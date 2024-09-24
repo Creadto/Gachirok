@@ -5,11 +5,12 @@ const Sidebar = () => {
     <aside className="fixed top-14 left-0 h-full w-64 bg-gray-100 shadow">
       <div className="p-4">
         <nav className="space-y-4">
-            <Link href='/'>
-          <div className="flex items-center space-x-2 cursor-pointer">
-            <span className="text-orange-500">🏠</span>
-            <span className="text-orange-500">Home</span>
-          </div>
+          <div className="h-12 bg-red-500"></div>
+          <Link href="/">
+            <div className="flex items-center space-x-2 cursor-pointer">
+              <span className="text-orange-500">🏠</span>
+              <span className="text-orange-500">Home</span>
+            </div>
           </Link>
           <hr className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 text-black" />
           <div className="text-gray-500">Universal</div>
