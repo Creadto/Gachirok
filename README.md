@@ -1,36 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Commit Message Rule
 
-## Getting Started
+|타입이름|내용|
+|:----:|:-----------------:|
+|FEAT|새로운 기능에 대한 커밋|
+|FIX|버그 수정에 대한 커밋|
+|BUILD|빌드 관련 파일 수정 / 모듈 설치 또는 삭제에 대한 커밋|
+|CHORE|그 외 자잘한 수정에 대한 커밋|
+|CI|ci 관련 설정 수정에 대한 커밋|
+|DOCS|문서 수정에 대한 커밋|
+|STYLE|코드 스타일 혹은 포맷 등에 관한 커밋|
+|REFACTOR|코드 리팩토링에 대한 커밋|
+|TEST|테스트 코드 수정에 대한 커밋|
+|PERF|성능 개선에 대한 커밋|
 
-First, run the development server:
+## Github Flow
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+![image](https://github.com/user-attachments/assets/4de22506-585b-4960-bbdf-78596ab8b572)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. Branch 생성
+- 새로운 기능이나 버그 수정 작업을 수행하기 위해 브랜치를 생성한다.
+- 네이밍 규칙은 ```feature/[개발할 기능]``` 으로 한다.
+- ex) ```feature/community```, ```feature/meeting```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. Commit 작성
+- 브랜치에서 변경 사항을 커밋으로 저장한다.
+- 커밋은 작업의 단위이며, 코드 변경 내용을 기록한다.
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+3. Pull Request
+- 변경 사항을 본래 브랜치로 병합하기 위해 PR를 생성한다.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+4. 리뷰 및 피드백
+- PR를 생성한 후 다른 개발자들이 코드를 검토하고 피드백을 제공한다.
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+5. 병합
+- PR이 승인되면 변경 사항을 본래 브랜치로 병합한다.
