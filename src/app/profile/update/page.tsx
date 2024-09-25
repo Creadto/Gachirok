@@ -2,15 +2,15 @@
 
 import CustomAlert from "@/core/components/CustomAlert";
 import useStore from "@/core/store/user-store";
-import { ProfileResponse } from "@/core/types/Profile";
-import { ProfileUI } from "@/core/types/ProfileUI";
-import { ProfileUpdateRequest } from "@/core/types/Profile";
+import { ProfileUI } from "@/app/profile/_types/ProfileUI";
 import { useSession } from "next-auth/react";
 import { ChangeEvent, useEffect, useState } from "react";
 import { getProfileData } from "../_utils/useGetProfile";
 import UpdateProfileForm from "./_components/UpdateProfileForm";
 import UpdateProfileImageForm from "./_components/UpdateProfileImageForm";
 import useUserStore from "@/core/store/user-store";
+import { ProfileUpdateRequest } from "../_types/ProfileUpdateRequest";
+import { ProfileResponse } from "../_types/ProfileResponse";
 
 export default function ProfilePage() {
   //해당 파일에서 사용되는 변수들

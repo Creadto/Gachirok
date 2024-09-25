@@ -1,4 +1,5 @@
-import { User } from "../types/User";
+
+import { User } from "../store/user-store";
 import { UserResponse } from "../types/UserResponse";
 
 //User에 userResponse데이터 넣기

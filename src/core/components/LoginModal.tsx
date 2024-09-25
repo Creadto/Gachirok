@@ -3,17 +3,19 @@ import { RiKakaoTalkFill } from "react-icons/ri";
 import { FcGoogle } from "react-icons/fc";
 import { FaApple, FaGithub } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import { signIn, useSession } from "next-auth/react";
+import { getSession, signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export const LoginModal = () => {
   const [isModalOpen, setIsModalOpen] = useState(true);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { data: session, status } = useSession();
+  let [signedUpUser, setSignedUpUser] = useState(false);
 
   useEffect(() => {
     setIsModalOpen(true);
-  }, [])
+  }, []);
   const closeModal = () => {
     setIsModalOpen(false);
     router.back();
@@ -23,6 +25,7 @@ export const LoginModal = () => {
     setLoading(true);
     const result = await signIn("kakao", {
       redirect: false,
+      callbackUrl: session?.signedUpUser === true ? "/" : "/sign-up",
     });
     if (result?.ok) {
       setLoading(false);
@@ -33,8 +36,9 @@ export const LoginModal = () => {
     setLoading(true);
     const result = await signIn("google", {
       redirect: false,
-      callbackUrl : '/'
+      callbackUrl: session?.signedUpUser === true ? "/" : "/sign-up",
     });
+
     if (result?.ok) {
       setLoading(false);
     }
@@ -47,11 +51,10 @@ export const LoginModal = () => {
     });
     if (result?.ok) {
       setLoading(false);
-      router.replace('/')
     }
   };
 
-  if(isModalOpen) {
+  if (isModalOpen) {
     return (
       <>
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -60,7 +63,7 @@ export const LoginModal = () => {
               onClick={closeModal}
               className="absolute top-3 right-6 text-black hover:text-gray-800"
             >
-              &#10005; 
+              &#10005;
             </button>
             <div className="text-center mb-4">
               <img

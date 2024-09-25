@@ -1,21 +1,38 @@
-"use client"
-import { useState } from "react";
+"use client";
+import useUserStore, { User } from "@/core/store/user-store";
+import axios from "axios";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const Agreement = () => {
   const [allChecked, setAllChecked] = useState(false);
+  const { data: session } = useSession();
+
   const [requiredAgreed, setRequiredAgreed] = useState({
     terms: false,
     privacy: false,
     community: false,
     age: false,
   });
-  const[optionalAgreed, setOptionalAgreed] = useState({
-    marketing: false
-  })
+  const [optionalAgreed, setOptionalAgreed] = useState({
+    marketing: false,
+  });
+  const router = useRouter();
+  const [signedUpUser, setSignedUpUser] = useState(false);
+  const { user,setUser } = useUserStore();
+  console.log("required", requiredAgreed);
+  console.log("optional", optionalAgreed);
+
+  useEffect(() => {
+    if (session?.signedUpUser === true) {
+      router.replace("/");
+    }
+  });
 
   const handleCheckAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;
-    setAllChecked(checked);
+    setAllChecked(!allChecked);
     setRequiredAgreed({
       terms: checked,
       privacy: checked,
@@ -23,29 +40,95 @@ const Agreement = () => {
       age: checked,
     });
     setOptionalAgreed({
-      marketing: checked
-    })
+      marketing: checked,
+    });
+    console.log("Required", requiredAgreed),
+      console.log("Optional", optionalAgreed);
   };
 
-  const handleCheck = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
+  const handleCheckRequired = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: string
+  ) => {
     const checked = e.target.checked;
     setRequiredAgreed((prev) => ({
       ...prev,
       [field]: checked,
     }));
+
     setAllChecked(
-      checked && Object.values({ ...requiredAgreed, [field]: checked }).every((v) => v)
+      checked &&
+        Object.values({
+          ...requiredAgreed,
+          ...optionalAgreed,
+          [field]: checked,
+        }).every((v) => v)
     );
   };
 
-  // const handleSubmit = async() => {
-  //   const res = await fetch("/users",{
-  //     method: 'POST',
-  //     body: {
-  //       noticeMarketing: requiredAgreed,
-  //     }
-  //   })
-  // }
+  const handleCheckOptional = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: string
+  ) => {
+    const checked = e.target.checked;
+
+    setOptionalAgreed((prev) => ({
+      ...prev,
+      [field]: checked,
+    }));
+
+    setAllChecked(
+      checked &&
+        Object.values({
+          ...requiredAgreed,
+          ...optionalAgreed,
+          [field]: checked,
+        }).every((v) => v)
+    );
+    console.log("optional", optionalAgreed);
+  };
+
+  const handleClick = async () => {
+    console.log(optionalAgreed.marketing);
+    if (session?.accessToken) {
+      console.log("exists", session?.accessToken);
+      try {
+        const res = await axios.post(
+          "/api/users",
+          {
+            deviceToken: Math.floor(Math.random() * 1000).toString(),
+            countryCode: "China",
+            noticeMarketing: optionalAgreed.marketing,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${session?.accessToken}`,
+            },
+          }
+        );
+        const data = res.data;
+        const updatedUser: User ={
+          ...user,
+          signedUpUser: true,
+          userId: res.data.userId,
+          platform: res.data.platform,
+          email: res.data.email,
+          referralCode: res.data.referralCode,
+        }
+        setUser(updatedUser);
+        console.log("data", data)
+        if (data) {
+          router.push("/");
+          console.log("user after", user)
+        }
+      } catch (error) {
+        console.log("error", error);
+      }
+    }
+  };
+  useEffect(() => {
+    console.log("User state updated:", user);
+  }, [user]);
 
   return (
     <div className="flex items-center justify-center h-screen">
@@ -68,7 +151,7 @@ const Agreement = () => {
                 type="checkbox"
                 className="mr-2"
                 checked={requiredAgreed.terms}
-                onChange={(e) => handleCheck(e, "terms")}
+                onChange={(e) => handleCheckRequired(e, "terms")}
               />
               <span>필수: 서비스 이용약관 동의</span>
             </div>
@@ -77,7 +160,7 @@ const Agreement = () => {
                 type="checkbox"
                 className="mr-2"
                 checked={requiredAgreed.privacy}
-                onChange={(e) => handleCheck(e, "privacy")}
+                onChange={(e) => handleCheckRequired(e, "privacy")}
               />
               <span>필수: 개인정보 수집 및 이용 동의</span>
             </div>
@@ -86,7 +169,7 @@ const Agreement = () => {
                 type="checkbox"
                 className="mr-2"
                 checked={requiredAgreed.community}
-                onChange={(e) => handleCheck(e, "community")}
+                onChange={(e) => handleCheckRequired(e, "community")}
               />
               <span>필수: 커뮤니티 가이드 동의</span>
             </div>
@@ -95,7 +178,7 @@ const Agreement = () => {
                 type="checkbox"
                 className="mr-2"
                 checked={requiredAgreed.age}
-                onChange={(e) => handleCheck(e, "age")}
+                onChange={(e) => handleCheckRequired(e, "age")}
               />
               <span>필수: 만 19세 이상 동의</span>
             </div>
@@ -104,7 +187,7 @@ const Agreement = () => {
                 type="checkbox"
                 className="mr-2"
                 checked={optionalAgreed.marketing}
-                onChange={(e) => handleCheck(e, "marketing")}
+                onChange={(e) => handleCheckOptional(e, "marketing")}
               />
               <span>선택: 혜택 및 이벤트 알림 수신 동의</span>
             </div>
@@ -112,12 +195,12 @@ const Agreement = () => {
         </div>
         <button
           className={`w-full mt-6 py-3 text-white font-bold ${
-            allChecked
+            Object.values(requiredAgreed).every(Boolean)
               ? "bg-pink-500 hover:bg-pink-600"
               : "bg-gray-300 cursor-not-allowed"
           }`}
-          disabled={!allChecked}
-          // onSubmit={handleSubmit}
+          disabled={!Object.values(requiredAgreed).every(Boolean)}
+          onClick={handleClick}
         >
           동의하고 가기!
         </button>

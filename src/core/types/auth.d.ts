@@ -7,5 +7,6 @@ declare module 'next-auth' {
       id?: string;
     } & DefaultSession['user'];
     accessToken: string;
+    signedUpUser: boolean
   }
 }

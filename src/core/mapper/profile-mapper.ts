@@ -1,9 +1,8 @@
-import {
-  Profile,
-  ProfileCreateRequest,
-  ProfileResponse,
-  ProfileVisitResponse,
-} from "../types/Profile";
+import { ProfileCreateRequest } from "@/app/profile/_types/ProfileCreateRequest";
+import { Profile } from "../store/profile-store";
+import { ProfileResponse } from "@/app/profile/_types/ProfileResponse";
+import { ProfileVisitResponse } from "@/app/profile/_types/ProfileVisitResponse";
+
 
 //Profile에서 ProfileCreateRequest 데이터 추출하기
 export function mapProfileCreateRequest(data: Profile): ProfileCreateRequest {

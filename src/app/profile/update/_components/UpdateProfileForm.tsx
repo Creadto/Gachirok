@@ -1,5 +1,5 @@
 
-import { ProfileUI } from "@/core/types/ProfileUI";
+import { ProfileUI } from "@/app/profile/_types/ProfileUI";
 import { ChangeEvent } from "react";
 
 interface UpdateProfileFormProps {

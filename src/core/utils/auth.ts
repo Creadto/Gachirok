@@ -3,6 +3,7 @@ import NextAuth, { NextAuthOptions } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import GoogleProvider from "next-auth/providers/google";
 import KakaoProvider from "next-auth/providers/kakao";
+import {cookies} from "next/headers"
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -36,12 +37,22 @@ export const authOptions: NextAuthOptions = {
 
           //account의 accessToken에 가치가 api에서 받아온 accessToken저장
           account.access_token = authResponse.data.accessToken;
-          if (authResponse.data.signedUpUser === false) {
-            return "/sign-up"; // 클라이언트 측에서 이 경로로 리다이렉트
-          }
+          account.signedUpUser = authResponse.data.signedUpUser
+          console.log("sex", authResponse.data.signedUpUser)
+          // if (authResponse.data.signedUpUser === false) {
+          //   // console.log("sex", account.access_token)
+          //   // const cookieStore = cookies();
+          //   // cookieStore.set('accessToken', authResponse.data.accessToken, {
+          //   //   httpOnly: true, //HTTP 전용 쿠키로 설정하여 JavaScript에서 접근할 수 없게 만듬
+          //   //   secure: true, //쿠키가 HTTPS 연결에서만 전송되도록
+          //   //   path: '/', //쿠키가 사이트 전역에서 유효하도록 설정
+          //   //   maxAge: 60 * 60 * 24 * 7
+          //   // })
+            
+          //   return true; // 클라이언트 측에서 이 경로로 리다이렉트
+          // }
 
           console.log("api auth", authResponse.data);
-          return authResponse.data.signedUpUser === true;
         } catch (error) {
           console.error("Error during signIn:", error);
         }
@@ -58,6 +69,7 @@ export const authOptions: NextAuthOptions = {
       if (account) {
         //account에 저장된 기존의 가치가 api에서 받아온 accesstoken을 token.accessToken에 저장
         token.accessToken = account.access_token;
+        token.signedUpUser = account.signedUpUser
       }
       return token;
     },
@@ -66,6 +78,7 @@ export const authOptions: NextAuthOptions = {
         //최종적으로 session의 accessToken에 가치가api에서 받아온 accessToken저장
         session.accessToken = token.accessToken;
         session.user.id = token.id;
+        session.signedUpUser = token.signedUpUser
       }
       return session;
     },

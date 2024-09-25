@@ -8,6 +8,7 @@ import useUserStore from "../store/user-store";
 export const useFetchUserResponse = (session: any) => {
   const [loading, setLoading] = useState(true);
   const { user, setUser } = useUserStore();
+  const [profileUrl, setProfileUrl] = useState("");
 
   useEffect(() => {
     const fetchUserResponseData = async () => {
@@ -19,6 +20,7 @@ export const useFetchUserResponse = (session: any) => {
             },
           });
          setUser(mapUserResponse(response.data));
+         setProfileUrl(response.data.profile.profilePhotoUrl)
         } catch (error) {
           console.error("Error fetching user data:", error);
         }
@@ -29,5 +31,5 @@ export const useFetchUserResponse = (session: any) => {
     fetchUserResponseData();
   }, [session, setUser]);
 
-  return loading;
+  return profileUrl;
 };

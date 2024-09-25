@@ -1,4 +1,5 @@
-import { ProfileResponse } from "@/core/types/Profile";
+import { ProfileResponse } from "../_types/ProfileResponse";
+
 
 
 export async function getProfileData(accessToken: string): Promise<ProfileResponse> {
