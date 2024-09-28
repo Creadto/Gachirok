@@ -23,6 +23,10 @@ interface userActions {
   setUser: (user: User) => void;
 }
 
+/**
+ * @Description User에 대한 정보를 저장하는 전역 store
+ * @author 김영서
+ **/
 const useUserStore = create<userState & userActions>((set) => ({
     user: {
       signedUpUser: false,

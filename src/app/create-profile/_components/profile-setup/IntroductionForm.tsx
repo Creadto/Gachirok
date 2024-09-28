@@ -10,6 +10,11 @@ interface IntroductionFormProps {
   maxLength: number;
 }
 
+
+/**
+ * @Description 프로필 신규 생성의 Introduction 생성
+ * @author 김영서
+ **/
 const IntroductionForm: React.FC<IntroductionFormProps> = ({
   register,
   label,
@@ -22,7 +27,7 @@ const IntroductionForm: React.FC<IntroductionFormProps> = ({
     <label className="block mb-4">
       <span className="text-gray-700">{label}</span>
       <textarea
-        {...register(name, { required, maxLength })}
+        {...register(name, { required, maxLength })} //maxLength로 최대길이 지정
         className="mt-1 block h-32 w-full border bg-slate-100 border-gray-300 rounded-md shadow-sm focus:ring focus:ring-opacity-50"
       />
       <div className="text-right text-sm text-gray-400">

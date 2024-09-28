@@ -3,6 +3,10 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 
+/**
+ * @Description 알림을 띄우는 모달창
+ * @author 김영서
+ **/
 interface CustomAlertProps {
   message: string;
   onClose: () => void;

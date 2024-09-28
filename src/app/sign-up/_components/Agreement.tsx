@@ -1,10 +1,16 @@
 "use client";
+import { usePostUserCreateRequest } from "@/core/hooks/usePostUserCreateRequest";
+import { mapUserResponse } from "@/core/mapper/user-mapper";
 import useUserStore, { User } from "@/core/store/user-store";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+/**
+ * @Description signedUpUser가 false일 때 등장하는 약관동의 페이지
+ * @author 김영서
+ **/
 const Agreement = () => {
   const [allChecked, setAllChecked] = useState(false);
   const { data: session } = useSession();
@@ -19,17 +25,16 @@ const Agreement = () => {
     marketing: false,
   });
   const router = useRouter();
-  const [signedUpUser, setSignedUpUser] = useState(false);
-  const { user,setUser } = useUserStore();
-  console.log("required", requiredAgreed);
-  console.log("optional", optionalAgreed);
+  const { user, setUser } = useUserStore();
 
+  //세션의 정보를 검사한 후, signedUpUser가 true이면 hompage으로 redirect
   useEffect(() => {
     if (session?.signedUpUser === true) {
       router.replace("/");
     }
   });
 
+  //모든 약관 동의 버튼 상태 관리
   const handleCheckAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;
     setAllChecked(!allChecked);
@@ -42,10 +47,9 @@ const Agreement = () => {
     setOptionalAgreed({
       marketing: checked,
     });
-    console.log("Required", requiredAgreed),
-      console.log("Optional", optionalAgreed);
   };
 
+  //필수항목 체크 상태 관리
   const handleCheckRequired = (
     e: React.ChangeEvent<HTMLInputElement>,
     field: string
@@ -66,6 +70,7 @@ const Agreement = () => {
     );
   };
 
+  //선택항목 체크 상태 관리
   const handleCheckOptional = (
     e: React.ChangeEvent<HTMLInputElement>,
     field: string
@@ -88,48 +93,22 @@ const Agreement = () => {
     console.log("optional", optionalAgreed);
   };
 
+  //동의하고 가치락 시작하기 버튼 눌렀을 때 API에 Response 요청
   const handleClick = async () => {
-    console.log(optionalAgreed.marketing);
     if (session?.accessToken) {
-      console.log("exists", session?.accessToken);
       try {
-        const res = await axios.post(
-          "/api/users",
-          {
-            deviceToken: Math.floor(Math.random() * 1000).toString(),
-            countryCode: "China",
-            noticeMarketing: optionalAgreed.marketing,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${session?.accessToken}`,
-            },
-          }
-        );
-        const data = res.data;
-        const updatedUser: User ={
-          ...user,
-          signedUpUser: true,
-          userId: res.data.userId,
-          platform: res.data.platform,
-          email: res.data.email,
-          referralCode: res.data.referralCode,
-        }
+        const response = await usePostUserCreateRequest(`Bearer ${session?.accessToken}`, optionalAgreed.marketing)
+        const data = response.data
+        const updatedUser: User = mapUserResponse(data);
         setUser(updatedUser);
-        console.log("data", data)
         if (data) {
           router.push("/");
-          console.log("user after", user)
         }
       } catch (error) {
         console.log("error", error);
       }
     }
   };
-  useEffect(() => {
-    console.log("User state updated:", user);
-  }, [user]);
-
   return (
     <div className="flex items-center justify-center h-screen">
       <div className="w-full max-w-md p-6 bg-white border rounded-md shadow-md">
@@ -137,6 +116,7 @@ const Agreement = () => {
         <p className="mb-6">아래 약관에 동의해주세요.</p>
         <div className="space-y-4">
           <div className="flex items-center">
+            {/* 모두선택하는 버튼 */}
             <input
               type="checkbox"
               className="mr-2"
@@ -145,6 +125,7 @@ const Agreement = () => {
             />
             <span>모든 약관 동의</span>
           </div>
+          {/* 서비스 이용약관 동의 */}
           <div className="pl-4 space-y-2">
             <div className="flex items-center">
               <input
@@ -155,6 +136,7 @@ const Agreement = () => {
               />
               <span>필수: 서비스 이용약관 동의</span>
             </div>
+            {/* 개인정보 수집 및 이용 동의 */}
             <div className="flex items-center">
               <input
                 type="checkbox"
@@ -164,6 +146,7 @@ const Agreement = () => {
               />
               <span>필수: 개인정보 수집 및 이용 동의</span>
             </div>
+            {/* 커뮤니티 가이드 동의 */}
             <div className="flex items-center">
               <input
                 type="checkbox"
@@ -173,6 +156,7 @@ const Agreement = () => {
               />
               <span>필수: 커뮤니티 가이드 동의</span>
             </div>
+            {/* 만 19세 이상 동의 */}
             <div className="flex items-center">
               <input
                 type="checkbox"
@@ -182,6 +166,7 @@ const Agreement = () => {
               />
               <span>필수: 만 19세 이상 동의</span>
             </div>
+            {/* 선택: 혜택 및 이벤트 알림 수신 동의 */}
             <div className="flex items-center">
               <input
                 type="checkbox"
@@ -193,6 +178,7 @@ const Agreement = () => {
             </div>
           </div>
         </div>
+        {/* 동의하고 가치락 시작하기 버튼 */}
         <button
           className={`w-full mt-6 py-3 text-white font-bold ${
             Object.values(requiredAgreed).every(Boolean)
@@ -202,7 +188,7 @@ const Agreement = () => {
           disabled={!Object.values(requiredAgreed).every(Boolean)}
           onClick={handleClick}
         >
-          동의하고 가기!
+          동의하고 가치락 시작가기!
         </button>
       </div>
     </div>

@@ -9,6 +9,11 @@ interface InterestAndExpertiseFormProps {
   errors: FieldErrors;
 }
 
+
+/**
+ * @Description 프로필 신규 생성의 Interests & Expertises 생성
+ * @author 김영서
+ **/
 const InterestAndExpertiseForm: React.FC<InterestAndExpertiseFormProps> = ({
   register,
   label,

@@ -1,9 +1,9 @@
-import Sidebar from "@/core/components/Sidebar";
+import Sidebar from "@/core/components/side-bar/Sidebar";
 import type { Metadata } from "next";
 import "./globals.css";
-import Topbar from "@/core/components/Topbar";
 import { AuthProvider } from "./auth/provider";
 import ReactQueryProvider from "@/core/utils/reactQueryProvider";
+import Topbar from "@/core/components/top-bar/Topbar";
 
 export const metadata: Metadata = {
   title: "Create Next App",

@@ -36,7 +36,10 @@ interface profileState {
 interface profileActions {
   setProfile: (profile: Profile) => void;
 }
-
+/**
+ * @Description Profile에 대한 정보를 저장하는 전역 store
+ * @author 김영서
+ **/
 const useProfileStore = create<profileState & profileActions>((set) => ({
   profile: {
     male: true,

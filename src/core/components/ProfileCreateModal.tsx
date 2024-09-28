@@ -4,19 +4,15 @@ import useUserStore from "../store/user-store";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
+/**
+ * @Description 약간동의 후 혹은, 사용자의 profile이 null일 때 등장하는 모달창
+ * @author 김영서
+ **/
 const ProfileModal = () => {
   const [isOpen, setIsOpen] = useState(true);
-  const { user } = useUserStore();
   const router = useRouter();
   const { data: session } = useSession();
 
-  const handleClose = () => {
-    setIsOpen(false);
-  };
-
-  const handlCreateProfileClick = () => {
-    router.push("/create-profile");
-  };
 
   if (!isOpen) return null;
 
@@ -25,9 +21,11 @@ const ProfileModal = () => {
       <div className="bg-red-500">
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96 relative">
+
+            {/* 오른쪽 상단 X버튼 */}
             <button
               className="absolute top-2 right-5 text-gray-400 hover:text-gray-600 text-xl "
-              onClick={handleClose}
+              onClick={() => setIsOpen(false)}
             >X
             </button>
             <div className="flex justify-center mb-4">
@@ -46,15 +44,17 @@ const ProfileModal = () => {
               사용하실 수 있습니다.
             </p>
             <div className="flex justify-center">
+              {/* 프로필 생성하기 버튼 */}
               <button
                 className="bg-pink-500 text-white rounded-full py-2 px-6"
-                onClick={handlCreateProfileClick}
+                onClick={() => router.push('/create-profile')}
               >
                 프로필 설정하고 가치가 시작하기!
               </button>
             </div>
+            {/* 닫기 버튼 */}
             <div className="text-center mt-3">
-              <button className="text-gray-400 text-sm" onClick={handleClose}>
+              <button className="text-gray-400 text-sm" onClick={() => setIsOpen(false)}>
                 나중에 하기
               </button>
             </div>

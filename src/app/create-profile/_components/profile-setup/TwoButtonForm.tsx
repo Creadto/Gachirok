@@ -7,6 +7,10 @@ interface TwoButtonFormProps {
   onChange: (value: boolean) => void;
 }
 
+/**
+ * @Description  프로필 신규 생성의 여행자/거주자 및 남자/여자 고르는 버튼
+ * @author 김영서
+ **/
 const TwoButtonForm: React.FC<TwoButtonFormProps> = ({
   title,
   options,
@@ -19,6 +23,7 @@ const TwoButtonForm: React.FC<TwoButtonFormProps> = ({
       <div className="flex space-x-4">
         {options.map((option) => (
           <button
+          type="button"
             key={option.label}
             className={`px-4 py-2 rounded ${
               activeValue === option.value ? "bg-blue-500" : "bg-gray-300"

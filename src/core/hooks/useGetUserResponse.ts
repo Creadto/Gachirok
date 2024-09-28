@@ -1,35 +1,15 @@
-//user관련 response를 api를 통해 호출하는 custom hook
-
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { mapUserResponse } from "../mapper/user-mapper";
-import useUserStore from "../store/user-store";
 
-export const useFetchUserResponse = (session: any) => {
-  const [loading, setLoading] = useState(true);
-  const { user, setUser } = useUserStore();
-  const [profileUrl, setProfileUrl] = useState("");
+/**
+ * @Description UserResponse를 API로부터 Get하는 함수
+ * @author 김영서
+ **/
+export default async function useGetUserResponse(accessToken: string) {
+  const response = await axios.get("/api/users", {
+    headers: {
+      Authorization: accessToken,
+    },
+  });
 
-  useEffect(() => {
-    const fetchUserResponseData = async () => {
-      if (session?.accessToken) {
-        try {
-          const response = await axios.get("/api/users", {
-            headers: {
-              Authorization: `Bearer ${session.accessToken}`,
-            },
-          });
-         setUser(mapUserResponse(response.data));
-         setProfileUrl(response.data.profile.profilePhotoUrl)
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-        }
-      }
-      setLoading(false);
-    };
-
-    fetchUserResponseData();
-  }, [session, setUser]);
-
-  return profileUrl;
-};
+  return response;
+}

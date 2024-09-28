@@ -10,6 +10,11 @@ interface NicknameFormProps {
   placeholder: string;
 }
 
+
+/**
+ * @Description 프로필 신규 생성의 Nickname 생성
+ * @author 김영서
+ **/
 const NicknameForm: React.FC<NicknameFormProps> = ({
   register,
   label,

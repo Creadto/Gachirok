@@ -7,6 +7,11 @@ interface ProfileImageFormProps {
   label: string;
 }
 
+
+/**
+ * @Description 프로필 신규 생성의 Profile Image 생성
+ * @author 김영서
+ **/
 const ProfileImageForm: React.FC<ProfileImageFormProps> = ({
   image,
   onImageUpload,
@@ -16,6 +21,7 @@ const ProfileImageForm: React.FC<ProfileImageFormProps> = ({
     <div className="mb-6 text-center">
       <label className="block mb-2 text-gray-700">{label}</label>
       <div className="relative inline-block">
+        {/* 입력된 파일을 바탕으로 이미지 미리보기 표시 */}
         {image ? (
           <Image
             src={image}
