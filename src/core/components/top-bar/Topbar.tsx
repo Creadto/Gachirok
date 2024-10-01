@@ -15,7 +15,7 @@ import ProfileIcon from "./ProfileIcon";
  **/
 export default function Topbar() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isActive, setIsActive] = useState(false);
+  const [_isActive, setIsActive] = useState(false);
   const { active, setActive } = useEditButtonStore();
   const toggleModal = () => setIsEditModalOpen(!isEditModalOpen);
   const router = useRouter();

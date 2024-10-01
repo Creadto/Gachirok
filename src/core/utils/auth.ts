@@ -25,9 +25,9 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   callbacks: {
-    async signIn({ account, user, profile }: any) {
+    async signIn({ account }: any) {
       if (account) {
-        const { access_token, provider, refresh_token, providerAccountId } =
+        const { access_token, provider} =
           account;
         try {
           const authResponse = await axios.post(

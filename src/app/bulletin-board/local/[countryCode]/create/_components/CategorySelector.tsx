@@ -48,6 +48,7 @@ export const CategorySelector = ({
 
   return (
     <>
+    <div className="flex flex-col">
       <p className="text-xs text-slate-300 mt-8 -mb-4">카테고리</p>
       <div className="flex flex-row gap-x-4">
 
@@ -135,6 +136,7 @@ export const CategorySelector = ({
             구인구직
           </div>
         </button>
+      </div>
       </div>
     </>
   );

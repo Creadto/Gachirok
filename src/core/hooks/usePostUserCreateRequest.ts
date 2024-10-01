@@ -6,7 +6,7 @@ import axios from "axios";
  **/
 export async function usePostUserCreateRequest(
   accessToken: string,
-  noticeMarketing: Boolean
+  noticeMarketing: boolean
 ) {
   const response = await axios.post(
     "/api/users",

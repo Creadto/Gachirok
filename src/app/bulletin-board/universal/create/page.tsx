@@ -93,10 +93,7 @@ const AddUniversalBulletinBoardPage = () => {
   }, [selectedCategory, title, content]);
 
   return (
-    <form
-      className="min-w-xl max-w-3xl mx-auto bg-white p-6 rounded-lg"
-      onSubmit={handleSubmit(onValid)}
-    >
+    <div className="min-w-xl max-w-3xl mx-auto bg-white p-6 rounded-lg">
       <BackButton onClick={() => router.push("/")} />
       <div className="flex flex-row items-center my-auto">
         <h1 className="text-2xl font-bold">글쓰기</h1>
@@ -143,67 +140,69 @@ const AddUniversalBulletinBoardPage = () => {
         {errors.title && <p className="text-red-500">주제는 필수항목입니다.</p>}
       </div> */}
 
-      {/* 글 내용 */}
-      {/* 제목 */}
-      <label className="block mb-2">글 내용</label>
-      <input
-        type="text"
-        {...register("title", { required: true })}
-        className="block w-full border bg-slate-300  rounded-md p-2 mb-4"
-        placeholder="제목을 입력해 주세요."
-      />
-      {errors.title && <p className="text-red-500">제목은 필수항목입니다.</p>}
-
-      {/* 본문 */}
-      <QuillWrapper
-        theme={"snow"}
-        id={"content"}
-        placeholder={"설명을 입력해주세요"}
-        value={content}
-        modules={modules}
-        formats={formats}
-        onChange={setContent}
-      />
-
-      {/* 이미지 업로드 */}
-      <label className="block mb-2">이미지 업로드 (0/10)</label>
-      <input
-        type="file"
-        accept="image/*"
-        {...register("images")}
-        multiple
-        className="block w-full mb-4"
-      />
-      <p>{watchImages ? `${watchImages.length}개 업로드됨` : "0개 업로드"}</p>
-
-      {/* 위치 입력 */}
-      <label className="block mb-2">위치</label>
-      <input
-        type="text"
-        {...register("location")}
-        className="block w-full border border-gray-300 rounded-md p-2 mb-4"
-        placeholder="위치를 입력해 주세요."
-      />
-
-      {/* 미리보기 버튼 */}
-      <div className="flex justify-between">
-        <button
-          type="button"
-          className="py-2 px-4 rounded bg-gray-300 hover:bg-gray-400"
-          onClick={handlePreviewModal}
-        >
-          미리보기
-        </button>
-
-        {/* 작성 완료 버튼 */}
+      <form onSubmit={handleSubmit(onValid)}>
+        {/* 글 내용 */}
+        {/* 제목 */}
+        <label className="block mb-2">글 내용</label>
         <input
-          type="submit"
-          className="py-2 px-4 rounded bg-blue-500 hover:bg-blue-700 text-white"
-          value="작성 완료"
+          type="text"
+          {...register("title", { required: true })}
+          className="block w-full border bg-slate-300  rounded-md p-2 mb-4"
+          placeholder="제목을 입력해 주세요."
         />
-      </div>
+        {errors.title && <p className="text-red-500">제목은 필수항목입니다.</p>}
 
-        {/* 미리보기 모달창 */}
+        {/* 본문 */}
+        <QuillWrapper
+          theme={"snow"}
+          id={"content"}
+          placeholder={"설명을 입력해주세요"}
+          value={content}
+          modules={modules}
+          formats={formats}
+          onChange={setContent}
+        />
+
+        {/* 이미지 업로드 */}
+        <label className="block mb-2">이미지 업로드 (0/10)</label>
+        <input
+          type="file"
+          accept="image/*"
+          {...register("images")}
+          multiple
+          className="block w-full mb-4"
+        />
+        <p>{watchImages ? `${watchImages.length}개 업로드됨` : "0개 업로드"}</p>
+
+        {/* 위치 입력 */}
+        <label className="block mb-2">위치</label>
+        <input
+          type="text"
+          {...register("location")}
+          className="block w-full border border-gray-300 rounded-md p-2 mb-4"
+          placeholder="위치를 입력해 주세요."
+        />
+
+        {/* 미리보기 버튼 */}
+        <div className="flex justify-between gap-x-5">
+          <button
+            type="button"
+            className="py-2 px-4 rounded bg-gray-300 hover:bg-gray-400 ml-auto"
+            // onClick={handleModal}
+          >
+            미리보기
+          </button>
+
+          {/* 작성 완료 버튼 */}
+          <input
+            type="submit"
+            className="py-2 px-4 rounded bg-blue-500 hover:bg-blue-700 text-white mr-auto"
+            value="작성 완료"
+          />
+        </div>
+      </form>
+
+      {/* 미리보기 모달창 */}
       <PreviewModal
         isOpen={isPreviewModalOpen}
         onClose={handlePreviewModal}
@@ -215,7 +214,7 @@ const AddUniversalBulletinBoardPage = () => {
           location: watch("location"),
         }}
       />
-    </form>
+    </div>
   );
 };
 

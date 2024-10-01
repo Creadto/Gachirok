@@ -3,7 +3,6 @@ import ProfileModal from "@/core/components/ProfileCreateModal";
 import { countryStore } from "@/core/store/country-store";
 import useUserStore from "@/core/store/user-store";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 interface PageProps {

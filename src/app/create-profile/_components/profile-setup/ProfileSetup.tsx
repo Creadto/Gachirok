@@ -1,26 +1,22 @@
+import { BackButton } from "@/app/bulletin-board/_components/BackButton";
+import CountryStateCitySelector from "@/app/bulletin-board/local/[countryCode]/create/meetings/_components/CountryStateCitySelector";
 import { ProfileCreateRequest } from "@/app/profile/_types/ProfileCreateRequest";
+import CustomAlert from "@/core/components/CustomAlert";
+import ExpertisesSelector from "@/core/components/ExpertisesSelector";
+import InterestSelector from "@/core/components/InterestsSelector";
+import usePostProfileCreateRequest from "@/core/hooks/usePostProfileCreateRequest";
+import { mapProfileResponse } from "@/core/mapper/profile-mapper";
 import useProfileStore, { Profile } from "@/core/store/profile-store";
-import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FieldErrors, useForm } from "react-hook-form";
+import appendProfileCreateRequestFormData from "../../_utils/appendProfileCreateRequestFormData";
 import BackgroundImageForm from "./BackgroundImageForm";
-import InterestAndExpertiseForm from "./InterestAndExpertiseForm";
 import IntroductionForm from "./IntroductionForm";
 import NicknameForm from "./NicknameForm";
 import ProfileImageForm from "./ProfileImageForm";
 import TwoButtonForm from "./TwoButtonForm";
-import CountryStateCitySelector from "@/app/bulletin-board/local/[countryCode]/create/meetings/_components/CountryStateCitySelector";
-import {
-  expertisesOptions,
-  interestsOptions,
-} from "@/core/types/InterestsAndExpertisesOptions";
-import usePostProfileCreateRequest from "@/core/hooks/usePostProfileCreateRequest";
-import appendProfileCreateRequestFormData from "../../_utils/appendProfileCreateRequestFormData";
-import { mapProfileResponse } from "@/core/mapper/profile-mapper";
-import { BackButton } from "@/app/bulletin-board/_components/BackButton";
-import CustomAlert from "@/core/components/CustomAlert";
 
 /**
  * @Description 프로필 신규 생성의 메인 페이지
@@ -34,6 +30,7 @@ export default function CreateProfilePage() {
     register,
     handleSubmit,
     setValue,
+    clearErrors,
     formState: { errors },
   } = useForm<ProfileCreateRequest>();
 
@@ -48,7 +45,7 @@ export default function CreateProfilePage() {
     setProfile(updatedProfile);
     if (result) {
       setAlertMessage("Profile updated successfully!");
-      setShowAlert(true); 
+      setShowAlert(true);
     }
   };
 
@@ -64,13 +61,13 @@ export default function CreateProfilePage() {
   const [birth, setBirth] = useState<string>("");
   const [formattedDate, setFormattedDate] =
     useState<string>("2000년 01월 01일"); //한글로 변환된 생일의 초기값
-  const [interests, setInterests] = useState<string[]>([]);
-  const [expertises, setExpertises] = useState<string[]>([]);
+  // const [interests, setInterests] = useState<string[]>([]);
+  // const [expertises, setExpertises] = useState<string[]>([]);
   const [selectedCountry, setSelectedCountry] = useState<string>("");
   const [selectedState, setSelectedState] = useState<string>("");
   const [selectedCity, setSelectedCity] = useState<string>("");
   const [showAlert, setShowAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState("")
+  const [alertMessage, setAlertMessage] = useState("");
 
   //프로필 사진을 파일로부터 선택
   const handleProfileImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,7 +104,8 @@ export default function CreateProfilePage() {
     const dateValue = e.target.value;
     setBirth(dateValue);
     const date = new Date(dateValue);
-    setFormattedDate(formatDate(date)); //API로 보내는 형식으로 날짜를 변환한 뒤 업데이트
+    const fomattedDate = formatDate(date);
+    setFormattedDate(fomattedDate); //API로 보내는 형식으로 날짜를 변환한 뒤 업데이트
   };
 
   // 프로필 업데이트되었다는 알림창 닫기
@@ -121,29 +119,24 @@ export default function CreateProfilePage() {
     console.log("residenceYear", residenceYear);
     console.log("profile file", profileFile);
     console.log("background file", backgroundFile);
-    console.log("interests", interests);
-    console.log("expertises", expertises);
+    console.log("residenceCountryCode", selectedCountry);
+    console.log("residenceStateCode", selectedState);
+    console.log("residenceCityCode", selectedCity);
+    console.log("birth", formattedDate);
     setValue("male", male);
     setValue("traveler", traveler);
     setValue("residenceYear", residenceYear);
-    setValue("interests", interests);
-    setValue("expertises", expertises);
+    setValue("birth", formattedDate)
+    // setValue("interests", interests);
+    // setValue("expertises", expertises);
     setValue("photo", profileFile);
-    setValue("residenceCountryCode", selectedCountry);
-    setValue("residenceStateCode", selectedState);
-    setValue("residenceCityCode", selectedCity);
-    setValue("birth", formattedDate);
   }, [
     male,
     traveler,
     residenceYear,
-    interests,
-    expertises,
     profileFile,
-    formattedDate,
-    selectedCity,
-    selectedCountry,
-    selectedState,
+    birth,
+
   ]);
 
   return (
@@ -167,6 +160,7 @@ export default function CreateProfilePage() {
             setSelectedCity={setSelectedCity}
             register={register}
             errors={errors}
+            setValue={setValue}
           />
 
           {/* 여행자/거주자 INPUT */}
@@ -243,6 +237,7 @@ export default function CreateProfilePage() {
           <span className="text-gray-700">생일</span>
           <label className="block mb-4">
             <input
+              {...register("birth", { required: true })}
               type="date"
               value={birth}
               onChange={handleDateChange}
@@ -251,24 +246,25 @@ export default function CreateProfilePage() {
             {birth && (
               <p className="mt-4 text-md">선택한 날짜: {formattedDate}</p>
             )}
+            {errors.birth && (
+              <p className="text-red-500">생일을 입력해주세요</p>
+            )}
           </label>
 
           {/* 여행지 관심분야 INPUT */}
-          <InterestAndExpertiseForm
+          <span className="text-gray-700">여행지 관심분야</span>
+          <InterestSelector
             register={register}
-            label="여행지 관심분야"
-            name="interests"
-            options={interestsOptions}
             errors={errors}
+            setValue={setValue}
           />
 
           {/* 거주지 전문분야 INPUT */}
-          <InterestAndExpertiseForm
+          <span className="text-gray-700">거주지 전문분야</span>
+          <ExpertisesSelector
             register={register}
-            label="거주지 전문분야"
-            name="expertises"
-            options={expertisesOptions}
             errors={errors}
+            setValue={setValue}
           />
 
           {/* 프로필 성정 완료 버튼 */}
@@ -277,13 +273,13 @@ export default function CreateProfilePage() {
             className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
             value="프로필 생성"
           />
-           {showAlert && (
-        <CustomAlert
-          message={alertMessage}
-          onClose={handleCloseAlert}
-          route="/"
-        />
-      )}
+          {showAlert && (
+            <CustomAlert
+              message={alertMessage}
+              onClose={handleCloseAlert}
+              route="/"
+            />
+          )}
         </form>
       </div>
     </div>

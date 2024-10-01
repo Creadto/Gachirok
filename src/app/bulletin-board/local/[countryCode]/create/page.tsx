@@ -108,13 +108,10 @@ export default function AddFreeLocalBulletinBoardPage({
     setValue("category", selectedCategory);
     setValue("content", content);
     console.log("content", content);
-  }, [selectedCategory, title, content]);
+  }, [selectedCategory, content]);
 
   return (
-    <form
-      className="min-w-xl max-w-3xl mx-auto bg-white p-6 rounded-lg"
-      onSubmit={handleSubmit(onValid)}
-    >
+    <div className="min-w-xl max-w-3xl mx-auto bg-white p-6 rounded-lg">
       <BackButton
         onClick={() => router.push(`/bulletin-board/local/${country}`)}
       />
@@ -143,110 +140,115 @@ export default function AddFreeLocalBulletinBoardPage({
         }
       />
 
-      {/* 주제 선택 */}
-      <div className="relative block text-left">
-        <label className="block mb-2">주제</label>
+      {/* form을 카테고리 선택하는 것 위에 올리면 routing될 떄 onsubmit실행됨 */}
+      <form onSubmit={handleSubmit(onValid)}>
+        {/* 주제 선택 */}
+        <div className="relative block text-left">
+          <label className="block mb-2">주제</label>
+          <input
+            type="button"
+            {...register("category", { required: true })}
+            value={selectedCategory ? selectedCategory : "주제를 선택해주세요"}
+            onClick={toggleCategoryDropdown}
+            readOnly
+            className="block w-full border bg-slate-300 text-black text-left
+         rounded-md p-2 mb-4"
+            placeholder="주제를 선택해 주세요."
+          />
+
+          {isOpen && (
+            <div className="absolute right-0 z-10 mt-1 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+              <div className="py-1" role="none">
+                {categories.map((category, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleCategoryClick(category)}
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+          {errors.category && (
+            <p className="text-red-500">주제는 필수항목입니다.</p>
+          )}
+        </div>
+
+        {/* 글 내용 */}
+        {/* 제목 */}
+        <label className="block mb-2">글 내용</label>
         <input
           type="text"
-          {...register("category", { required: true })}
-          value={selectedCategory}
-          onClick={toggleCategoryDropdown}
-          readOnly
-          className="block w-full border bg-slate-300 text-black 
-         rounded-md p-2 mb-4"
-          placeholder="주제를 선택해 주세요."
+          {...register("title", { required: true })}
+          className="block w-full border bg-slate-300  rounded-md p-2 mb-4"
+          placeholder="제목을 입력해 주세요."
+        />
+        {errors.title && <p className="text-red-500">제목은 필수항목입니다.</p>}
+
+        {/* 본문 */}
+        <QuillWrapper
+          theme={"snow"}
+          id={"content"}
+          placeholder={"설명을 입력해주세요"}
+          value={content}
+          modules={modules}
+          formats={formats}
+          onChange={setContent}
         />
 
-        {isOpen && (
-          <div className="absolute right-0 z-10 mt-1 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-            <div className="py-1" role="none">
-              {categories.map((category, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleCategoryClick(category)}
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-        {errors.title && <p className="text-red-500">주제는 필수항목입니다.</p>}
-      </div>
-
-      {/* 글 내용 */}
-      {/* 제목 */}
-      <label className="block mb-2">글 내용</label>
-      <input
-        type="text"
-        {...register("title", { required: true })}
-        className="block w-full border bg-slate-300  rounded-md p-2 mb-4"
-        placeholder="제목을 입력해 주세요."
-      />
-      {errors.title && <p className="text-red-500">제목은 필수항목입니다.</p>}
-
-      {/* 본문 */}
-      <QuillWrapper
-        theme={"snow"}
-        id={"content"}
-        placeholder={"설명을 입력해주세요"}
-        value={content}
-        modules={modules}
-        formats={formats}
-        onChange={setContent}
-      />
-
-      {/* 이미지 업로드 */}
-      <label className="block mb-2">이미지 업로드 (0/10)</label>
-      <input
-        type="file"
-        accept="image/*"
-        {...register("images")}
-        multiple
-        className="block w-full mb-4"
-      />
-      <p>{watchImages ? `${watchImages.length}개 업로드됨` : "0개 업로드"}</p>
-
-      {/* 위치 입력 */}
-      <label className="block mb-2">위치</label>
-      <input
-        type="text"
-        {...register("location")}
-        className="block w-full border border-gray-300 rounded-md p-2 mb-4"
-        placeholder="위치를 입력해 주세요."
-      />
-
-      {/* 미리보기 버튼 */}
-      <div className="flex justify-between">
-        <button
-          type="button"
-          className="py-2 px-4 rounded bg-gray-300 hover:bg-gray-400"
-          onClick={handlePreviewModal}
-        >
-          미리보기
-        </button>
-
-        {/* 작성 완료 버튼 */}
+        {/* 이미지 업로드 */}
+        <label className="block mb-2">이미지 업로드 (0/10)</label>
         <input
-          type="submit"
-          className="py-2 px-4 rounded bg-blue-500 hover:bg-blue-700 text-white"
-          value="작성 완료"
+          type="file"
+          accept="image/*"
+          {...register("images")}
+          multiple
+          className="block w-full mb-4"
         />
-      </div>
+        <p>{watchImages ? `${watchImages.length}개 업로드됨` : "0개 업로드"}</p>
 
-      {/* 미리보기 모달창 */}
-      <PreviewModal
-        isOpen={isPreviewModalOpen}
-        onClose={handlePreviewModal}
-        formData={{
-          category: selectedCategory,
-          title: watch("title"),
-          content,
-          images: watchImages,
-          location: watch("location"),
-        }}
-      />
-    </form>
+        {/* 위치 입력 */}
+        <label className="block mb-2">위치</label>
+        <input
+          type="text"
+          {...register("location")}
+          className="block w-full border border-gray-300 rounded-md p-2 mb-4"
+          placeholder="위치를 입력해 주세요."
+        />
+
+        {/* 미리보기 버튼 */}
+        <div className="flex justify-between gap-x-5">
+          <button
+            type="button"
+            className="py-2 px-4 rounded bg-gray-300 hover:bg-gray-400 ml-auto"
+            // onClick={handleModal}
+          >
+            미리보기
+          </button>
+
+          {/* 작성 완료 버튼 */}
+          <input
+            type="submit"
+            className="py-2 px-4 rounded bg-blue-500 hover:bg-blue-700 text-white mr-auto"
+            value="작성 완료"
+          />
+        </div>
+
+        {/* 미리보기 모달창 */}
+        <PreviewModal
+          isOpen={isPreviewModalOpen}
+          onClose={handlePreviewModal}
+          formData={{
+            category: selectedCategory,
+            title: watch("title"),
+            content,
+            images: watchImages,
+            location: watch("location"),
+          }}
+        />
+      </form>
+    </div>
   );
 }

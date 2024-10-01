@@ -1,7 +1,9 @@
 import { ProfileUI } from "@/app/profile/_types/ProfileUI";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useState } from "react";
 import { FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import CountryStateCityUpdater from "./CountryStateCityUpdater";
+import ExpertisesSelectorFromData from "./ExpertisesSelectorFromData";
+import InterestSelectorFromData from "./InterestsSelectorFromData";
 
 interface UpdateProfileFormProps {
   profile: ProfileUI;
@@ -26,6 +28,10 @@ const UpdateProfileForm: React.FC<UpdateProfileFormProps> = ({
   errors,
   setValue,
 }) => {
+  //관심분야
+  const[selectedInterests, setSelectedInterests] = useState<string[]>(profile.interests)
+  //전문분야
+  const[selectedExpertises, setSelectedExpertises] = useState<string[]>(profile.expertises)
   return (
     <div className="space-y-6">
       {/* 여행자/거주자 변경 */}
@@ -91,62 +97,12 @@ const UpdateProfileForm: React.FC<UpdateProfileFormProps> = ({
       </label>
 
       {/* 관심 분야 */}
-      <label className="block">
-        <span className="text-gray-700">Interests</span>
-        {[
-          "culture",
-          "activity",
-          "food",
-          "self_development",
-          "amity",
-          "volunteer",
-          "local",
-        ].map((interest) => (
-          <div key={interest} className="flex items-center space-x-2">
-            <input
-              {...register("interests", { required: true })}
-              type="checkbox"
-              value={interest}
-              checked={profile?.interests.includes(interest)}
-              onChange={onCheckboxChange}
-              className="form-checkbox"
-            />
-            <span>{interest}</span>
-          </div>
-        ))}
-        {errors.interests && (
-          <p className="text-red-500">관심분야는 필수항목입니다.</p>
-        )}
-      </label>
+      <label className="block mb-2 text-xs">관심분야</label>
+      <InterestSelectorFromData register={register} errors={errors} setValue={setValue} selectedInterests={selectedInterests} setSelectedInterests={setSelectedInterests}/>
 
       {/* 전문 분야 */}
-      <label className="block">
-        <span className="text-gray-700">Expertises</span>
-        {[
-          "culture",
-          "activity",
-          "food",
-          "self_development",
-          "amity",
-          "volunteer",
-          "local",
-        ].map((expertise) => (
-          <div key={expertise} className="flex items-center space-x-2">
-            <input
-              {...register("expertises", { required: true })}
-              type="checkbox"
-              value={expertise}
-              checked={profile?.expertises.includes(expertise)}
-              onChange={onCheckboxChange}
-              className="form-checkbox"
-            />
-            <span>{expertise}</span>
-          </div>
-        ))}
-        {errors.expertises && (
-          <p className="text-red-500">전문분야는 필수항목입니다.</p>
-        )}
-      </label>
+      <label className="block mb-2 text-xs">관심분야</label>
+      <ExpertisesSelectorFromData register={register} errors={errors} setValue={setValue} selectedExpertises={selectedExpertises} setSelectedExpertises={setSelectedExpertises}/>
     </div>
   );
 };

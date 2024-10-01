@@ -6,7 +6,7 @@ import {
   getStateKoreanName,
 } from "@/core/utils/handleCountryStateCityModify";
 import { useEffect, useState } from "react";
-import { FieldErrors, UseFormRegister } from "react-hook-form";
+import { FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
 
 interface CountryStateCitySelectorProps {
   selectedCountry: string;
@@ -17,6 +17,7 @@ interface CountryStateCitySelectorProps {
   setSelectedCity: (value: string) => void;
   register: UseFormRegister<any>;
   errors: FieldErrors;
+  setValue: UseFormSetValue<any>
 }
 
 /**
@@ -30,7 +31,8 @@ const CountryStateCitySelector = ({
   setSelectedCountry,
   setSelectedState,
   setSelectedCity,
-  register, errors
+  register, errors,
+  setValue
 }: CountryStateCitySelectorProps) => {
   const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
   const [isStateDropdownOpen, setIsStateDropdownOpen] = useState(false);
@@ -98,7 +100,14 @@ const CountryStateCitySelector = ({
     filteredCity.length === 0
       ? setIsCityDropdownVisible(false)
       : setIsCityDropdownVisible(true);
-  }, [filteredState, filteredCity]);
+
+      console.log("residenceCountryCode", selectedCountry);
+      console.log("residenceStateCode", selectedState);
+      console.log("residenceCityCode", selectedCity);
+      setValue("residenceCountryCode", selectedCountry);
+      setValue("residenceStateCode", selectedState);
+      setValue("residenceCityCode", selectedCity);
+  }, [filteredState, filteredCity, selectedCountry, selectedState, selectedCity]);
 
   return (
     <div className="flex flex-wrap space-x-4">
@@ -177,7 +186,7 @@ const CountryStateCitySelector = ({
           type="button"
             onClick={toggleCityDropdown}
             className={`w-48 px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md text-left h-[48px] ${
-              errors.residenceCityCode ? "border-red-500" : ""
+              errors.cityCode ? "border-red-500" : ""
             }`}
             {...register("residenceCityCode", { required:true})}
           >

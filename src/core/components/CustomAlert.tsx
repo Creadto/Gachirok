@@ -13,7 +13,7 @@ interface CustomAlertProps {
   route: string
 }
 
-const CustomAlert: React.FC<CustomAlertProps> = ({ message, onClose, route }) => {
+const CustomAlert: React.FC<CustomAlertProps> = ({ message, route }) => {
   const router = useRouter();
 
   const handleConfirm = () => {

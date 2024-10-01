@@ -13,7 +13,7 @@ import { RiKakaoTalkFill } from "react-icons/ri";
  **/
 export const LoginModal = () => {
   const [isModalOpen, setIsModalOpen] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
   const router = useRouter();
   const { data: session } = useSession();
 

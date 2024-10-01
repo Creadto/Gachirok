@@ -1,8 +1,7 @@
 "use client";
-import { useState } from "react";
-import useUserStore from "../store/user-store";
-import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 /**
  * @Description 약간동의 후 혹은, 사용자의 profile이 null일 때 등장하는 모달창

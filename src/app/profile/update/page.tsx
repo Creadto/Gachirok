@@ -28,7 +28,6 @@ export default function ProfilePage() {
   const {
     register,
     handleSubmit,
-    watch,
     setValue,
     clearErrors,
     formState: { errors },
@@ -163,6 +162,8 @@ export default function ProfilePage() {
       setLoading(false);
     }
   };
+
+
   if (profileUI) {
     return (
       <form
@@ -176,7 +177,6 @@ export default function ProfilePage() {
           imagePreviewURL={imagePreviewURL}
           onFileChange={handleFileChange}
           register={register}
-          errors={errors}
         />
         <div className="h-8"></div>
 

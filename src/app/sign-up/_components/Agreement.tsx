@@ -2,7 +2,6 @@
 import { usePostUserCreateRequest } from "@/core/hooks/usePostUserCreateRequest";
 import { mapUserResponse } from "@/core/mapper/user-mapper";
 import useUserStore, { User } from "@/core/store/user-store";
-import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -25,7 +24,7 @@ const Agreement = () => {
     marketing: false,
   });
   const router = useRouter();
-  const { user, setUser } = useUserStore();
+  const {setUser } = useUserStore();
 
   //세션의 정보를 검사한 후, signedUpUser가 true이면 hompage으로 redirect
   useEffect(() => {
