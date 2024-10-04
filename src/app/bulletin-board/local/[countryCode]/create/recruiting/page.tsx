@@ -1,29 +1,19 @@
 "use client";
 
 import { BackButton } from "@/app/bulletin-board/_components/BackButton";
-import PreviewModal from "@/app/bulletin-board/_components/PreviewModal";
+import { PreviewAndSubmitButton } from "@/app/bulletin-board/_components/PreviewAndSubmitButton";
+import { QuillEditor } from "@/app/bulletin-board/_components/QuillEditor";
 import TwoButtonForm from "@/app/create-profile/_components/profile-setup/TwoButtonForm";
 import DropdownSelector from "@/core/components/DropdownSelector";
 import SingleDateSelector from "@/core/components/SingleDateSelector";
 import { countryStore } from "@/core/store/country-store";
-import { formats } from "@/core/types/Quill";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { ImageDrop } from "quill-image-drop-module";
-import ImageResize from "quill-image-resize-module-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { CategorySelector } from "../_components/CategorySelector";
 
-const QuillWrapper = dynamic(() => import("react-quill"), {
-  ssr: false,
-  // loading: () => <p>Loading ...</p>,
-});
 
-Quill.register("modules/imageDrop", ImageDrop);
-Quill.register("modules/imageResize", ImageResize);
 
 interface AddFleaMarketLocalBulletinBoardPageProps {
   params: {
@@ -38,30 +28,6 @@ interface AddFleaMarketLocalBulletinBoardPageProps {
 export default function AddRecruitingLocalBulletinBoardPage({
   params,
 }: AddFleaMarketLocalBulletinBoardPageProps) {
-  const modules = useMemo(
-    () => ({
-      toolbar: [
-        [{ header: "1" }, { header: "2" }, { font: [] }],
-        [{ size: [] }],
-        ["bold", "italic", "underline", "strike"],
-        [
-          { list: "ordered" },
-          { list: "bullet" },
-          { indent: "-1" },
-          { indent: "+1" },
-        ],
-        ["link", "image", "video"],
-      ],
-      clipboard: {
-        matchVisual: false,
-      },
-      imageDrop: true,
-      imageResize: {
-        modules: ["Resize", "DisplaySize"],
-      },
-    }),
-    []
-  );
 
   const { country, setCountry } = countryStore();
   const { countryCode } = params;
@@ -73,6 +39,7 @@ export default function AddRecruitingLocalBulletinBoardPage({
     watch,
     setValue,
     clearErrors,
+    trigger,
     formState: { errors },
   } = useForm();
 
@@ -120,8 +87,8 @@ export default function AddRecruitingLocalBulletinBoardPage({
   const [workPeriod, setWorkPeriod] = useState<string>("");
   const workPeriodOptions = ["1년 미만", "1년", "2년", "3년", "5년이상"];
 
-  //채용 공고 내용
-  const [introduction, setIntroduction] = useState("");
+  //채용 공고 내용(본문)
+  const [content, setContent] = useState("");
 
   // 미리보기
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
@@ -165,10 +132,9 @@ export default function AddRecruitingLocalBulletinBoardPage({
   //값이 변경될 때마다 setValue()로 useForm의 data에 저장
   useEffect(() => {
     clearErrors(); //Submit시 오류가 뜨고, 수정하면 오류 삭제되게끔
-    setValue("introduction", introduction);
 
     setValue("category", selectedJobCategory);
-  }, [introduction, selectedJobCategory]);
+  }, [selectedJobCategory]);
 
   return (
     <div className="min-w-xl mx-auto bg-white p-6 rounded-lg">
@@ -227,6 +193,8 @@ export default function AddRecruitingLocalBulletinBoardPage({
           errorMessage="직군/직무 선택은 필수입니다."
           placeholder="직군/직무를 선택해주세요."
           label="직군/직무"
+          trigger={trigger}
+          setValue={setValue}
         />
 
         <hr className="border-slate-300 mb-3 mt-3" />
@@ -244,6 +212,8 @@ export default function AddRecruitingLocalBulletinBoardPage({
               errorMessage="고용형태 선택은 필수입니다."
               placeholder="고용형태를 선택해주세요."
               label="고용형태"
+              trigger={trigger}
+              setValue={setValue}
             />
           </div>
           {/* 경력 */}
@@ -258,6 +228,8 @@ export default function AddRecruitingLocalBulletinBoardPage({
               errorMessage="경력 선택은 필수입니다."
               placeholder="경력을 선택해주세요."
               label="경력"
+              trigger={trigger}
+              setValue={setValue}
             />
           </div>
         </div>
@@ -295,6 +267,8 @@ export default function AddRecruitingLocalBulletinBoardPage({
               errorMessage="근무지 선택은 필수입니다."
               placeholder="근무지를 선택해주세요."
               label="근무지"
+              trigger={trigger}
+              setValue={setValue}
             />
           </div>
         </div>
@@ -309,6 +283,8 @@ export default function AddRecruitingLocalBulletinBoardPage({
               selectedDate={recruitEndDate}
               onDateChange={setRecruitEndDate}
               register={register}
+              placeholder="채용 마감일을 선택해주세요"
+              setValue={setValue}
             />
           </div>
           {/* 근무 기간 */}
@@ -323,6 +299,8 @@ export default function AddRecruitingLocalBulletinBoardPage({
               errorMessage="근무 기간 선택은 필수입니다."
               placeholder="근무기간을 선택해주세요."
               label="근무 기간"
+              trigger={trigger}
+              setValue={setValue}
             />
           </div>
         </div>
@@ -343,14 +321,18 @@ export default function AddRecruitingLocalBulletinBoardPage({
         )}
 
         {/* 본문 */}
-        <QuillWrapper
-          theme={"snow"}
-          id={"content"}
-          placeholder={"채용공고 및 근무 상세 내용을 입력해주세요"}
-          value={introduction}
-          modules={modules}
-          formats={formats}
-          onChange={setIntroduction}
+        <QuillEditor
+          register={register}
+          placeholder={"채용 공고 및 상세 내용을 입력해주세요"}
+          trigger={trigger}
+          name="introduction"
+          errors={errors}
+          value={content}
+          onChange={(value) => {
+            setContent(value);
+            setValue("introduction", value);
+            trigger("introduction");
+          }}
         />
 
         {/* 이미지 업로드 */}
@@ -392,27 +374,12 @@ export default function AddRecruitingLocalBulletinBoardPage({
           </div>
         </div>
 
-        {/* 미리보기 버튼 */}
-        <div className="flex justify-between gap-x-5">
-          <button
-            type="button"
-            className="py-2 px-4 rounded bg-gray-300 hover:bg-gray-400 ml-auto"
-            // onClick={handleModal}
-          >
-            미리보기
-          </button>
-
-          {/* 작성 완료 버튼 */}
-          <input
-            type="submit"
-            className="py-2 px-4 rounded bg-blue-500 hover:bg-blue-700 text-white mr-auto"
-            value="작성 완료"
-          />
-        </div>
+{/* 미리보기와 작성완료 버튼 */}
+        <PreviewAndSubmitButton onClick={() => {}} />
       </form>
 
       {/* 미리보기 모달창 */}
-      <PreviewModal
+      {/* <PreviewModal
         isOpen={isPreviewModalOpen}
         onClose={handleModal}
         formData={{
@@ -422,7 +389,7 @@ export default function AddRecruitingLocalBulletinBoardPage({
           images: watchImages,
           location: watch("location"),
         }}
-      />
+      /> */}
     </div>
   );
 }

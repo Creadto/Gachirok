@@ -16,7 +16,7 @@ export default function appendProfileCreateRequestFormData (data: ProfileCreateR
     if (data.photo) {
       formData.append("photo", data.photo);
     }
-    formData.append("residenceCountryCode", data.residenceCityCode);
+    formData.append("residenceCountryCode", data.residenceCountryCode);
     formData.append("residenceStateCode", data.residenceStateCode);
     formData.append("residenceCityCode", data.residenceCityCode);
     formData.append("birth", data.birth);

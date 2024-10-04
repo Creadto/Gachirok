@@ -1,28 +1,17 @@
 "use client";
 
 import { BackButton } from "@/app/bulletin-board/_components/BackButton";
+import { PreviewAndSubmitButton } from "@/app/bulletin-board/_components/PreviewAndSubmitButton";
+import { QuillEditor } from "@/app/bulletin-board/_components/QuillEditor";
 import TwoButtonForm from "@/app/create-profile/_components/profile-setup/TwoButtonForm";
 import SingleDateSelector from "@/core/components/SingleDateSelector";
 import { countryStore } from "@/core/store/country-store";
-import { formats } from "@/core/types/Quill";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { ImageDrop } from "quill-image-drop-module";
-import ImageResize from "quill-image-resize-module-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import DropdownSelector from "../../../../../../core/components/DropdownSelector";
 import { CategorySelector } from "../_components/CategorySelector";
-
-const QuillWrapper = dynamic(() => import("react-quill"), {
-  ssr: false,
-  // loading: () => <p>Loading ...</p>,
-});
-
-Quill.register("modules/imageDrop", ImageDrop);
-Quill.register("modules/imageResize", ImageResize);
 
 interface AddRealEstateLocalBulletinBoardPageProps {
   params: {
@@ -37,30 +26,6 @@ interface AddRealEstateLocalBulletinBoardPageProps {
 export default function AddRealEstateLocalBulletinBoardPage({
   params,
 }: AddRealEstateLocalBulletinBoardPageProps) {
-  const modules = useMemo(
-    () => ({
-      toolbar: [
-        [{ header: "1" }, { header: "2" }, { font: [] }],
-        [{ size: [] }],
-        ["bold", "italic", "underline", "strike"],
-        [
-          { list: "ordered" },
-          { list: "bullet" },
-          { indent: "-1" },
-          { indent: "+1" },
-        ],
-        ["link", "image", "video"],
-      ],
-      clipboard: {
-        matchVisual: false,
-      },
-      imageDrop: true,
-      imageResize: {
-        modules: ["Resize", "DisplaySize"],
-      },
-    }),
-    []
-  );
 
   const { country, setCountry } = countryStore();
   const { countryCode } = params;
@@ -72,6 +37,7 @@ export default function AddRealEstateLocalBulletinBoardPage({
     watch,
     setValue,
     clearErrors,
+    trigger,
     formState: { errors },
   } = useForm();
 
@@ -145,7 +111,7 @@ export default function AddRealEstateLocalBulletinBoardPage({
   ];
 
   //본문
-  const [information, setInformation] = useState("");
+  const [content, setContent] = useState("");
 
   //이미지 Thumbnail
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
@@ -157,6 +123,7 @@ export default function AddRealEstateLocalBulletinBoardPage({
     setIsTodayDateClicked(!isTodayDateClicked);
     if (isTodayDateClicked) {
       setSelectedDate(null);
+      setValue("selectedDate", selectedDate);
     } else {
       const today = new Date();
       setSelectedDate(today);
@@ -253,17 +220,17 @@ export default function AddRealEstateLocalBulletinBoardPage({
           }
         />
 
-<div className="flex flex-col mt-8 h-full">
-        {/* 방있어요/방구해요 */}
-        <TwoButtonForm
-          title="소 카테고리"
-          options={[
-            { label: "방있어요", value: false },
-            { label: "방구해요", value: true },
-          ]}
-          activeValue={searchEstate}
-          onChange={setSearchEstate}
-        />
+        <div className="flex flex-col mt-8 h-full">
+          {/* 방있어요/방구해요 */}
+          <TwoButtonForm
+            title="소 카테고리"
+            options={[
+              { label: "방있어요", value: false },
+              { label: "방구해요", value: true },
+            ]}
+            activeValue={searchEstate}
+            onChange={setSearchEstate}
+          />
         </div>
       </div>
       <form onSubmit={handleSubmit(onValid)}>
@@ -278,6 +245,8 @@ export default function AddRealEstateLocalBulletinBoardPage({
           errorMessage="부동산 종류는 필수항목입니다."
           placeholder="종류를 선택해주세요."
           label="종류"
+          trigger={trigger}
+          setValue={setValue}
         />
 
         <hr className="border-slate-300 mb-3 mt-3" />
@@ -286,7 +255,7 @@ export default function AddRealEstateLocalBulletinBoardPage({
         {/* 우편번호 */}
         <input
           type="number"
-          {...register("location", { required: true })}
+          {...register("zipCode", { required: true })}
           className="block w-1/2 border border-gray-300 rounded-md p-2 mb-4"
           placeholder="우편번호를 입력해주세요"
         />
@@ -324,6 +293,8 @@ export default function AddRealEstateLocalBulletinBoardPage({
               register={register}
               errors={errors}
               name="selectedDate"
+              placeholder="입주날짜를 선택해주세요"
+              setValue={setValue}
             />
             {/* 즉시입주 버튼 */}
             <div className="flex flex-row cn ml-1">
@@ -351,6 +322,8 @@ export default function AddRealEstateLocalBulletinBoardPage({
               errorMessage="입주 기간은 필수항목입니다."
               placeholder="기간을 선택해주세요."
               label="기간"
+              trigger={trigger}
+              setValue={setValue}
             />
           </div>
         </div>
@@ -415,6 +388,8 @@ export default function AddRealEstateLocalBulletinBoardPage({
               errorMessage="침실 수는 필수항목입니다."
               placeholder="침실 수를 선택해주세요."
               label="침실 수"
+              trigger={trigger}
+              setValue={setValue}
             />
           </div>
 
@@ -431,6 +406,8 @@ export default function AddRealEstateLocalBulletinBoardPage({
                 errorMessage="욕실 수는 필수항목입니다."
                 placeholder="욕실 수를 선택해주세요."
                 label="욕실 수"
+                trigger={trigger}
+                setValue={setValue}
               />
             </div>
           </div>
@@ -531,14 +508,18 @@ export default function AddRealEstateLocalBulletinBoardPage({
         )} */}
 
         {/* 본문 */}
-        <QuillWrapper
-          theme={"snow"}
-          id={"content"}
+        <QuillEditor
+          register={register}
           placeholder={"해당 집 내용을 자세히 작성해주세요"}
-          value={information}
-          modules={modules}
-          formats={formats}
-          onChange={setInformation}
+          trigger={trigger}
+          name="introduction"
+          errors={errors}
+          value={content}
+          onChange={(value) => {
+            setContent(value);
+            setValue("introduction", value);
+            trigger("introduction");
+          }}
         />
 
         {/* 이미지 업로드 */}
@@ -595,22 +576,7 @@ export default function AddRealEstateLocalBulletinBoardPage({
         </div>
 
         {/* 미리보기 버튼 */}
-        <div className="flex justify-between">
-          <button
-            type="button"
-            className="py-2 px-4 rounded bg-gray-300 hover:bg-gray-400 mt-6"
-            // onClick={handleModal}
-          >
-            미리보기
-          </button>
-
-          {/* 작성 완료 버튼 */}
-          <input
-            type="submit"
-            className="py-2 px-4 rounded bg-blue-500 hover:bg-blue-700 text-white"
-            value="작성 완료"
-          />
-        </div>
+        <PreviewAndSubmitButton onClick={() => {}} />
       </form>
 
       {/* 미리보기 모달창 */}

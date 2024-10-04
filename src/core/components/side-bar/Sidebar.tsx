@@ -62,7 +62,7 @@ const Sidebar = () => {
           <div className="text-gray-500">Local</div>
 
           {/* Local - News */}
-          <div className="space-y-2">
+          <div className="space-y-2 flex flex-col">
             <Link href="/local/news">
               <div className="flex items-center space-x-2 cursor-pointer">
                 <span>📰</span>
@@ -79,12 +79,14 @@ const Sidebar = () => {
             </Link>
 
             {/* Local - Gathering */}
-            <Link href="/local/gathering">
+            <button
+              onClick={() => router.push(`/meetings/local/${country}`)}
+            >
               <div className="flex items-center space-x-2 cursor-pointer">
-                <span>👥</span>
-                <span>Gathering</span>
+              <span>👥</span>
+              <span>Gachiga</span>
               </div>
-            </Link>
+            </button>
 
             {/* Local - Bulletin Board */}
             <button

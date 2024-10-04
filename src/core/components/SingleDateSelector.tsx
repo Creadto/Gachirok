@@ -2,7 +2,7 @@
 import React from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { FieldErrors, UseFormRegister } from "react-hook-form";
+import { FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { FaCalendarAlt } from "react-icons/fa";
 
 // Props 타입 정의
@@ -12,6 +12,8 @@ interface SingleDateSelectorProps {
   register: UseFormRegister<any>;
   errors: FieldErrors;
   name: string;
+  placeholder: string;
+  setValue: UseFormSetValue<any>;
 }
 
 /**
@@ -24,7 +26,17 @@ const SingleDateSelector: React.FC<SingleDateSelectorProps> = ({
   register,
   errors,
   name,
+  placeholder,
+  setValue,
 }) => {
+  //입력받은 날짜를 API로 보내기 위한 데이터로 변환
+  const formatDate = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1; // 월은 0부터 시작하므로 +1
+    const day = date.getDate();
+    return `${year}년 ${month}월 ${day}일`; //API로 보내는 형식
+  };
+
   return (
     <div className="flex flex-col space-y-4">
       {/* 날짜 선택 */}
@@ -34,15 +46,18 @@ const SingleDateSelector: React.FC<SingleDateSelectorProps> = ({
           <DatePicker
             {...register(`${name}`, { required: true })}
             selected={selectedDate}
-            onChange={(date) => onDateChange(date)}
+            onChange={(date) => {
+              onDateChange(date);
+              if (date) {
+                setValue(name, formatDate(date));
+              }
+            }}
             dateFormat="yyyy-MM-dd"
             className="w-full border-none outline-none text-base"
-            placeholderText="입주날짜를 선택해주세요."
+            placeholderText={placeholder}
           />
         </div>
-        {errors.meetingDate && (
-          <p className="text-red-500">날짜는 필수항목입니다.</p>
-        )}
+        {errors[name] && <p className="text-red-500">날짜는 필수항목입니다.</p>}
       </div>
     </div>
   );

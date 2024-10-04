@@ -10,6 +10,10 @@ const nextConfig = {
         {
           source: '/api/users',
           destination: 'https://dev.gachiga.creadto.com/api/v1/users',
+        },
+        {
+          source: '/api/meetings',
+          destination: 'https://dev.gachiga.creadto.com/api/v1/meetings',
         }
       ];
     },

@@ -17,6 +17,7 @@ import IntroductionForm from "./IntroductionForm";
 import NicknameForm from "./NicknameForm";
 import ProfileImageForm from "./ProfileImageForm";
 import TwoButtonForm from "./TwoButtonForm";
+import SingleDateSelector from "@/core/components/SingleDateSelector";
 
 /**
  * @Description 프로필 신규 생성의 메인 페이지
@@ -36,17 +37,29 @@ export default function CreateProfilePage() {
 
   //submit시 실행
   const onValid = async (data: ProfileCreateRequest) => {
-    const accessToken = `Bearer ${session?.accessToken}`;
+
     console.log(data);
-    const formData = appendProfileCreateRequestFormData(data); //data를 formData로 append
-    const res = await usePostProfileCreateRequest(accessToken, formData); //API로 응답 Request
-    const result = await res.data;
-    const updatedProfile: Profile = mapProfileResponse(result, profile); //응답으로 받은 ProfileResponse을 profile store에 Mapping
-    setProfile(updatedProfile);
-    if (result) {
-      setAlertMessage("Profile updated successfully!");
-      setShowAlert(true);
+
+    try{
+      setLoading(true);
+      const accessToken = `Bearer ${session?.accessToken}`
+      const formData = appendProfileCreateRequestFormData(data); //data를 formData로 append
+      const res = await usePostProfileCreateRequest(accessToken, formData); //API로 응답 Request
+  
+      const result = await res.data;
+      const updatedProfile: Profile = mapProfileResponse(result, profile); //응답으로 받은 ProfileResponse을 profile store에 Mapping
+      setProfile(updatedProfile);
+
+      if (result) {
+        setAlertMessage("Profile updated successfully!");
+        setShowAlert(true);
+      }
+    } catch(error) {
+      console.error("Failed to catch profile data", error)
+    } finally{
+      setLoading(false);
     }
+   
   };
 
   const onInValid = (errors: FieldErrors) => console.log(errors);
@@ -58,16 +71,13 @@ export default function CreateProfilePage() {
   const [profileImage, setProfileImage] = useState<string | null>(null); //프로필 사진 미리보기를 위한 상태
   const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
   const [backgroundFile, setBackgroundFile] = useState<File | null>(null);
-  const [birth, setBirth] = useState<string>("");
-  const [formattedDate, setFormattedDate] =
-    useState<string>("2000년 01월 01일"); //한글로 변환된 생일의 초기값
-  // const [interests, setInterests] = useState<string[]>([]);
-  // const [expertises, setExpertises] = useState<string[]>([]);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedCountry, setSelectedCountry] = useState<string>("");
   const [selectedState, setSelectedState] = useState<string>("");
   const [selectedCity, setSelectedCity] = useState<string>("");
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   //프로필 사진을 파일로부터 선택
   const handleProfileImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,53 +101,17 @@ export default function CreateProfilePage() {
     }
   };
 
-  //입력받은 날짜를 API로 보내기 위한 데이터로 변환
-  const formatDate = (date: Date): string => {
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1; // 월은 0부터 시작하므로 +1
-    const day = date.getDate();
-    return `${year}년 ${month}월 ${day}일`; //API로 보내는 형식
-  };
-
-  //변경되는 날짜에 대한 로직
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const dateValue = e.target.value;
-    setBirth(dateValue);
-    const date = new Date(dateValue);
-    const fomattedDate = formatDate(date);
-    setFormattedDate(fomattedDate); //API로 보내는 형식으로 날짜를 변환한 뒤 업데이트
-  };
-
   // 프로필 업데이트되었다는 알림창 닫기
   const handleCloseAlert = () => {
     setShowAlert(false);
   };
 
   useEffect(() => {
-    console.log("male", male);
-    console.log("traveler", traveler);
-    console.log("residenceYear", residenceYear);
-    console.log("profile file", profileFile);
-    console.log("background file", backgroundFile);
-    console.log("residenceCountryCode", selectedCountry);
-    console.log("residenceStateCode", selectedState);
-    console.log("residenceCityCode", selectedCity);
-    console.log("birth", formattedDate);
     setValue("male", male);
     setValue("traveler", traveler);
     setValue("residenceYear", residenceYear);
-    setValue("birth", formattedDate)
-    // setValue("interests", interests);
-    // setValue("expertises", expertises);
     setValue("photo", profileFile);
-  }, [
-    male,
-    traveler,
-    residenceYear,
-    profileFile,
-    birth,
-
-  ]);
+  }, [male, traveler, residenceYear, profileFile]);
 
   return (
     <div className="bg-gray-100 min-h-screen flex justify-center">
@@ -152,6 +126,9 @@ export default function CreateProfilePage() {
           {/* <ResidenceForm register={register} errors={errors} /> */}
           <label className="block mb-2">장소</label>
           <CountryStateCitySelector
+            registerCountryCode="residenceCountryCode"
+            registerStateCode="residenceStateCode"
+            registerCityCode="residenceCityCode"
             selectedCountry={selectedCountry}
             selectedState={selectedState}
             selectedCity={selectedCity}
@@ -234,22 +211,16 @@ export default function CreateProfilePage() {
           />
 
           {/* 생일 INPUT */}
-          <span className="text-gray-700">생일</span>
-          <label className="block mb-4">
-            <input
-              {...register("birth", { required: true })}
-              type="date"
-              value={birth}
-              onChange={handleDateChange}
-              className="border border-gray-300 rounded-lg p-2"
-            />
-            {birth && (
-              <p className="mt-4 text-md">선택한 날짜: {formattedDate}</p>
-            )}
-            {errors.birth && (
-              <p className="text-red-500">생일을 입력해주세요</p>
-            )}
-          </label>
+          <label className="block mb-4 text-gray-700">생일</label>
+          <SingleDateSelector
+            selectedDate={selectedDate}
+            onDateChange={setSelectedDate}
+            register={register}
+            errors={errors}
+            name="birth"
+            placeholder="생일을 입력해주세요"
+            setValue={setValue}
+          />
 
           {/* 여행지 관심분야 INPUT */}
           <span className="text-gray-700">여행지 관심분야</span>

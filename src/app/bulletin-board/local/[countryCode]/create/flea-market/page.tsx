@@ -1,27 +1,16 @@
 "use client";
 
 import { BackButton } from "@/app/bulletin-board/_components/BackButton";
+import { PreviewAndSubmitButton } from "@/app/bulletin-board/_components/PreviewAndSubmitButton";
+import { QuillEditor } from "@/app/bulletin-board/_components/QuillEditor";
 import TwoButtonForm from "@/app/create-profile/_components/profile-setup/TwoButtonForm";
 import { countryStore } from "@/core/store/country-store";
-import { formats } from "@/core/types/Quill";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { ImageDrop } from "quill-image-drop-module";
-import ImageResize from "quill-image-resize-module-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import DropdownSelector from "../../../../../../core/components/DropdownSelector";
 import { CategorySelector } from "../_components/CategorySelector";
-
-const QuillWrapper = dynamic(() => import("react-quill"), {
-  ssr: false,
-  // loading: () => <p>Loading ...</p>,
-});
-
-Quill.register("modules/imageDrop", ImageDrop);
-Quill.register("modules/imageResize", ImageResize);
 
 interface AddFleaMarketLocalBulletinBoardPageProps {
   params: {
@@ -36,31 +25,6 @@ interface AddFleaMarketLocalBulletinBoardPageProps {
 export default function AddFleaMarketLocalBulletinBoardPage({
   params,
 }: AddFleaMarketLocalBulletinBoardPageProps) {
-  const modules = useMemo(
-    () => ({
-      toolbar: [
-        [{ header: "1" }, { header: "2" }, { font: [] }],
-        [{ size: [] }],
-        ["bold", "italic", "underline", "strike"],
-        [
-          { list: "ordered" },
-          { list: "bullet" },
-          { indent: "-1" },
-          { indent: "+1" },
-        ],
-        ["link", "image", "video"],
-      ],
-      clipboard: {
-        matchVisual: false,
-      },
-      imageDrop: true,
-      imageResize: {
-        modules: ["Resize", "DisplaySize"],
-      },
-    }),
-    []
-  );
-
   const { country, setCountry } = countryStore();
   const { countryCode } = params;
   const router = useRouter();
@@ -70,6 +34,7 @@ export default function AddFleaMarketLocalBulletinBoardPage({
     handleSubmit,
     watch,
     setValue,
+    trigger,
     clearErrors,
     formState: { errors },
   } = useForm();
@@ -97,15 +62,13 @@ export default function AddFleaMarketLocalBulletinBoardPage({
   //가격
   const [price, setPrice] = useState<number | null>(null);
 
-
   //본문
-  const [information, setInformation] = useState("");
+  const [content, setContent] = useState("");
 
   //이미지 Thumbnail
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
   //미리보기 Modal 열림 여부
-
 
   useEffect(() => {
     if (watchImages && watchImages.length > 0) {
@@ -201,6 +164,8 @@ export default function AddFleaMarketLocalBulletinBoardPage({
           errorMessage="물건 종류는 필수항목입니다."
           placeholder="종류를 선택해주세요."
           label="종류"
+          trigger={trigger}
+          setValue={setValue}
         />
         <hr className="border-slate-300 mb-3 mt-3" />
 
@@ -248,14 +213,18 @@ export default function AddFleaMarketLocalBulletinBoardPage({
         )} */}
 
         {/* 본문 */}
-        <QuillWrapper
-          theme={"snow"}
-          id={"content"}
-          placeholder={"해당 집 내용을 자세히 작성해주세요 \n\nex ) \n거래 방법 : 직거래 / 택배\n구매시기 : 1년전 \n제품상태 : 생활흠집이 있습니다. 새제품(미개봉)입니다."}
-          value={information}
-          modules={modules}
-          formats={formats}
-          onChange={setInformation}
+        <QuillEditor
+          register={register}
+          placeholder={`해당 집 내용을 자세히 작성해주세요 \n\nex ) \n거래 방법 : 직거래 / 택배\n구매시기 : 1년전 \n제품상태 : 생활흠집이 있습니다. 새제품(미개봉)입니다.`}
+          trigger={trigger}
+          name="introduction"
+          errors={errors}
+          value={content}
+          onChange={(value) => {
+            setContent(value);
+            setValue("introduction", value);
+            trigger("introduction");
+          }}
         />
 
         {/* 이미지 업로드 */}
@@ -296,24 +265,8 @@ export default function AddFleaMarketLocalBulletinBoardPage({
             ))}
           </div>
         </div>
-
-        {/* 미리보기 버튼 */}
-        <div className="flex justify-between gap-x-5">
-          <button
-            type="button"
-            className="py-2 px-4 rounded bg-gray-300 hover:bg-gray-400 ml-auto"
-            // onClick={handleModal}
-          >
-            미리보기
-          </button>
-
-          {/* 작성 완료 버튼 */}
-          <input
-            type="submit"
-            className="py-2 px-4 rounded bg-blue-500 hover:bg-blue-700 text-white mr-auto"
-            value="작성 완료"
-          />
-        </div>
+        {/* 미리보기와 작성완료 버튼 */}
+        <PreviewAndSubmitButton onClick={() => {}} />
       </form>
 
       {/* 미리보기 모달창 */}

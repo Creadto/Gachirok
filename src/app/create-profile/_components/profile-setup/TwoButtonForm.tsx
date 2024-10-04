@@ -23,10 +23,12 @@ const TwoButtonForm: React.FC<TwoButtonFormProps> = ({
       <div className="flex space-x-4">
         {options.map((option) => (
           <button
-          type="button"
+            type="button"
             key={option.label}
             className={`px-4 py-2 rounded ${
-              activeValue === option.value ? "bg-pink-500 text-white" : "bg-gray-300"
+              activeValue === option.value
+                ? "bg-pink-500 text-white"
+                : "bg-gray-300"
             }`}
             onClick={() => onChange(option.value)}
           >

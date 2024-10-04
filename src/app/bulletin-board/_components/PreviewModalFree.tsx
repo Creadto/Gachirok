@@ -1,7 +1,7 @@
 // components/PreviewModal.js
 import React from "react";
 
-interface PreviewModalProps {
+interface PreviewModalFreeProps {
     isOpen: boolean,
     onClose: () => void,
     formData: any
@@ -11,7 +11,7 @@ interface PreviewModalProps {
  * @Description 자유게시판 미리보기 창 모달
  * @author 김영서
  **/
-const PreviewModal = ({ isOpen, onClose, formData }: PreviewModalProps) => {
+const PreviewModalFree = ({ isOpen, onClose, formData }: PreviewModalFreeProps) => {
   if (!isOpen) return null;
 
   return (
@@ -49,4 +49,4 @@ const PreviewModal = ({ isOpen, onClose, formData }: PreviewModalProps) => {
   );
 };
 
-export default PreviewModal;
+export default PreviewModalFree;

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { FieldErrors, UseFormRegister } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { FieldErrors, UseFormRegister, UseFormSetValue, UseFormTrigger } from "react-hook-form";
 
 interface DropdownSelectorProps {
   selectedValue: string;
@@ -11,6 +11,8 @@ interface DropdownSelectorProps {
   errorMessage: string; // Custom error message
   placeholder: string; // Custom placeholder text
   label: string; // Custom label
+  trigger: UseFormTrigger<any>;
+  setValue: UseFormSetValue<any>
 }
 
 /**
@@ -27,6 +29,9 @@ const DropdownSelector = ({
   errorMessage,
   placeholder,
   label,
+  trigger,
+  setValue
+  
 }: DropdownSelectorProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -39,8 +44,12 @@ const DropdownSelector = ({
   const handleOptionClick = (value: string) => {
     setSelectedValue(value);
     setIsOpen(false);
+    setValue(name, value)
+    trigger(name);
   };
 
+
+  
   return (
     <div className="relative block text-left w-full">
       <label className="block mb-2 text-xs">{label}</label>
@@ -61,6 +70,7 @@ const DropdownSelector = ({
           <div className="py-1" role="none">
             {options.map((option, index) => (
               <button
+                type="button"
                 key={index}
                 onClick={() => handleOptionClick(option)}
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"

@@ -1,34 +1,24 @@
 "use client";
 
 import { BackButton } from "@/app/bulletin-board/_components/BackButton";
-import PreviewModal from "@/app/bulletin-board/_components/PreviewModal";
+import { PreviewAndSubmitButton } from "@/app/bulletin-board/_components/PreviewAndSubmitButton";
+import { QuillEditor } from "@/app/bulletin-board/_components/QuillEditor";
 import TwoButtonForm from "@/app/create-profile/_components/profile-setup/TwoButtonForm";
+import DoubleDateTimeSelector from "@/core/components/DoubleDateTimeSelector";
+import InterestSelector from "@/core/components/InterestsSelector";
 import { countryStore } from "@/core/store/country-store";
-import { formats } from "@/core/types/Quill";
-import dynamic from "next/dynamic";
+import axios from "axios";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { ImageDrop } from "quill-image-drop-module";
-import ImageResize from "quill-image-resize-module-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { CategorySelector } from "../_components/CategorySelector";
+import CostlyDetails from "./_components/CostlyDetails";
 import CountryStateCitySelector from "./_components/CountryStateCitySelector";
 import RangeSlider from "./_components/RangeSlider";
 import TwoButtonApproval from "./_components/TwoButtonApproval";
-import CostlyDetailsButton from "./_components/CostlyDetailsButton";
-import DoubleDateTimeSelector from "@/core/components/DoubleDateTimeSelector";
-import { interestsOptions } from "@/core/types/InterestsAndExpertisesOptions";
-import InterestSelector from "@/core/components/InterestsSelector";
-
-const QuillWrapper = dynamic(() => import("react-quill"), {
-  ssr: false,
-  // loading: () => <p>Loading ...</p>,
-});
-
-Quill.register("modules/imageDrop", ImageDrop);
-Quill.register("modules/imageResize", ImageResize);
+import appendMeetingCreateRequestFromData from "./_utils/appendMeetingCreateRequestFormData";
 
 interface AddFleaMarketLocalBulletinBoardPageProps {
   params: {
@@ -43,43 +33,12 @@ interface AddFleaMarketLocalBulletinBoardPageProps {
 export default function AddMeetingsLocalBulletinBoardPage({
   params,
 }: AddFleaMarketLocalBulletinBoardPageProps) {
-  const modules = useMemo(
-    () => ({
-      toolbar: [
-        [{ header: "1" }, { header: "2" }, { font: [] }],
-        [{ size: [] }],
-        ["bold", "italic", "underline", "strike"],
-        [
-          { list: "ordered" },
-          { list: "bullet" },
-          { indent: "-1" },
-          { indent: "+1" },
-        ],
-        ["link", "image", "video"],
-      ],
-      clipboard: {
-        matchVisual: false,
-      },
-      imageDrop: true,
-      imageResize: {
-        modules: ["Resize", "DisplaySize"],
-      },
-    }),
-    []
-  );
-
+  const router = useRouter();
+  //각 국가의 bulletin-page로 routing하기 위한 전역 변수 사용
   const { country, setCountry } = countryStore();
   const { countryCode } = params;
-  const router = useRouter();
-
-  const {
-    register,
-    handleSubmit,
-    watch,
-    setValue,
-    clearErrors,
-    formState: { errors },
-  } = useForm();
+  const { data: session } = useSession();
+  const accessToken = session?.accessToken;
 
   //URL의 param이 변화될때마다 country store update
   useEffect(() => {
@@ -87,45 +46,123 @@ export default function AddMeetingsLocalBulletinBoardPage({
     console.log("country", countryCode);
   }, [params]);
 
-  const onValid = (data: any) => {
-    console.log(data);
-    // 여기에서 데이터를 서버로 전송하거나 다른 작업을 수행합니다.
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    clearErrors,
+    trigger,
+    formState: { errors },
+  } = useForm();
+
+  const [loading, setLoading] = useState(false);
+
+  const onValid = async (updatedData: any) => {
+    setLoading(true);
+    try {
+      if (!accessToken) {
+        throw new Error("Access token is missing");
+      }
+      console.log("updatedData", updatedData);
+
+      const formData = appendMeetingCreateRequestFromData(updatedData);
+      
+      console.log("formData", formData);
+
+
+      if (formData !== null) {
+      console.log("실행됨1")
+       const response =  await axios.post("/api/meetings", formData, {
+            headers: {
+            "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
+
+        console.log(response)
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      alert("An error occurred while updating the profile.");
+    } finally {
+      setLoading(false);
+    }
   };
+  //Image의 변동사항을 실시간으로 체크하기 위한 watch
+  const watchImages: File[] | undefined = watch("photos") as File[];
 
-  const watchImages = watch("images");
-
+  //장소 선택 시 필요한 Country, State, City에 관한 상태
   const [selectedCountry, setSelectedCountry] = useState<string>("");
   const [selectedState, setSelectedState] = useState<string>("");
   const [selectedCity, setSelectedCity] = useState<string>("");
 
+  //모임 종류
   const [meetingType, setMeetingType] = useState(false);
 
+  //모임 종류가 하루만일 때 날짜 선택 변수
   const [isDateVisible, setIsDateVisible] = useState(true);
   const [selectedStartTime, setSelectedStartTime] = useState("");
   const [selectedEndTime, setSelectedEndTime] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
+  //모집 멤버 종류
   const sexTypes = [
     { label: "누구나", value: "anyone" },
     { label: "동일성비", value: "same_sex" },
     { label: "여자만", value: "female" },
     { label: "남자만", value: "male" },
   ];
-  const [activeSexType, setActiveSexType] = useState(sexTypes[0].value);
+  const [activeSexType, setActiveSexType] = useState(sexTypes[0].value); //모집 멤버의 기본값은 누구나
+
+  //모집 멤버 수
   const [maxMember, setMaxMember] = useState(2);
 
   // 나이대 선택하는 변수
   const [minValue, setMinValue] = useState<string>("20");
   const [maxValue, setMaxValue] = useState<string>("50");
 
-  // 모집방식
+  // 모집방식(선착순, 승인제)
   const [approval, setApproval] = useState(false);
 
   // 승인제-호스트에게 질문
   const [isQuestionVisible, setIsQuestionVisible] = useState(false);
 
-  // 모임소개
-  const [introduction, setIntroduction] = useState("");
+  // 본문(모임소개글)
+  const [content, setContent] = useState("");
+
+  //이미지 thumbnail
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const customFileLabel =
+    watchImages && watchImages.length > 0
+      ? `${watchImages.length}개의 파일 선택됨`
+      : "파일 선택";
+
+  useEffect(() => {
+    if (watchImages && watchImages.length > 0) {
+      const imageFiles = Array.from(watchImages); // 파일 배열로 변환
+      const imageUrls = imageFiles.map((file) => URL.createObjectURL(file)); // 각 파일에 대한 URL 생성
+      setImagePreviews(imageUrls); // URL 상태로 저장
+
+      // 메모리 누수 방지 위해 URL 해제
+      return () => {
+        imageUrls.forEach((url) => URL.revokeObjectURL(url));
+      };
+    }
+  }, [watchImages]);
+
+  const handleImageRemove = (index: number) => {
+    const updatedImages = Array.from(watchImages).filter((_, i) => i !== index);
+
+    // react-hook-form의 setValue로 FileList 업데이트
+    const dataTransfer = new DataTransfer();
+    updatedImages.forEach((file) => dataTransfer.items.add(file));
+    setValue("photos", dataTransfer.files);
+
+    // 미리보기 이미지 업데이트
+    const updatedPreviews = imagePreviews.filter((_, i) => i !== index);
+    setImagePreviews(updatedPreviews);
+  };
 
   // 미리보기
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
@@ -135,55 +172,50 @@ export default function AddMeetingsLocalBulletinBoardPage({
 
   // 필요한 비용 - 있음 경우
   const [isCostlyItemOpen, setIsCostlyItemOpen] = useState(false);
-  const [contentCost, setContentCost] = useState(false);
-  const [hostTipCost, setHostTipCost] = useState(false);
-  const [rentalCost, setRentalCost] = useState(false);
-  const [materialCost, setMaterialCost] = useState(false);
-  const [snackCost, setSnackCost] = useState(false);
-  const [admissionCost, setAdmissionCost] = useState(false);
-  const [entryCost, setEntryCost] = useState(false);
-  const [isCustomCostDescriptionOpen, setIsCustomCostDescriptionOpen] =
-    useState(false);
 
   //미리보기 Modal 열림 여부
   const handleModal = () => {
     setIsPreviewModalOpen(!isPreviewModalOpen);
   };
 
+  const formatStartTime = (time: string): string => {
+    let [hours, minutes] = time.split(":");
+    hours = parseInt(hours, 10).toString(); // 앞의 '0' 제거
+    minutes = parseInt(minutes, 10).toString();
+    return `${hours}시 ${minutes}분`;
+  };
 
+  const formatEndTime = (time: string): string => {
+        let [hours, minutes] = time.split(":");
+    hours = parseInt(hours, 10).toString(); // 앞의 '0' 제거
+    minutes = parseInt(minutes, 10).toString();
+    return `${hours}시 ${minutes}분`;
+  };
 
   //값이 변경될 때마다 setValue()로 useForm의 data에 저장
   useEffect(() => {
     clearErrors(); //Submit시 오류가 뜨고, 수정하면 오류 삭제되게끔
-    setValue("introduction", introduction);
-    setValue("countryCode", selectedCountry);
-    setValue("stateCode", selectedState);
-    setValue("cityCode", selectedCity);
-    setValue("meetingStartTime", selectedStartTime);
-    setValue("meetingEndTime", selectedEndTime);
+    setValue("meetingStartTime", formatStartTime(selectedStartTime));
+    setValue("meetingEndTime", formatEndTime(selectedEndTime));
     setValue("approval", approval);
     setValue("startAge", parseInt(minValue, 10));
     setValue("endAge", parseInt(maxValue, 10));
     setValue("sexType", activeSexType);
-    setValue("content", contentCost);
-    setValue("hostTip", hostTipCost);
-    setValue("rental", rentalCost);
-    setValue("material", materialCost);
-    setValue("snack", snackCost);
-    setValue("admission", admissionCost);
-    setValue("entry", entryCost);
     setValue("costly", costly);
     //register했지만, number타입으로 전송해야하기 때문에 setValue적용
     setValue("maxMember", maxMember);
+    setValue("hostType", "normal_host");
+    setValue("countryFlagEmoji", "🇰🇷");
+    setValue("coin", 5);
+    setValue("packageItem", "day_all");
 
     selectedDate
       ? setValue("meetingDate", formatDate(selectedDate))
       : setValue("meetingDate", "");
 
     meetingType === false
-      ? setValue("meetingType", "ONCE")
-      : setValue("meetingType", "ALWAYS");
-    meetingType === false ? setIsDateVisible(true) : setIsDateVisible(false);
+      ? (setValue("meetingType", "ONCE"), setIsDateVisible(true))
+      : (setValue("meetingType", "ALWAYS"), setIsDateVisible(false));
 
     approval === false
       ? setIsQuestionVisible(false)
@@ -191,23 +223,12 @@ export default function AddMeetingsLocalBulletinBoardPage({
 
     costly === false ? setIsCostlyItemOpen(false) : setIsCostlyItemOpen(true);
   }, [
-    introduction,
-    selectedCity,
-    selectedCountry,
-    selectedState,
     selectedStartTime,
     selectedEndTime,
     approval,
     minValue,
     maxValue,
     activeSexType,
-    contentCost,
-    hostTipCost,
-    rentalCost,
-    materialCost,
-    snackCost,
-    admissionCost,
-    entryCost,
     costly,
     maxMember,
     selectedDate,
@@ -225,6 +246,11 @@ export default function AddMeetingsLocalBulletinBoardPage({
     setMinValue(min);
     setMaxValue(max);
   };
+
+  const handlePreviewModal = () => {
+    setIsPreviewModalOpen(!isPreviewModalOpen);
+  };
+
   return (
     <div className="min-w-xl mx-auto bg-white p-6 rounded-lg">
       <BackButton
@@ -258,12 +284,18 @@ export default function AddMeetingsLocalBulletinBoardPage({
       <form onSubmit={handleSubmit(onValid)}>
         {/* 모임 목적*/}
         <label className="block mb-2 text-xs">모임 목적</label>
-        <InterestSelector register={register} errors={errors} setValue={setValue}/>
-
+        <InterestSelector
+          register={register}
+          errors={errors}
+          setValue={setValue}
+        />
 
         {/* 장소에 대한 dropdown */}
         <label className="block mb-2 text-xs">장소</label>
         <CountryStateCitySelector
+          registerCountryCode="countryCode"
+          registerStateCode="stateCode"
+          registerCityCode="cityCode"
           selectedCountry={selectedCountry}
           selectedState={selectedState}
           selectedCity={selectedCity}
@@ -275,13 +307,17 @@ export default function AddMeetingsLocalBulletinBoardPage({
           setValue={setValue}
         />
 
-        <label className="block mb-2 text-xs">위치</label>
+        {/* 위치 선택 */}
+        <label className="block mt-2 text-xs">위치</label>
         <input
           type="text"
           {...register("location", { required: true })}
           className="block w-full border border-gray-300 rounded-md p-2 mb-4"
           placeholder="위치를 입력해 주세요."
         />
+        {errors.location && (
+          <p className="text-red-500">위치 입력은 필수항목입니다.</p>
+        )}
 
         {/* 하루만/언제나 */}
         <TwoButtonForm
@@ -385,7 +421,6 @@ export default function AddMeetingsLocalBulletinBoardPage({
         {/* 승인제-질문 */}
         {isQuestionVisible && (
           <>
-            {" "}
             <label className="block mb-2 text-xs">질문사항</label>
             <input
               type="text"
@@ -415,28 +450,57 @@ export default function AddMeetingsLocalBulletinBoardPage({
         )}
 
         {/* 본문 */}
-        <QuillWrapper
-          theme={"snow"}
-          id={"content"}
-          placeholder={
-            "모임 소개글을 작성해주세요 \n소개글을 자세히 작성하면 참석률과 신청률이 70% 높아집니다."
-          }
-          value={introduction}
-          modules={modules}
-          formats={formats}
-          onChange={setIntroduction}
+        <QuillEditor
+          register={register}
+          placeholder={`모임 소개글을 작성해주세요 \n소개글을 자세히 작성하면 참석률과 신청률이 70% 높아집니다.`}
+          trigger={trigger}
+          name="introduction"
+          errors={errors}
+          value={content}
+          onChange={(value) => {
+            setContent(value);
+            setValue("introduction", value);
+            trigger("introduction");
+          }}
         />
 
-        {/* 이미지 업로드 */}
-        <label className="block mb-2 text-xs">이미지 업로드 (0/10)</label>
-        <input
-          type="file"
-          accept="image/*"
-          {...register("images")}
-          multiple
-          className="block w-full mb-4"
-        />
-        <p>{watchImages ? `${watchImages.length}개 업로드됨` : "0개 업로드"}</p>
+        {/* 파일선택 */}
+        <div>
+          <div className="relative w-max mt-2">
+            <input
+              type="file"
+              accept="image/*"
+              {...register("photos")}
+              multiple
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            />
+            <div className="px-4 py-2 bg-blue-500 text-white rounded-md text-center cursor-pointer">
+              {customFileLabel}
+            </div>
+          </div>
+          <p>
+            {watchImages
+              ? `10개 중 ${watchImages.length}개 업로드됨`
+              : "10개 중 0개 업로드"}
+          </p>
+
+          {/* 이미지 미리보기 섹션 */}
+          <div className="flex flex-wrap gap-4 mt-4">
+            {imagePreviews.map((src, index) => (
+              <div
+                key={index}
+                className="w-24 h-24 border border-gray-300 rounded-md overflow-hidden"
+                onClick={() => handleImageRemove(index)}
+              >
+                <img
+                  src={src}
+                  alt={`미리보기 ${index + 1}`}
+                  className="object-cover w-full h-full"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
 
         {/* 안내사항 */}
         <div className="mt-5">
@@ -463,128 +527,18 @@ export default function AddMeetingsLocalBulletinBoardPage({
           activeValue={costly}
           onChange={setCostly}
         />
-        {isCostlyItemOpen && (
-          <>
-            <label>예상 비용 입력</label>
-            <input
-              type="text"
-              {...register("cost", { required: true })}
-              className="block w-full border bg-slate-300  rounded-md p-2 mb-4 mt-5"
-              placeholder="예상 필요 비용을 입력하세요. 예) 10,000 KRW, 20 USD"
-            />
-            {errors.cost && (
-              <p className="text-red-500">예상 필요 비용은 필수 항목입니다..</p>
-            )}
-            <label className="block">비용 정보</label>
-            <span className="text-xs">
-              예상 필요 비용은 호스트와 개인적으로 만나서 결제하는
-              지침비용입니다.
-            </span>
-            <br />
-            <div className="mt-5">
-              <span className="mt-4 text-sm">운영비</span>
-              <div className="flex flex-row gap-x-6">
-                <CostlyDetailsButton
-                  value={contentCost}
-                  title="컨텐츠 제작비"
-                  onClick={() => setContentCost((prev) => !prev)}
-                />
-                <CostlyDetailsButton
-                  value={hostTipCost}
-                  title="호스트 수고비"
-                  onClick={() => setHostTipCost((prev) => !prev)}
-                />
-              </div>
-            </div>
-            {/* 모임비 */}
-            <div className="mt-5">
-              <span className="mt-4 text-sm">모임비</span>
-              <div className="flex flex-row gap-x-6">
-                <CostlyDetailsButton
-                  value={rentalCost}
-                  title="대여료"
-                  onClick={() => setRentalCost((prev) => !prev)}
-                />
-                <CostlyDetailsButton
-                  value={materialCost}
-                  title="재료비"
-                  onClick={() => setMaterialCost((prev) => !prev)}
-                />
-                <CostlyDetailsButton
-                  value={snackCost}
-                  title="다과비"
-                  onClick={() => setSnackCost((prev) => !prev)}
-                />
-              </div>
-            </div>
-            {/* 기타 */}
-            <div className="mt-5">
-              <span className="mt-4 text-sm">기타</span>
-              <div className="flex flex-row gap-x-6">
-                <CostlyDetailsButton
-                  value={admissionCost}
-                  title="입장료"
-                  onClick={() => setAdmissionCost((prev) => !prev)}
-                />
-                <CostlyDetailsButton
-                  value={entryCost}
-                  title="참가비"
-                  onClick={() => setEntryCost((prev) => !prev)}
-                />
-                <button
-                  type="button"
-                  className={`border border-slate-500 rounded-md border-solid ${
-                    isCustomCostDescriptionOpen
-                      ? "bg-black text-white"
-                      : "bg-white text-slate-500"
-                  }`}
-                  onClick={() =>
-                    setIsCustomCostDescriptionOpen((prev) => !prev)
-                  }
-                >
-                  기타
-                </button>
-              </div>
-              {isCustomCostDescriptionOpen && (
-                <>
-                  <input
-                    type="text"
-                    {...register("customCostDescription", { required: true })}
-                    className="block w-full border bg-slate-300  rounded-md p-2 mb-4 mt-5"
-                    placeholder="비용의 용도를 직접 입력하세요. 예) 맥주 한 병 및 안주 비용"
-                  />
-                  {errors.customCostDescription && (
-                    <p className="text-red-500">
-                      직접 입력 선택 시 내용은 필수항목입니다.
-                    </p>
-                  )}
-                </>
-              )}
-            </div>
-          </>
-        )}
-
-        {/* 미리보기 버튼 */}
-        <div className="flex justify-between gap-x-5">
-          <button
-            type="button"
-            className="py-2 px-4 rounded bg-gray-300 hover:bg-gray-400 ml-auto"
-            // onClick={handleModal}
-          >
-            미리보기
-          </button>
-
-          {/* 작성 완료 버튼 */}
-          <input
-            type="submit"
-            className="py-2 px-4 rounded bg-blue-500 hover:bg-blue-700 text-white mr-auto"
-            value="작성 완료"
-          />
-        </div>
+        <CostlyDetails
+          register={register}
+          errors={errors}
+          setValue={setValue}
+          isCostlyItemOpen={isCostlyItemOpen}
+        />
+        {/* 미리보기와 작성완료 버튼 */}
+        <PreviewAndSubmitButton onClick={handleModal} />
       </form>
 
       {/* 미리보기 모달창 */}
-      <PreviewModal
+      {/* <PreviewModalMeetings
         isOpen={isPreviewModalOpen}
         onClose={handleModal}
         formData={{
@@ -593,7 +547,7 @@ export default function AddMeetingsLocalBulletinBoardPage({
           images: watchImages,
           location: watch("location"),
         }}
-      />
+      /> */}
     </div>
   );
 }

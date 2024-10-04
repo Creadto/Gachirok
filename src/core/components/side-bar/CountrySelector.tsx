@@ -16,7 +16,7 @@ const CountrySelector = () => {
   const router = useRouter();
 
   // CountryList에 대한 객체
-  const countryOptions = Object.values(CountryList);
+  const countryOptions = CountryList;
   const handleCountryDropdown = () => {
     setIsOpen(!isOpen);
   };
@@ -68,11 +68,11 @@ const CountrySelector = () => {
           <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
             {countryOptions.map((country) => (
               <button
-                key={country}
-                onClick={() => handleCountrySelect(country)}
+                key={country.code}
+                onClick={() => handleCountrySelect(country.name)}
                 className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition-colors duration-150"
               >
-                {country}
+                {country.name}
               </button>
             ))}
           </div>
