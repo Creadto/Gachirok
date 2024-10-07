@@ -9,6 +9,10 @@ interface CostlyDetailsProps {
   isCostlyItemOpen: boolean;
 }
 
+/**
+ * @Description 필요한 비용이 '있음'일 경우 세부 비용 선택하는 Component
+ * @author 김영서
+ **/
 const CostlyDetails = ({
   register,
   errors,
@@ -29,6 +33,14 @@ const CostlyDetails = ({
     if (isCostlyItemOpen === false) {
       setValue("cost", "");
       setValue("customCostDescription", "")
+      setContentCost(false);
+      setHostTipCost(false);
+      setRentalCost(false);
+      setMaterialCost(false);
+      setSnackCost(false);
+      setAdmissionCost(false);
+      setEntryCost(false);
+      setIsCustomCostDescriptionOpen(false);
     }
     contentCost === true
       ? setValue("content", contentCost)

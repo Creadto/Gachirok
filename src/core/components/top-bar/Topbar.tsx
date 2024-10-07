@@ -48,10 +48,10 @@ export default function Topbar() {
 
         {/* 중앙 검색 바 */}
         <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2">
-            <span>🌍</span> {/* 위치 아이콘 */}
+          {/* <div className="flex items-center space-x-2">
+            <span>🌍</span> 
             <span>싱가포르</span>
-          </div>
+          </div> */}
           <input
             type="text"
             placeholder="검색어를 입력하세요."

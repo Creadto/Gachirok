@@ -527,6 +527,7 @@ export default function AddMeetingsLocalBulletinBoardPage({
           activeValue={costly}
           onChange={setCostly}
         />
+        {/* 필요한 비용에 대한 세부사항 */}
         <CostlyDetails
           register={register}
           errors={errors}

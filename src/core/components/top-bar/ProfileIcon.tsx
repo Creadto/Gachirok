@@ -77,7 +77,7 @@ const fetchProfileData = async() => {
             <></>
           )}
 
-          <span className="my-auto ml-2">{session?.user?.name}</span>
+          <span className="my-auto ml-2">{session?.user?.name}님</span>
         </button>
       ) : (
         <Link href="/?modal=signin" as="/signin">

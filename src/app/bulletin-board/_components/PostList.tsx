@@ -1,27 +1,25 @@
-interface Post {
-  id: number;
-  category: string;
-  title: string;
-  author: string;
-  date: string;
-  views: number;
-  likes: number;
-  comments: number;
-  trending: boolean;
+"use client"
+import { useRouter } from "next/navigation";
+import { categoryMap, Post } from "../_types/Posts";
+interface PostListProps {
+  filteredPosts: Post[]
 }
 
-const PostList = ({ posts }: { posts: Post[] }) => {
+const PostList = ({filteredPosts}: PostListProps) => {
+  const router = useRouter();
   return (
     <div className="w-full px-4 py-6 space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {posts.map((post) => (
+        {filteredPosts.map((post) => (
           <div
             key={post.id}
             className="border rounded-lg p-4 hover:bg-gray-100 transition"
           >
+            <button onClick={() => router.push(`/bulletin-board/${post.id}`)}>
             <div className="flex justify-start items-center flex-row gap-x-2">
               <span className="text-sm text-black border border-solid bg-slate-300">
-                {post.category}
+                {/* 한글에 해당하는 category 제목을 찾아서 출력 */}
+               {Object.keys(categoryMap).find(key => categoryMap[key] === post.category)}
               </span>
               {post.trending === true ? (
                 <span className="text-sm text-white border border-solid bg-pink-500">
@@ -43,6 +41,7 @@ const PostList = ({ posts }: { posts: Post[] }) => {
                 <span>댓글 {post.comments}</span>
               </div>
             </div>
+            </button>
           </div>
         ))}
       </div>

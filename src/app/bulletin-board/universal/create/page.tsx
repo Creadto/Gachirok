@@ -34,7 +34,7 @@ const AddUniversalBulletinBoardPage = () => {
   const watchImages: FileList | undefined = watch("images") as FileList;
 
   //주제
-  const categoryOptions = ["주제1", "주제 2", "주제 3"];
+  const categoryOptions = ["일상토크", "정보공유", "질문답변", "자유토론", "고민상담"];
   const [selectedCategory, setSelectedCategory] = useState<string>("");
 
   //본문
