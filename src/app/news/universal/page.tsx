@@ -1,34 +1,13 @@
-import News from "@/app/news/universal/_components/News";
-import { mockNewsData } from "@/app/news/universal/_mock/mockNewsData";
 import DetailButton from "@/app/news/universal/_components/DetailButton";
+import SectionNews from "@/app/news/universal/section/_components/SectionNews";
+import {Category} from "@/app/news/utils/Category";
 
-interface NewsItem{
-    title: string;
-    description: string;
-    category: string;
-    date: string;
-    id: string;
-}
+
 /**
- *
- *
- *
- *
- *
- *
- */
-/**
- * @Description 뉴스 배열을 섹션 별로 객체를 생성하는 로직
- *
- * @Author 민동현
+ *  @Description Universal News 처음 화면
+ *  @Author 민동현
  **/
 export default function NewsPage() {
-    const sections = ["정치", "경제", "사회", "스포츠", "생활", "문화"];
-
-    const groupedNews = sections.reduce((acc, section) => {
-        acc[section] = mockNewsData.filter(newsData => newsData.category === section);
-        return acc;
-    }, {} as Record<string, NewsItem[]>);
 
     return (
         <section className="p-4">
@@ -37,28 +16,14 @@ export default function NewsPage() {
                 <p className="p-1 bg-gray-200 text-center rounded text-gray-500">Universal</p>
             </div>
             <div className="p-1 grid grid-cols-3 gap-5 max-w-8xl mx-auto">
-                {sections.map((section) => (
+                {Category.map((section) => (
                     <div key={section} className="p-4 bg-gray-100 text-center rounded">
                         <div className="flex justify-between">
                             <h2 className="text-2xl font-bold p-1 text-left">{section}</h2>
-                            <DetailButton section={section}/>
+                            <DetailButton section={section}/>   {/* 해당 뉴스 카테고리로 이동하는 버튼 */}
                         </div>
                         <hr className="bg-black border-0 h-[2px]"/>
-                        <div className="text-left">
-                            {groupedNews[section].map((newsItem) => (
-                                <div key={newsItem.id}>
-                                    <News
-                                        title={newsItem.title}
-                                        description={newsItem.description}
-                                        date={newsItem.date}
-                                        id={newsItem.id}
-                                        classNameTitle="truncate whitespace-nowrap overflow-hidden"
-                                        classNameDescription="truncate whitespace-nowrap overflow-hidden"
-                                    />
-                                    <hr/>
-                                </div>
-                            ))}
-                        </div>
+                        <SectionNews section={section}/>    {/* 뉴스의 대략적인 정보만 보여주는 컴포넌트(제목, 내용, 날짜 ) */}
                     </div>
                 ))}
             </div>

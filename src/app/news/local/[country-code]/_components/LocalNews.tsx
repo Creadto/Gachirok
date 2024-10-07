@@ -1,6 +1,6 @@
 "use client";
 
-import {useRouter} from "next/navigation";
+import {useParams, useRouter} from "next/navigation";
 
 interface NewsProps{
     title: string;
@@ -18,13 +18,14 @@ interface NewsProps{
  * @param id 뉴스 ID
  * @Author 민동현
  */
-
-export default function News({title, description, date, id} : NewsProps){
+export default function LocalNews({title, description, date, id} : NewsProps){
 
     const router = useRouter();
+    const params = useParams();
+    const countryCode = params['country-code'];
 
     const handleClick = ()=>{
-        router.push(`/news/universal/${id}`)
+        router.push(`/news/local/${countryCode}/${id}`)
     }
     return(
         <div className="cursor-pointer" onClick={handleClick}>
