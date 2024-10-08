@@ -12,13 +12,10 @@ import { FaCalendarAlt, FaClock } from "react-icons/fa";
 
 interface FilterModalProps {
   onClose: () => void;
-  countryCode : string;
+  countryCode: string;
 }
-const FilterModal = ({
-  onClose,
-  countryCode
-}: FilterModalProps) => {
-  const {data: session} = useSession();
+const FilterModal = ({ onClose, countryCode }: FilterModalProps) => {
+  const { data: session } = useSession();
   const router = useRouter();
   const weekdayOptions = [
     { value: "1", label: "일" },
@@ -94,8 +91,6 @@ const FilterModal = ({
     return `${hours}시 ${minutes}분`;
   };
 
-
-
   useEffect(() => {
     console.log("searchContent", searchContent);
     console.log("interests", selectedInterests);
@@ -126,47 +121,51 @@ const FilterModal = ({
     endTime,
   ]);
 
-  const  applyFilters = async() => {
+  const applyFilters = async () => {
     const params = new URLSearchParams();
 
-    if(countryCode) params.set("countryCode", countryCode);
+    if (countryCode) params.set("countryCode", countryCode);
     if (searchContent !== null) params.set("title", searchContent);
     if (weekDays.length > 0) params.set("daysOfWeek", weekDays.join(","));
-    if (selectedInterests.length > 0) params.set("interests", selectedInterests.join(","));
+    if (selectedInterests.length > 0)
+      params.set("interests", selectedInterests.join(","));
     if (slot !== null) params.set("slot", slot);
     if (cost !== null) params.set("costly", cost.toString());
     if (approval !== null) params.set("approval", approval.toString());
     if (sexType !== null) params.set("sexType", sexType);
     if (startAge !== null) params.set("startAge", startAge);
     if (endAge != null) params.set("endAge", endAge);
-    if (startDate !== null) params.set("meetingStartDate", formatDate(startDate));
+    if (startDate !== null)
+      params.set("meetingStartDate", formatDate(startDate));
     if (endDate !== null) params.set("meetingEndDate", formatDate(endDate));
-    if (startTime!== null) params.set("meetingStartTime", formatTime(startTime));
+    if (startTime !== null)
+      params.set("meetingStartTime", formatTime(startTime));
     if (endTime !== null) params.set("meetingEndTime", formatTime(endTime));
 
     console.log(params.toString());
 
-    try{
-      if(session?.accessToken){
-        //sessionStorage 초기화
-        sessionStorage.removeItem('meetings');
-        const response = await useGetFilteredMeetings(session.accessToken, params.toString())
+    try {
+      if (session?.accessToken) {
+        const response = await useGetFilteredMeetings(
+          session.accessToken,
+          params.toString()
+        );
         console.log(response);
-        sessionStorage.setItem('meetings', JSON.stringify(response));
+        //sessionStorage 초기화
+        sessionStorage.removeItem("meetings");
+        //sessionStorage에 새로운 데이터 넣기
+        sessionStorage.setItem("meetings", JSON.stringify(response));
+        //필터적용이 된 페이지로 이동
         router.push(`/gachiga/local?${params.toString()}`);
-  
+
         onClose(); // 모달 닫기
-  
       }
-    }catch(error){
-      console.error("ERROR", error)
+    } catch (error) {
+      console.error("ERROR", error);
     }
 
     // URL 업데이트
-
   };
-
-  
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 ">
@@ -415,9 +414,7 @@ const FilterModal = ({
                   onClick={() => handleDaysOfWeek(value)}
                   key={value}
                   className={`border h-8 border-black rounded-md text-center mx-2 justify-between items-stretch w-full ${
-                    weekDays.includes(value)
-                      ? "bg-pink-500 text-white"
-                      : ""
+                    weekDays.includes(value) ? "bg-pink-500 text-white" : ""
                   }`}
                 >
                   {label}
