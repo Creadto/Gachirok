@@ -1,6 +1,11 @@
 interface CreateMeetingsButtonProps {
   onClick: () => void;
 }
+
+/** 모임 개설하기 버튼
+ * @Description 
+ * @author 김영서
+ **/
 export const CreateMeetingsButton = ({
   onClick,
 }: CreateMeetingsButtonProps) => {

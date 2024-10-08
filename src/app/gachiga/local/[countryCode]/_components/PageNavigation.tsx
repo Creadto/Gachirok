@@ -4,7 +4,10 @@ interface PageNavigationProps {
   handlePageChange: (pageNumber: number) => void;
 
 }
-
+/**
+ * @Description 페이지를 이동하게 해주는 Component
+ * @author 김영서
+ **/
 const PageNavigation = ({currentPage, totalPages, handlePageChange}: PageNavigationProps) => {
 
   return(

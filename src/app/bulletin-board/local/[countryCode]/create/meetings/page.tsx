@@ -19,7 +19,7 @@ import CountryStateCitySelector from "./_components/CountryStateCitySelector";
 import RangeSlider from "./_components/RangeSlider";
 import TwoButtonApproval from "./_components/TwoButtonApproval";
 import appendMeetingCreateRequestFromData from "./_utils/appendMeetingCreateRequestFormData";
-import { sexTypes } from "@/core/types/SexTypes";
+import { sexTypes } from "@/core/types/DataForUI";
 
 interface AddFleaMarketLocalBulletinBoardPageProps {
   params: {

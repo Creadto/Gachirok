@@ -1,7 +1,6 @@
 import { MemberPreviewResponse } from "./MemberPreviewResponse";
 
 export interface MeetingPreviewResponse {
-
   meetingId: number;
   bookmark: boolean;
   reviewStatus: boolean; // 리뷰 필요 : 모임종료 & 모임멤버 & 리뷰미실시

@@ -18,7 +18,12 @@ const nextConfig = {
         {
           source: '/api/meetings/host',
           destination: 'https://dev.gachiga.creadto.com/api/v1/meetings/host',
-        }
+        },
+        {
+          source: '/api/meetings/:meetingId/bookmark',
+          destination: 'https://dev.gachiga.creadto.com/api/v1/meetings/:meetingId/bookmark',
+        },
+
       ];
     },
 };

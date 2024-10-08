@@ -1,12 +1,11 @@
 "use client";
 import TimePicker from "@/core/components/TimePicker";
 import { useGetFilteredMeetings } from "@/core/hooks/useGetMeetings";
+import { sexTypes, weekdayOptions } from "@/core/types/DataForUI";
 import { interestsOptions } from "@/core/types/InterestsAndExpertisesOptions";
-import { sexTypes } from "@/core/types/SexTypes";
-import { access } from "fs";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import DatePicker from "react-datepicker";
 import { FaCalendarAlt, FaClock } from "react-icons/fa";
 
@@ -14,18 +13,14 @@ interface FilterModalProps {
   onClose: () => void;
   countryCode: string;
 }
+
+/**
+ * @Description 필터 적용하기를 눌렀을 때 등장하는 필터 모달
+ * @author 김영서
+ **/
 const FilterModal = ({ onClose, countryCode }: FilterModalProps) => {
   const { data: session } = useSession();
   const router = useRouter();
-  const weekdayOptions = [
-    { value: "1", label: "일" },
-    { value: "2", label: "월" },
-    { value: "3", label: "화" },
-    { value: "4", label: "수" },
-    { value: "5", label: "목" },
-    { value: "6", label: "금" },
-    { value: "7", label: "토" },
-  ];
 
   // 모임 이름 혹은 내용 검색
   const [searchContent, setSearchContent] = useState<string | null>(null);
@@ -67,6 +62,7 @@ const FilterModal = ({ onClose, countryCode }: FilterModalProps) => {
     });
   };
 
+  //모집요일을 선택 함수
   const handleDaysOfWeek = (value: string) => {
     setWeekDays((prev) => {
       const newWeekDays = prev.includes(value)
@@ -77,6 +73,7 @@ const FilterModal = ({ onClose, countryCode }: FilterModalProps) => {
     });
   };
 
+  //API Request의 형식에 맞게 날짜 format 바꾸기
   const formatDate = (date: Date): string => {
     const year = date.getFullYear();
     const month = date.getMonth() + 1; // 월은 0부터 시작하므로 +1
@@ -84,6 +81,7 @@ const FilterModal = ({ onClose, countryCode }: FilterModalProps) => {
     return `${year}년 ${month}월 ${day}일`; //API로 보내는 형식
   };
 
+  //API Request의 형식에 맞게 시간 format 바꾸기
   const formatTime = (time: string): string => {
     let [hours, minutes] = time.split(":");
     hours = parseInt(hours, 10).toString(); // 앞의 '0' 제거
@@ -91,36 +89,7 @@ const FilterModal = ({ onClose, countryCode }: FilterModalProps) => {
     return `${hours}시 ${minutes}분`;
   };
 
-  useEffect(() => {
-    console.log("searchContent", searchContent);
-    console.log("interests", selectedInterests);
-    console.log("cost", cost);
-    console.log("approval", approval);
-    console.log("sexType", sexType);
-    console.log("slot", slot);
-    console.log("startAge", startAge);
-    console.log("endAge", endAge);
-    console.log("checkbox clicked", isAllClicked);
-    console.log("startDate", startDate);
-    console.log("endDate", endDate);
-    console.log("startTime", startTime);
-    console.log("endTime", endTime);
-  }, [
-    searchContent,
-    selectedInterests,
-    cost,
-    approval,
-    sexType,
-    slot,
-    startAge,
-    endAge,
-    isAllClicked,
-    startDate,
-    endDate,
-    startTime,
-    endTime,
-  ]);
-
+  //적용 버튼을 눌렀을 때
   const applyFilters = async () => {
     const params = new URLSearchParams();
 
@@ -142,15 +111,12 @@ const FilterModal = ({ onClose, countryCode }: FilterModalProps) => {
       params.set("meetingStartTime", formatTime(startTime));
     if (endTime !== null) params.set("meetingEndTime", formatTime(endTime));
 
-    console.log(params.toString());
-
     try {
       if (session?.accessToken) {
         const response = await useGetFilteredMeetings(
           session.accessToken,
           params.toString()
         );
-        console.log(response);
         //sessionStorage 초기화
         sessionStorage.removeItem("meetings");
         //sessionStorage에 새로운 데이터 넣기
@@ -163,8 +129,6 @@ const FilterModal = ({ onClose, countryCode }: FilterModalProps) => {
     } catch (error) {
       console.error("ERROR", error);
     }
-
-    // URL 업데이트
   };
 
   return (

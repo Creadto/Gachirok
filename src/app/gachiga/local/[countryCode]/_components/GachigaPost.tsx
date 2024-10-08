@@ -5,20 +5,32 @@ import { useEffect, useState } from "react";
 import PageNavigation from "./PageNavigation";
 import { useRouter } from "next/navigation";
 import { useGetMeetings } from "@/core/hooks/useGetMeetings";
+import FilledStarIcon from "@/core/components/icons/FilledStarIcon";
+import EmptyStarIcon from "@/core/components/icons/EmptyStarIcon";
+import { usePostMeetingsBookmark } from "@/core/hooks/usePostMeetings";
 
 interface GachigaPostProps {
-  countryCode : string
+  countryCode: string;
 }
-const GachigaPost = ({countryCode}: GachigaPostProps) => {
-  
+
+/**
+ * @Description 메인 페이지 '전체모임'을 그려주는 Component
+ * @author 김영서
+ **/
+const GachigaPost = ({ countryCode }: GachigaPostProps) => {
   const { data: session } = useSession();
   const router = useRouter();
   const accessToken = session?.accessToken;
-  const [meetings, setMeetings] = useState<MeetingPreviewResponse[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
-  const meetingsPerPage = 10;
 
+  //전체 모임
+  const [meetings, setMeetings] = useState<MeetingPreviewResponse[]>([]);
+  //로딩여부
+  const [loading, setLoading] = useState(true);
+  //현재 페이지
+  const [currentPage, setCurrentPage] = useState(1);
+  //페이지당 미팅 개수
+  const meetingsPerPage = 10;
+  //전체 페이지 개수
   const totalPages = Math.ceil(meetings.length / meetingsPerPage);
 
   // 현재 페이지에서 보여줄 meetings 슬라이싱
@@ -34,6 +46,7 @@ const GachigaPost = ({countryCode}: GachigaPostProps) => {
     setCurrentPage(pageNumber);
   };
 
+  //API로부터 소모임을 가져오는 함수
   async function loadMeetings() {
     try {
       setLoading(true);
@@ -48,6 +61,24 @@ const GachigaPost = ({countryCode}: GachigaPostProps) => {
     }
   }
 
+  //즐겨찾기 버튼 눌렀을 때 API 요청보내는 함수
+  const handleBookmark = (meeting: MeetingPreviewResponse) => {
+    try {
+      if (accessToken) {
+        usePostMeetingsBookmark(accessToken, meeting.meetingId);
+        setMeetings((prevMeetings) =>
+          prevMeetings.map((m) =>
+            m.meetingId === meeting.meetingId
+              ? { ...m, bookmark: !m.bookmark }
+              : m
+          )
+        );
+      }
+    } catch (error) {
+      console.log("Error", error);
+    }
+  };
+
   useEffect(() => {
     if (accessToken) {
       loadMeetings();
@@ -55,13 +86,11 @@ const GachigaPost = ({countryCode}: GachigaPostProps) => {
   }, [accessToken, router]);
 
   if (loading) {
-    // Loading screen
     return <div>Loading...</div>;
   }
 
   if (!meetings.length) {
-    // No meetings found
-    return <div>No meetings found</div>;
+    return <div>소모임이 존재하지 않습니다.</div>;
   }
   return (
     <>
@@ -72,34 +101,22 @@ const GachigaPost = ({countryCode}: GachigaPostProps) => {
             className="bg-white shadow-xl rounded-lg w-20% h-[280px] relative"
             key={index}
           >
+            <img
+              src={meeting.meetingPhotoUrl}
+              alt="Event Image"
+              className=" rounded-md object-cover w-[256px] h-[155px]"
+            />
+            <div className="absolute top-2 left-2 bg-black text-white px-2 py-1 text-xs rounded">
+              진행중
+            </div>
+            <div className="absolute top-0.5 right-1 p-1">
+              <button onClick={() => handleBookmark(meeting)}>
+                {meeting.bookmark ? <FilledStarIcon /> : <EmptyStarIcon />}
+              </button>
+            </div>
             <button
               onClick={() => router.push(`/gachiga/${meeting.meetingId}`)}
             >
-              <img
-                src={meeting.meetingPhotoUrl}
-                alt="Event Image"
-                className=" rounded-md object-cover w-[256px] h-[155px]"
-              />
-              <div className="absolute top-2 left-2 bg-black text-white px-2 py-1 text-xs rounded">
-                진행중
-              </div>
-              <div className="absolute top-0.5 right-1 p-1">
-                <svg
-                  width="30"
-                  height="30"
-                  viewBox="0 0 30 30"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M15.7823 5.8403L18.5237 11.2235L24.6519 12.0868C24.8109 12.1046 24.9615 12.1675 25.0859 12.2681C25.2103 12.3687 25.3034 12.5027 25.3542 12.6544C25.405 12.8061 25.4114 12.9692 25.3726 13.1244C25.3339 13.2796 25.2515 13.4205 25.1354 13.5305L20.7005 17.7196L21.7472 23.6367C21.7704 23.7956 21.749 23.9578 21.6856 24.1053C21.6222 24.2528 21.5191 24.3798 21.3878 24.4723C21.2566 24.5648 21.1023 24.619 20.942 24.6291C20.7818 24.6391 20.6218 24.6046 20.48 24.5292L14.9986 21.74L9.51723 24.5292C9.37543 24.6046 9.21548 24.6391 9.05523 24.6291C8.89498 24.619 8.74072 24.5648 8.60945 24.4723C8.47818 24.3798 8.37504 24.2528 8.31161 24.1053C8.24819 23.9578 8.22689 23.7956 8.25008 23.6367L9.29673 17.7196L4.86192 13.5305C4.74574 13.4205 4.66342 13.2796 4.62464 13.1244C4.58587 12.9692 4.59224 12.8061 4.64304 12.6544C4.69385 12.5027 4.78694 12.3687 4.91137 12.2681C5.0358 12.1675 5.18641 12.1046 5.3454 12.0868L11.4736 11.2235L14.215 5.8403C14.2906 5.69802 14.4034 5.57902 14.5415 5.49601C14.6795 5.413 14.8375 5.36914 14.9986 5.36914C15.1597 5.36914 15.3178 5.413 15.4558 5.49601C15.5939 5.57902 15.7067 5.69802 15.7823 5.8403Z"
-                    fill="white" //비울려면 none
-                    fillOpacity="1"
-                    stroke="white"
-                    strokeWidth="1.8"
-                  />
-                </svg>
-              </div>
               <div className="p-3 ">
                 <p className="text-sm text-gray-500 pt-1 flex">9/11 16:20</p>
                 <h2 className=" font-bold mt-0.5 text-sm flex">
@@ -134,6 +151,7 @@ const GachigaPost = ({countryCode}: GachigaPostProps) => {
         ))}
       </div>
 
+      {/* 하단 페이지 이동 네비게이션 */}
       <PageNavigation
         currentPage={currentPage}
         totalPages={totalPages}

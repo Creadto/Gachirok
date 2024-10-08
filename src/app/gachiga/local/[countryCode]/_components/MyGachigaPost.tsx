@@ -10,12 +10,18 @@ const MyGachigaPost = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const accessToken = session?.accessToken;
-  const [meetings, setMeetings] = useState<MeetingPreviewResponse[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
-  const meetingsPerPage = 10;
 
-  const totalPages = Math.ceil(meetings.length / meetingsPerPage);
+ //전체 모임
+ const [meetings, setMeetings] = useState<MeetingPreviewResponse[]>([]);
+ //로딩여부
+ const [loading, setLoading] = useState(true);
+ //현재 페이지
+ const [currentPage, setCurrentPage] = useState(1);
+ //페이지당 미팅 개수
+ const meetingsPerPage = 10;
+ //전체 페이지 개수
+ const totalPages = Math.ceil(meetings.length / meetingsPerPage);
+
 
   // 현재 페이지에서 보여줄 meetings 슬라이싱
   const indexOfLastMeeting = currentPage * meetingsPerPage;
@@ -30,6 +36,7 @@ const MyGachigaPost = () => {
     setCurrentPage(pageNumber);
   };
 
+  //API로부터 내모임을 가져오는 함수
   async function loadMeetings() {
     try {
       setLoading(true);
@@ -51,13 +58,11 @@ const MyGachigaPost = () => {
   }, [accessToken]);
 
   if (loading) {
-    // Loading screen
     return <div>Loading...</div>;
   }
 
   if (!meetings.length) {
-    // No meetings found
-    return <div>No meetings found</div>;
+    return <div>소모임이 존재하지 않습니다.</div>;
   }
   return (
     <>

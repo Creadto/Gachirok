@@ -1,20 +1,13 @@
 "use client";
+import GachigaIcon from "@/core/components/icons/GachigaIcon";
+import { LocationIcon } from "@/core/components/icons/LocationIcon";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { MeetingPreviewResponse } from "../_types/MeetingPreviewResponse";
-import { useRouter } from "next/navigation";
-import { LocationIcon } from "@/core/components/icons/LocationIcon";
 import PageNavigation from "./[countryCode]/_components/PageNavigation";
-import GachigaIcon from "@/core/components/icons/GachigaIcon";
-import { CreateMeetingsButton } from "./[countryCode]/_components/CreateMeetingsButton";
 
-interface FilteredPageProps {
-  params: {
-    countryCode: string;
-  };
-}
 
-const FilteredPage = ({ params }: FilteredPageProps) => {
-  const { countryCode } = params;
+const FilteredPage = () => {
   const [meetings, setMeetings] = useState<MeetingPreviewResponse[]>([]);
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
@@ -55,17 +48,6 @@ const FilteredPage = ({ params }: FilteredPageProps) => {
           </div>
           <div>
             <p>필터된 모임들</p>
-          </div>
-        </div>
-        <div className="flex mt-5 text-xs">
-          <div className=" ml-auto items-end">
-            <CreateMeetingsButton
-              onClick={() =>
-                router.push(
-                  `/bulletin-board/local/${countryCode}/create/meetings`
-                )
-              }
-            />
           </div>
         </div>
         <div>

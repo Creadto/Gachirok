@@ -11,7 +11,6 @@ export interface MeetingResponse {
   maxMember: number; 
   startAge: number;
   endAge: number;
-  
   title: string;
   countryCode: string;
   countryFlagEmoji: string;
@@ -32,7 +31,6 @@ export interface MeetingResponse {
   hostValue: number; // float -> number
   visitorStatus: 'host' | 'accept' | 'reject' | 'wait' | 'visit' | 'cancel';
   meetingType: 'ONCE' | 'ALWAYS';
-  
   content: boolean;
   hostTip: boolean;
   rental: boolean;

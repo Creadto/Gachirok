@@ -17,6 +17,10 @@ interface GachigaPageProps {
   };
 }
 
+/**
+ * @Description CountryCode에 해당하는 나라의 소모임 메인 페이지
+ * @author 김영서
+ **/
 const GachigaPage = ({ params }: GachigaPageProps) => {
   const { countryCode } = params;
   const router = useRouter();
@@ -24,7 +28,6 @@ const GachigaPage = ({ params }: GachigaPageProps) => {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isMyyMeetingsSelected, setIsMyMeetingsSelected] = useState(false);
   const [isOrderMeetingOpen, setIsOrderMeetingOpen] = useState(false);
-
 
   const handleToggle = () => {
     setIsOrderMeetingOpen((prev) => !prev);
@@ -69,11 +72,7 @@ const GachigaPage = ({ params }: GachigaPageProps) => {
           </div>
           {/* 검색 필터 모달창  */}
           {isFilterModalOpen && (
-            <FilterModal
-              onClose={onClose}
-              countryCode={countryCode}
-            
-            />
+            <FilterModal onClose={onClose} countryCode={countryCode} />
           )}
           <div className=" ml-auto items-end">
             <CreateMeetingsButton
@@ -91,7 +90,11 @@ const GachigaPage = ({ params }: GachigaPageProps) => {
             {isOrderMeetingOpen ? <ArrowUpIcon /> : <ArrowDownIcon />}
           </div>
         </div>
-        {isMyyMeetingsSelected ? <MyGachigaPost /> : <GachigaPost  countryCode={countryCode} />}
+        {isMyyMeetingsSelected ? (
+          <MyGachigaPost />
+        ) : (
+          <GachigaPost countryCode={countryCode} />
+        )}
       </div>
     </>
   );
