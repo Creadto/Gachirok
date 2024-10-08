@@ -36,7 +36,7 @@ const CountryStateCityUpdater: React.FC<CountryStateCityUpdaterProps> = ({
   const [isStateButtonVisible, setIsStateButtonVisible] = useState(true); //State를 선택하는 Button의 보여짐 여부 상태
   const [isCityButtonVisible, setIsCityButtonVisible] = useState(true); //City를 선택하는 Button의 보여짐 여부 상태
 
-  const countries = Object.entries(CountryList);
+  const countries = CountryList;
 
   //국가코드에 해당하는 State들 생성
   const filteredState = StateList.filter(
@@ -122,21 +122,22 @@ const CountryStateCityUpdater: React.FC<CountryStateCityUpdaterProps> = ({
           name="residenceCountryCode"
           value={
             selectedCountry
-              ? CountryList[selectedCountry]
+              ? countries.find((country) => country.code === selectedCountry)
+                  ?.name || "국가를 선택해주세요"
               : "국가를 선택해주세요"
           }
           onClick={toggleCountryDropdown}
           className="block text-left w-48 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-opacity-50 focus:ring-indigo-500 focus:border-indigo-500"
         />
         {isCountryDropdownOpen && (
-          <div className="relative z-20 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
-            {countries.map(([code, name]) => (
+          <div className="absolute z-20 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+            {countries.map(({ code, name, emoji }) => (
               <button
                 key={code}
                 onClick={() => handleCountrySelect(code)}
                 className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition-colors duration-150"
               >
-                {name}
+                {emoji} {name}
               </button>
             ))}
           </div>

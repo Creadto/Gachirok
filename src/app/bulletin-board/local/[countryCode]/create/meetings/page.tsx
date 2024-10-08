@@ -19,6 +19,7 @@ import CountryStateCitySelector from "./_components/CountryStateCitySelector";
 import RangeSlider from "./_components/RangeSlider";
 import TwoButtonApproval from "./_components/TwoButtonApproval";
 import appendMeetingCreateRequestFromData from "./_utils/appendMeetingCreateRequestFormData";
+import { sexTypes } from "@/core/types/SexTypes";
 
 interface AddFleaMarketLocalBulletinBoardPageProps {
   params: {
@@ -106,13 +107,6 @@ export default function AddMeetingsLocalBulletinBoardPage({
   const [selectedEndTime, setSelectedEndTime] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
-  //모집 멤버 종류
-  const sexTypes = [
-    { label: "누구나", value: "anyone" },
-    { label: "동일성비", value: "same_sex" },
-    { label: "여자만", value: "female" },
-    { label: "남자만", value: "male" },
-  ];
   const [activeSexType, setActiveSexType] = useState(sexTypes[0].value); //모집 멤버의 기본값은 누구나
 
   //모집 멤버 수

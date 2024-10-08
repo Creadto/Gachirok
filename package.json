@@ -29,6 +29,7 @@
     "react-quill": "^2.0.0",
     "react-range": "^1.10.0",
     "react-tailwindcss-datepicker": "^1.7.2",
+    "react-time-picker": "^7.0.0",
     "zustand": "^5.0.0-rc.2"
   },
   "devDependencies": {

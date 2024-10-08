@@ -80,7 +80,7 @@ const Sidebar = () => {
 
             {/* Local - Gathering */}
             <button
-              onClick={() => router.push(`/meetings/local/${country}`)}
+              onClick={() => router.push(`/gachiga/local/${country}`)}
             >
               <div className="flex items-center space-x-2 cursor-pointer">
               <span>👥</span>

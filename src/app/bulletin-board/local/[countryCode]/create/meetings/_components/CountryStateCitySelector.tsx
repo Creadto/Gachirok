@@ -17,10 +17,10 @@ interface CountryStateCitySelectorProps {
   setSelectedCity: (value: string) => void;
   register: UseFormRegister<any>;
   errors: FieldErrors;
-  setValue: UseFormSetValue<any>
+  setValue: UseFormSetValue<any>;
   registerCountryCode: string;
   registerStateCode: string;
-  registerCityCode: string
+  registerCityCode: string;
 }
 
 /**
@@ -34,11 +34,12 @@ const CountryStateCitySelector = ({
   setSelectedCountry,
   setSelectedState,
   setSelectedCity,
-  register, errors,
+  register,
+  errors,
   setValue,
   registerCountryCode,
   registerStateCode,
-  registerCityCode
+  registerCityCode,
 }: CountryStateCitySelectorProps) => {
   const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
   const [isStateDropdownOpen, setIsStateDropdownOpen] = useState(false);
@@ -62,12 +63,12 @@ const CountryStateCitySelector = ({
     setIsCountryDropdownOpen((prev) => !prev);
     setIsStateDropdownOpen(false);
   };
-//State를 선택하는 DropdownMenu 열림 여부 관리
+  //State를 선택하는 DropdownMenu 열림 여부 관리
   const toggleStateDropdown = () => {
     setIsStateDropdownOpen((prev) => !prev);
     setIsCityDropdownOpen(false);
   };
-//City를 선택하는 DropdownMenu 열림 여부 관리
+  //City를 선택하는 DropdownMenu 열림 여부 관리
   const toggleCityDropdown = () => {
     console.log("activated");
     setIsCityDropdownOpen((prev) => !prev);
@@ -107,44 +108,52 @@ const CountryStateCitySelector = ({
       ? setIsCityDropdownVisible(false)
       : setIsCityDropdownVisible(true);
 
-      console.log("residenceCountryCode", selectedCountry);
-      console.log("residenceStateCode", selectedState);
-      console.log("residenceCityCode", selectedCity);
-      setValue(registerCountryCode, selectedCountry);
-      setValue(registerStateCode, selectedState);
-      setValue(registerCityCode, selectedCity);
-  }, [filteredState, filteredCity, selectedCountry, selectedState, selectedCity]);
+    console.log("residenceCountryCode", selectedCountry);
+    console.log("residenceStateCode", selectedState);
+    console.log("residenceCityCode", selectedCity);
+    setValue(registerCountryCode, selectedCountry);
+    setValue(registerStateCode, selectedState);
+    setValue(registerCityCode, selectedCity);
+  }, [
+    filteredState,
+    filteredCity,
+    selectedCountry,
+    selectedState,
+    selectedCity,
+  ]);
 
   return (
     <div className="flex flex-wrap space-x-4">
       {/* Country 버튼 */}
       <div className="relative">
         <button
-        type="button"
+          type="button"
           onClick={toggleCountryDropdown}
           className={`w-48 px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md text-left h-[48px] ${
             errors[registerCountryCode] ? "border-red-500" : ""
           }`}
           {...register(registerCountryCode, { required: true })}
         >
-                  {selectedCountry
+          {selectedCountry
             ? countries.find((country) => country.code === selectedCountry)
                 ?.name || "국가를 선택해주세요"
             : "국가를 선택해주세요"}
         </button>
         {errors[registerCountryCode] && (
-          <span className="text-red-500 text-sm">국가 선택은 필수 항목입니다.</span>
+          <span className="text-red-500 text-sm">
+            국가 선택은 필수 항목입니다.
+          </span>
         )}
         {/* Country Dropdown */}
         {isCountryDropdownOpen && (
           <div className="absolute z-20 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
-            {countries.map(({code, name, emoji}) => (
+            {countries.map(({ code, name, emoji }) => (
               <button
                 key={code}
                 onClick={() => handleCountrySelect(code)}
                 className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition-colors duration-150"
               >
-               {emoji} {name}
+                {emoji} {name}
               </button>
             ))}
           </div>
@@ -155,19 +164,21 @@ const CountryStateCitySelector = ({
       {selectedCountry && isStateDropdownVisible && (
         <div className="relative">
           <button
-          type="button"
+            type="button"
             onClick={toggleStateDropdown}
             className={`w-48 px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md text-left h-[48px] ${
               errors[registerStateCode] ? "border-red-500" : ""
             }`}
-            {...register(registerStateCode, { required: true})}
+            {...register(registerStateCode, { required: true })}
           >
             {selectedState
               ? getStateKoreanName(selectedState)
               : "구/도를 선택해주세요"}
           </button>
           {errors[registerStateCode] && (
-            <span className="text-red-500 text-sm">구/도는 필수항목입니다.</span>
+            <span className="text-red-500 text-sm">
+              구/도는 필수항목입니다.
+            </span>
           )}
           {/* State Dropdown */}
           {isStateDropdownOpen && (
@@ -190,12 +201,12 @@ const CountryStateCitySelector = ({
       {selectedState && isCityDropdownVisible && (
         <div className="relative">
           <button
-          type="button"
+            type="button"
             onClick={toggleCityDropdown}
             className={`w-48 px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md text-left h-[48px] ${
               errors[registerCityCode] ? "border-red-500" : ""
             }`}
-            {...register(registerCityCode, { required:true})}
+            {...register(registerCityCode, { required: true })}
           >
             {selectedCity ? getCityFullName(selectedCity) : "시를 선택해주세요"}
           </button>
