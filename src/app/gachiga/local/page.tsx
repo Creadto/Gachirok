@@ -1,5 +1,5 @@
 "use client";
-import GachigaIcon from "@/core/components/icons/GachigaIcon";
+import GachigaIcon from "@/core/components/icons/GachigaIconPost";
 import { LocationIcon } from "@/core/components/icons/LocationIcon";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";

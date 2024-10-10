@@ -8,6 +8,7 @@ import { useGetMeetings } from "@/core/hooks/useGetMeetings";
 import FilledStarIcon from "@/core/components/icons/FilledStarIcon";
 import EmptyStarIcon from "@/core/components/icons/EmptyStarIcon";
 import { usePostMeetingsBookmark } from "@/core/hooks/usePostMeetings";
+import { CoinIcon } from "@/core/components/icons/CoinIcon";
 
 interface GachigaPostProps {
   countryCode: string;
@@ -98,13 +99,13 @@ const GachigaPost = ({ countryCode }: GachigaPostProps) => {
       <div className="grid grid-cols-5 grid-rows-2 gap-4 pt-5 gap-y-5 ">
         {currentMeetings.map((meeting, index) => (
           <div
-            className="bg-white shadow-xl rounded-lg w-20% h-[280px] relative"
+            className="bg-white shadow-xl rounded-lg w-[300px] h-[340px] relative"
             key={index}
           >
             <img
               src={meeting.meetingPhotoUrl}
               alt="Event Image"
-              className=" rounded-md object-cover w-[256px] h-[155px]"
+              className=" rounded-md object-cover w-[300px] h-[155px]"
             />
             <div className="absolute top-2 left-2 bg-black text-white px-2 py-1 text-xs rounded">
               진행중
@@ -115,10 +116,13 @@ const GachigaPost = ({ countryCode }: GachigaPostProps) => {
               </button>
             </div>
             <button
+              className="w-full"
               onClick={() => router.push(`/gachiga/${meeting.meetingId}`)}
             >
               <div className="p-3 ">
-                <p className="text-sm text-gray-500 pt-1 flex">9/11 16:20</p>
+                <p className="text-xs text-gray-300 pt-1 flex">
+                  {meeting.meetingDate} {meeting.meetingStartTime} <br />
+                </p>
                 <h2 className=" font-bold mt-0.5 text-sm flex">
                   {meeting.title}
                 </h2>
@@ -126,8 +130,9 @@ const GachigaPost = ({ countryCode }: GachigaPostProps) => {
                   <LocationIcon />
                   <p>{meeting.location}</p>
                 </div>
-                <div className="flex justify-between items-center mt-2">
-                  <div className="flex flex-row items-center gap-0.5">
+              </div>
+              <div className="w-full">
+                {/* <div className="flex flex-row items-center gap-0.5">
                     <svg
                       width="20"
                       height="20"
@@ -141,9 +146,26 @@ const GachigaPost = ({ countryCode }: GachigaPostProps) => {
                         strokeWidth="1.5"
                       />
                     </svg>
-                    <span className="text-gray-500">20</span>
+                    <div className="text-gray-500">20</div>
+                  </div> */}
+                <div className="flex items-center w-full absolute bottom-3 left-3 text-start justify-start">
+                    <CoinIcon width={24} height={24} />
+                    <div className="text-slate-300 text-xs">{meeting.coin ? meeting.coin : "무료"}</div>
                   </div>
-                  <span className="text-gray-700">6/10</span>
+                <div className="flex items-center w-full absolute bottom-3 right-3 text-end justify-end">
+                  <div className="flex -space-x-5 hover:space-x-0.5 transition duration-1000">
+                    {meeting.members.map((member, index) => (
+                      <img
+                        key={index}
+                        src={member.profilePhotoUrl} // Assume member object has profileUrl field
+                        alt={member.userId.toString()} // Assume member object has name field
+                        className="w-8 h-8 rounded-full border-2 border-white"
+                      />
+                    ))}
+                  </div>
+                  <div className="text-gray-700 text-xs ml-3">
+                    {meeting.members.length} / {meeting.maxMember}
+                  </div>
                 </div>
               </div>
             </button>

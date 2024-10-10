@@ -20,12 +20,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head />
-      <body>
+      <body className="bg-[#F6F6F6]">
         <ReactQueryProvider>
           <AuthProvider>
             <Topbar />
             <Sidebar />
-            <div className="ml-64 pt-16 p-4">
+            <div className="ml-64 pt-[80px]">
               {children}
             </div>
               {modal}

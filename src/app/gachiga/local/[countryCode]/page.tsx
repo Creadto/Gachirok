@@ -1,7 +1,7 @@
 "use client";
 import ArrowDownIcon from "@/core/components/icons/ArrowDownIcon";
 import ArrowUpIcon from "@/core/components/icons/ArrowUpIcon";
-import GachigaIcon from "@/core/components/icons/GachigaIcon";
+import GachigaIcon from "@/core/components/icons/GachigaIconPost";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { CreateMeetingsButton } from "./_components/CreateMeetingsButton";

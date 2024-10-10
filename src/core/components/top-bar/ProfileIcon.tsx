@@ -1,4 +1,4 @@
- "use client";
+"use client";
 
 import usePostProfileResponse from "@/core/hooks/usePostProfileResponse";
 import { mapProfileResponse } from "@/core/mapper/profile-mapper";
@@ -8,7 +8,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import useUserStore from "../../store/user-store";
-
 
 /**
  * @Description 프로필 아이콘 컴포넌트(User없을 때는 로그인/회원가입, 있을 때는 사진+이름)
@@ -20,31 +19,29 @@ const ProfileIcon = () => {
   const [loading, setLoading] = useState(false);
   const { user, setUser } = useUserStore();
   const { profile } = useProfileStore();
-  
 
   //API로부터 받은 Response를 user store에 저장
-const fetchProfileData = async() => {
-  try{
-    const accessToken = `Bearer ${session?.accessToken}`
-    const result = await usePostProfileResponse(accessToken);
-    const profileData = result.data;
+  const fetchProfileData = async () => {
+    try {
+      const accessToken = `Bearer ${session?.accessToken}`;
+      const result = await usePostProfileResponse(accessToken);
+      const profileData = result.data;
 
-    setUser({
-      ...user,
-      profile : mapProfileResponse(profileData, profile)
-    })
-  } catch(error) {
-    console.error("Failed to catch profile data", error)
-  } finally{
-    setLoading(false);
-  }}
-
-
+      setUser({
+        ...user,
+        profile: mapProfileResponse(profileData, profile),
+      });
+    } catch (error) {
+      console.error("Failed to catch profile data", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   //새로고침되어 store가 initialize되어도 다시 API호출
   useEffect(() => {
-    if(session && status === "authenticated"){
-      fetchProfileData()
+    if (session && status === "authenticated") {
+      fetchProfileData();
     }
   }, [session, status, profile]);
 
@@ -57,15 +54,13 @@ const fetchProfileData = async() => {
     );
   }
 
-  
-
   return (
-    <div>
+    <>
       {/* User의 signedUpUser가 true일 때 */}
       {user?.signedUpUser === true || session?.signedUpUser === true ? (
         <button
           onClick={() => router.push("/profile")}
-          className="flex items-center bg-black text-white rounded-full px-2 py-2 text-sm"
+          className="bg-black text-white rounded-[50px] h-[40px]  flex items-center justify-center w-full box-border"
         >
           {user.profile?.profilePhotoUrl ? (
             <img
@@ -80,13 +75,17 @@ const fetchProfileData = async() => {
           <span className="my-auto ml-2">{session?.user?.name}님</span>
         </button>
       ) : (
-        <Link href="/?modal=signin" as="/signin">
-          <button className="bg-black text-white rounded-full px-4 py-2 text-sm">
+        <div className="bg-black text-white rounded-[50px] h-[40px]  flex items-center justify-center w-full box-border">
+          <Link
+            href="/?modal=signin"
+            as="/signin"
+            className="text-[14px] py-[10px] px-[12px]"
+          >
             로그인/회원가입
-          </button>
-        </Link>
+          </Link>
+        </div>
       )}
-    </div>
+    </>
   );
 };
 
