@@ -60,7 +60,7 @@ const Sidebar = () => {
         pathname.startsWith("/bulletin-board") && !pathname.includes("/local"),
       localNews: pathname.includes("/news/local"),
       localAnnouncement: pathname.includes("/announcement/local"),
-      localGachiga: pathname.includes("/gachiga"),
+      localGachiga: pathname.includes("/gachiga/="),
       localBulletinBoard: pathname.startsWith("/bulletin-board/local/"),
       localRealEstate: pathname.includes("/real-estate/local"),
       localFleaMarket: pathname.includes("/flea-market/local"),

@@ -68,7 +68,7 @@ export default function Topbar() {
           </div>
         </div>
         <div className="flex absolute right-[50px] items-center justify-center h-[40px] space-x-[30px]">
-          <div className="container flex my-[5px] space-x-[20px] h-[30px]">
+          <div className="container flex my-[5px] space-x-[20px] h-[30px] relative">
             <div className="relative m-0 h-full">
               <CreatePostButton onClick={toggleModal} isActive={active} />
             </div>
@@ -97,7 +97,10 @@ export default function Topbar() {
             {/* 프로필 아이콘 */}
           </div>
           <ProfileIcon />
+
         </div>
+        
+        
       </div>
 
       {isEditModalOpen && (
