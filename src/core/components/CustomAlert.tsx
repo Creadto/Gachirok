@@ -3,13 +3,17 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 
+/**
+ * @Description 알림을 띄우는 모달창
+ * @author 김영서
+ **/
 interface CustomAlertProps {
   message: string;
   onClose: () => void;
   route: string
 }
 
-const CustomAlert: React.FC<CustomAlertProps> = ({ message, onClose, route }) => {
+const CustomAlert: React.FC<CustomAlertProps> = ({ message, route }) => {
   const router = useRouter();
 
   const handleConfirm = () => {

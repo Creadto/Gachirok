@@ -1,5 +1,33 @@
+import { PurchaseProfileResponse } from "@/app/profile/_types/PurchaseProfileResponse";
 import { create } from "zustand";
-import { Profile } from "../types/Profile";
+
+
+export interface Profile {
+  male: boolean;
+  traveler: boolean;
+  age: number;
+  residenceYear: number;
+  hostValue: number;
+  guestValue: number;
+  knowledgeValue: number;
+  profilePhotoUrl: string;
+  photo: File | null; //MultipartFile
+  nickname: string;
+  residenceCountryCode: string;
+  residenceStateCode: string;
+  residenceCityCode: string;
+  introduction: string;
+  birth: string;
+  interests: string[];
+  expertises: string[];
+  blockUser: boolean;
+  guestMeetingOpen: boolean;
+  answerCount: number;
+  answerPoint: number;
+  answerSpeed: number;
+  purchaseProfile: PurchaseProfileResponse  | null;
+}
+
 
 interface profileState {
   profile: Profile;
@@ -8,7 +36,10 @@ interface profileState {
 interface profileActions {
   setProfile: (profile: Profile) => void;
 }
-
+/**
+ * @Description Profile에 대한 정보를 저장하는 전역 store
+ * @author 김영서
+ **/
 const useProfileStore = create<profileState & profileActions>((set) => ({
   profile: {
     male: true,
