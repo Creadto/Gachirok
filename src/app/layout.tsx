@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { AuthProvider } from "./auth/provider";
 import ReactQueryProvider from "@/core/utils/reactQueryProvider";
+import {MSWComponent} from "@/app/_component/MSWComponent";
 import Topbar from "@/core/components/top-bar/Topbar";
 
 export const metadata: Metadata = {
@@ -19,8 +20,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head />
-      <body>
+      <MSWComponent/>
+      <body className="bg-[#F6F6F6]">
         <ReactQueryProvider>
           <AuthProvider>
             <Topbar />

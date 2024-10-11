@@ -391,7 +391,7 @@ export const StateList: StateListProps[] = [
     name: "Wyoming",
     countryCode: "US",
     koreanName: "와이오밍",
-    
+
   },
   {
     id: 56,
@@ -490,7 +490,7 @@ export const StateList: StateListProps[] = [
     name: "All",
     countryCode: "JP",
     koreanName: "전체"
-    
+
   },
   {
     id: 70,
@@ -1208,7 +1208,7 @@ export const StateList: StateListProps[] = [
     name: "Edinburgh",
     countryCode: "GB",
     koreanName: "에든버러"
-    
+
   },
   {
     id: 171,
