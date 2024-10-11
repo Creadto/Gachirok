@@ -26,6 +26,7 @@ import CountrySelector from "./CountrySelector";
 import { useEffect, useState } from "react";
 
 import SidebarItem from "./SidebarItem"
+import { CountryList } from "@/core/data/CountryList";
 /**
  * @Description 왼쪽 Navigation Bar
  * @author 김영서
@@ -48,6 +49,7 @@ const Sidebar = () => {
     localRecruit: false,
     localShop: false,
   });
+  const countryList = CountryList;
 
   useEffect(() => {
     setActiveItems({
@@ -60,7 +62,7 @@ const Sidebar = () => {
         pathname.startsWith("/bulletin-board") && !pathname.includes("/local"),
       localNews: pathname.includes("/news/local"),
       localAnnouncement: pathname.includes("/announcement/local"),
-      localGachiga: pathname.includes("/gachiga/="),
+      localGachiga: pathname.includes("/gachiga/"),
       localBulletinBoard: pathname.startsWith("/bulletin-board/local/"),
       localRealEstate: pathname.includes("/real-estate/local"),
       localFleaMarket: pathname.includes("/flea-market/local"),
@@ -70,7 +72,7 @@ const Sidebar = () => {
   }, [router, pathname]);
 
   return (
-    <aside className="fixed top-[100px] left-[20px] h-[879px] w-[230px] bg-white rounded-[15px]">
+    <aside className="fixed top-[100px] left-[20px] h-[845 px] w-[230px] bg-white rounded-[15px]">
       {/* 국가선택 */}
       <div className="w-full  h-[82px] mt-[5px] relative shadow-sm">
         <div className="flex flex-col w-[190px] h-[47px] absolute top-[15px] left-[20px]">
@@ -78,7 +80,7 @@ const Sidebar = () => {
             현재국가
           </span>
           <div className="mt-[5px]  h-[24px] w-full flex flex-row space-x-[10px]">
-            <div className="w-[36px] h-full">img</div>
+            <div className="w-[36px] h-full">{country ? countryList.find((countries) =>  countries.code === country)?.icon : ""}</div>
             <div className=" w-full h-full relative">
               <CountrySelector />
             </div>
@@ -166,7 +168,7 @@ const Sidebar = () => {
         Local
       </div>
 
-      <div className="w-full h-[399px] shadow-sm">
+      <div className="w-full h-[365px] shadow-sm">
         <div className=" h-[132px]">
           {/* News */}
           <SidebarItem
@@ -241,6 +243,8 @@ const Sidebar = () => {
           />
         </div>
       </div>
+      <span className="flex mt-[15px] mx-[20px] whitespace-nowrap text-[11px] box-content mb-[20px] text-[#A3A3A3]">© 2024 Creadto.
+      All rights reserved.</span>
     </aside>
   );
 };

@@ -5,10 +5,10 @@ import { countryStore } from "@/core/store/country-store";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import ArrowDownIcon from "../icons/ArrowDownIcon";
-import ChatIcon from "../icons/ChatIcon";
-import LanguageIcon from "../icons/LanguageIcon";
-import NotificationIcon from "../icons/NotificationIcon";
-import SearchIcon from "../icons/SearchIcon";
+import ChatIcon from "../icons/top-bar/ChatIcon";
+import LanguageIcon from "../icons/top-bar/LanguageIcon";
+import NotificationIcon from "../icons/top-bar/NotificationIcon";
+import SearchIcon from "../icons/top-bar/SearchIcon";
 import CreatePostButton from "./CreatePostButton";
 import CreatePostModal from "./CreatePostModal";
 import ProfileIcon from "./ProfileIcon";
@@ -67,7 +67,7 @@ export default function Topbar() {
             />
           </div>
         </div>
-        <div className="flex absolute right-[50px] items-center justify-center h-[40px] space-x-[30px]">
+        <div className="flex absolute right-[50px] items-center justify-center h-[40px] gap-x-[30px] ">
           <div className="container flex my-[5px] space-x-[20px] h-[30px] relative">
             <div className="relative m-0 h-full">
               <CreatePostButton onClick={toggleModal} isActive={active} />
