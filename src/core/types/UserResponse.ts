@@ -1,4 +1,5 @@
-import { Profile } from "./Profile";
+import { Profile } from "../store/profile-store";
+
 
 export interface UserResponse{
     userId: string,
