@@ -42,11 +42,10 @@ export default function SectionNews({section}:{section:string}){
             {sectionNews.map((newsItem) => (
                 <div key={newsItem.id}>
                     <News
-                        key={newsItem.title}
+                        id={newsItem.id}
                         title={newsItem.title}
                         description={newsItem.description}
                         date={newsItem.date}
-                        id={newsItem.id}
                     />
                     <hr/>
                 </div>

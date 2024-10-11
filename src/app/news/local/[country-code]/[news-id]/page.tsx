@@ -1,14 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import LikeButton from "@/app/news/local/[country-code]/[news-id]/_components/LikeButton";
-import HateButton from "@/app/news/local/[country-code]/[news-id]/_components/HateButton";
-import ReplyInput from "@/app/news/local/[country-code]/[news-id]/_components/ReplyInput";
-import Reply from "@/app/news/local/[country-code]/[news-id]/_components/Reply";
-import ToBeforeNews from "@/app/news/local/[country-code]/[news-id]/_components/ToBeforeNews";
-import ToNextNews from "@/app/news/local/[country-code]/[news-id]/_components/ToNextNews";
 import {useEffect, useState} from "react";
 import axios from "axios";
+import LikeButton from "@/core/components/LikeButton";
+import HateButton from "@/core/components/HateButton";
+import ToBeforeItem from "@/core/components/ToBeforeItem";
+import Reply from "@/core/components/Reply";
 
 interface NewsItem{
     title: string;
@@ -44,7 +42,7 @@ export default function LocalNewsPage({params} : {params : {'news-id': string}})
         const fetchNewsData = async()=>{
             try{
                 const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/news/${newsId}`);
-                setNewsData(response.data.newsData);
+                setNewsData(response.data.news);
             }
             catch(err){
                 console.log(err);
@@ -97,7 +95,7 @@ export default function LocalNewsPage({params} : {params : {'news-id': string}})
                     </div>
                     {/* 이전 뉴스 및 다음 뉴스로 이동하는 버튼 */}
                     <div>
-                        <ToBeforeNews/>
+                        <ToBeforeItem basePath="/news/local" apiPath="/api/news" itemType="news"/>
                         <hr/>
                         <ToNextNews/>
                     </div>

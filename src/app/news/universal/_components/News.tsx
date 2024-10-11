@@ -19,18 +19,18 @@ interface NewsProps{
  * @Author 민동현
  */
 
-export default function News({title, description, date, id} : NewsProps){
+export default function News(params : NewsProps){
 
     const router = useRouter();
 
     const handleClick = ()=>{
-        router.push(`/news/universal/${id}`)
+        router.push(`/news/universal/${params.id}`)
     }
     return(
         <div className="cursor-pointer" onClick={handleClick}>
-            <h3 className={`text-lg font-bold truncate whitespace-nowrap overflow-hidden`}>{title}</h3>
-            <p className={`text-sm truncate whitespace-nowrap overflow-hidden`}>{description}</p>
-            <span className="text-xs text-gray-500">{date}</span>
+            <h3 className={`text-lg font-bold truncate whitespace-nowrap overflow-hidden`}>{params.title}</h3>
+            <p className={`text-sm truncate whitespace-nowrap overflow-hidden`}>{params.description}</p>
+            <span className="text-xs text-gray-500">{params.date}</span>
         </div>
     );
 }

@@ -43,7 +43,11 @@ const Sidebar = () => {
               </Link>
 
               {/* Universal - Accouncement */}
-              <Link href="/universal/announcement">
+              <Link
+                  href={{
+                    pathname: "/announcement/universal/section/1",
+                    query:{page:'1',limit:'8',sort:'newest'},
+                  }}>
                 <div className="flex items-center space-x-2 cursor-pointer">
                   <span>📢</span>
                   <span>Announcement</span>
@@ -71,7 +75,7 @@ const Sidebar = () => {
               </Link>
 
               {/* Local - Accouncement */}
-              <Link href="/local/announcement">
+              <Link href={`/announcement/local/${country}`}>
                 <div className="flex items-center space-x-2 cursor-pointer">
                   <span>📢</span>
                   <span>Announcement</span>
