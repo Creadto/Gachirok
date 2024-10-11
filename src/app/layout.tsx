@@ -1,10 +1,10 @@
 import Sidebar from "@/core/components/side-bar/Sidebar";
 import type { Metadata } from "next";
 import "./globals.css";
-import Topbar from "@/core/components/Topbar";
 import { AuthProvider } from "./auth/provider";
 import ReactQueryProvider from "@/core/utils/reactQueryProvider";
 import {MSWComponent} from "@/app/_component/MSWComponent";
+import Topbar from "@/core/components/top-bar/Topbar";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -20,14 +20,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head />
-      <body>
       <MSWComponent/>
+      <body className="bg-[#F6F6F6]">
         <ReactQueryProvider>
           <AuthProvider>
             <Topbar />
             <Sidebar />
-            <div className="ml-64 pt-16 p-4">
+            <div className="ml-64 pt-[80px]">
               {children}
             </div>
               {modal}

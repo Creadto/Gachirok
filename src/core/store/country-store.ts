@@ -14,15 +14,10 @@ interface countryStore{
  * @author 김영서
  **/
 export const countryStore = create<countryStore>()(
-    persist(
         (set)=>({
             country: "KR", //hompage의 기본값 URL은 KR
             countryName: "대한민국", //homepage의 현재 국가 기본값은 대한민국
             //국가코드는 대문자로 저장, 국가코드에 일치하는 국가 이름을 countryName으로 저장
             setCountry: (country)=>set({country: country.toUpperCase(), countryName: getCountryName(country)}),
         }),
-        {
-            name: 'country-storage',
-        }
-    )
 );
