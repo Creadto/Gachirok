@@ -305,7 +305,7 @@ export default function CreateProfilePage() {
           />
 
           {/* 프로필 성정 완료 버튼 */}
-          <div className="w-full flex items-center justify-center">
+          <div className="w-full flex items-center justify-center mb-[150px]">
             <input
               type="submit"
               className="mt-[80px] w-[300px] h-[60px] bg-[#E62A2F] text-white rounded-lg font-semibold"

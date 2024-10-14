@@ -7,6 +7,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { AuthProvider } from "./auth/provider";
 import "./globals.css";
+import { Footer } from "@/core/components/footer/Footer";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -42,6 +43,7 @@ export default function RootLayout({
               {children}
             </div>
               {modal}
+              <Footer />
 
           </AuthProvider>
         </ReactQueryProvider>
