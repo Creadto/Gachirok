@@ -1,23 +1,33 @@
 "use client";
 
-import {useRouter} from "next/navigation";
+import {useParams, useRouter} from "next/navigation";
 import {AnCategoryToNumber} from "@/app/announcement/utils/Category";
 
 interface AnnouncementCategoryButtonProps{
     section:string;
     currentSection: string;
+    regionType : string;
 }
 
-export default function AnnouncementCategoryButton(params: AnnouncementCategoryButtonProps){
+export default function AnnouncementCategoryButton(props: AnnouncementCategoryButtonProps){
 
     const router = useRouter();
+    const params = useParams();
 
-    const category = params.section;
+    const countryCode = params['country-code'];
+    const category = props.section;
     const categoryId = AnCategoryToNumber[category];
-    const currentCategory = params.currentSection;
+    const currentCategory = props.currentSection;
+
+
 
     const onClickHandler = () => {
-        router.push(`/announcement/universal/section/${categoryId}?page=1&limit=8&sort=newest`);
+        if(props.regionType === 'local'){
+            router.push(`/announcement/local/${countryCode}/section/${categoryId}?page=1&limit=8&sort=newest`);
+        }
+        else{
+            router.push(`/announcement/universal/section/${categoryId}?page=1&limit=8&sort=newest`);
+        }
     }
     return (
         <div className="pr-2">

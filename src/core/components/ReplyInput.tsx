@@ -2,20 +2,20 @@
 
 import {useState} from "react";
 import axios from "axios";
-import {useParams} from "next/navigation";
+
+interface ReplyInputProps {
+    type:string;
+    parentId:string;
+}
 
 /**
  * @Description 댓글 입력 컴포넌트
  * @Author 민동현
  */
-
-export default function ReplyInput() {
+export default function ReplyInput({type,parentId}: ReplyInputProps) {
 
     const [replyContent, setReplyContent] = useState("");
-    const params = useParams();
-    const newsId = params['news-id'];
-
-
+    // const newsId = params['news-id'];
 
     const onClick = async(e:React.MouseEvent<HTMLElement,MouseEvent>)=>{
         e.preventDefault();
@@ -25,7 +25,7 @@ export default function ReplyInput() {
             return;
         }
         try{
-            const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/news/${newsId}/reply`,{
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/${type}/${parentId}/reply`,{
                 id: 31,
                 content:"asdasdasdas",
                 author:"mindong"
@@ -37,8 +37,6 @@ export default function ReplyInput() {
         }
 
     }
-
-
     return(
         <div>
             <form className="flex flex-row items-center">

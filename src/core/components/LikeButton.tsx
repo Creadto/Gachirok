@@ -12,14 +12,16 @@ export default function LikeButton({likeCount}:{likeCount: number}){
 
 
     return(
-        <div className="px-6">
+        <div
+            className="px-4 border rounded-2xl flex flex-col items-center hover:bg-blue-100 transition"
+            onClick={onClick}>
             <button
-                onClick={onClick}
-                className="rounded-full bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 transition"
+                className="rounded-full px-4 py-2"
             >
                 👍
             </button>
-            <p className="font-bold">추천 {like}</p>
+            <p className="font-bold text-sm text-blue-400">추천해요!</p>
+            <p className="font-bold"> {like}</p>
         </div>
     );
 }

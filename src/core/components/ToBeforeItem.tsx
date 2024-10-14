@@ -13,8 +13,6 @@ interface Item {
 }
 
 interface ToBeforeItemProps {
-    basePath: string; // 예: "/news/universal" 또는 "/announcement"
-    apiPath: string; // 예: "/api/news" 또는 "/api/announcement"
     itemType: string; // 예: "news" 또는 "announcement"
     regionType: string // 예: "Universal" 또는 "Local"
 }
@@ -24,7 +22,7 @@ interface ToBeforeItemProps {
  * @constructor
  */
 
-export default function ToBeforeItem({ basePath, apiPath, itemType, regionType }: ToBeforeItemProps) {
+export default function ToBeforeItem({itemType, regionType }: ToBeforeItemProps) {
     const params = useParams();
     const router = useRouter();
     const countryCode = params['country-code']; // Local이면 존재, Universal이면 undefined
@@ -32,22 +30,13 @@ export default function ToBeforeItem({ basePath, apiPath, itemType, regionType }
     const beforeId = currentId - 1;
     const [beforeItem, setBeforeItem] = useState<Item | null>(null);
 
-    if(regionType === "Local"){
-
-    }
-
-    else{   // Universal 인 경우
-
-    }
-
     const clickToBeforeItem = () => {
         if (currentId > 1) {
-            const newId = currentId - 1;
-            if(regionType === "Local"){
-                router.push(`${basePath}/${countryCode}/${newId}`);
+            if(regionType === "local"){
+                router.push(`/${itemType}/${regionType}/${countryCode}/${beforeId}`); //
             }
             else{
-                router.push(`${basePath}/${newId}`);
+                router.push(`/${itemType}/${regionType}/${beforeId}`);
             }
         }
     };
@@ -55,19 +44,27 @@ export default function ToBeforeItem({ basePath, apiPath, itemType, regionType }
     useEffect(() => {
         const fetchItem = async () => {
             try {
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}${apiPath}/${beforeId}`);
-                setBeforeItem(response.data.news);
+                if(regionType === "local"){ // local api 구상중
+                    const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/${itemType}/${beforeId}`);
+                    setBeforeItem(response.data.data);
+                }
+                else{
+                    const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/${itemType}/${beforeId}`);
+                    setBeforeItem(response.data.data);
+                }
             } catch (err) {
                 console.log(err);
             }
         };
         fetchItem();
-    }, [beforeId, apiPath, itemType]);
+    }, [beforeId, itemType]);
 
     return (
-        <div className="flex flex-row py-4 border-b cursor-pointer" onClick={clickToBeforeItem}>
+        <div className="flex flex-row items-center py-4 border-b cursor-pointer hover:bg-blue-100 hover:text-white"
+             onClick={clickToBeforeItem}>
             <p className="pr-32">이전으로</p>
-            {beforeItem ? <p>{beforeItem.title}</p> : <p>없음</p>}
+            <p className="text-xs border text-red-500 bg-red-100 ">{beforeItem?.category}</p>
+            {beforeItem ? <p className="pl-1">{beforeItem.title}</p> : <p>없음</p>}
         </div>
     );
 }

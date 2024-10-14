@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { AnCategoryToNumber } from "@/app/announcement/utils/Category";
 import axios from "axios";
-import Announcement from "@/app/announcement/universal/section/_components/Announcement";
-import { useRouter, useSearchParams } from "next/navigation";
+import {useParams, useRouter, useSearchParams} from "next/navigation";
+import Announcement from "@/app/announcement/_components/Announcement";
 
 interface AnnouncementItem {
     id: number;
@@ -23,18 +23,26 @@ interface SectionAnnouncementProps {
     page: string;
     limit: string;
     sort: string;
+    regionType:string;
 }
 
-export default function SectionAnnouncement(params: SectionAnnouncementProps) {
-    const sectionId = AnCategoryToNumber[params.section];
+export default function SectionAnnouncement(props: SectionAnnouncementProps) {
+
+
+    const router = useRouter();
+    const params = useParams();
+    const searchParams = useSearchParams();
+
+
+    const sectionId = AnCategoryToNumber[props.section];
 
     const [sectionAnnouncement, setSectionAnnouncement] = useState<AnnouncementItem[]>([]);
-    const [currentPage, setCurrentPage] = useState(parseInt(params.page));
+    const [currentPage, setCurrentPage] = useState(parseInt(props.page));
     const [totalPage, setTotalPage] = useState(0);
     const [totalLength, setTotalLength] = useState(0);
     const [sortOrder, setSortOrder] = useState("newest"); // 기본 정렬: 신규순
-    const router = useRouter();
-    const searchParams = useSearchParams();
+
+    const countryCode = params['country-code']; // local 일 경우
 
     const maxPageGroupSize = 5; // 페이지 그룹에 보여줄 페이지 개수
 
@@ -44,44 +52,74 @@ export default function SectionAnnouncement(params: SectionAnnouncementProps) {
     const goToPreviousPage = () => {
         const newPage = Math.max(currentPage - 1, 1);
         setCurrentPage(newPage);
-        router.push(`/announcement/universal/section/${sectionId}?page=${newPage}&limit=${params.limit}&sort=${params.sort}`);
+        if(props.regionType === 'local'){
+            router.push(`/announcement/local/${countryCode}/section/${sectionId}?page=${newPage}&limit=${props.limit}&sort=${props.sort}`);
+        }
+        else{
+            router.push(`/announcement/universal/section/${sectionId}?page=${newPage}&limit=${props.limit}&sort=${props.sort}`);
+        }
     };
 
     const goToNextPage = () => {
         const newPage = Math.min(currentPage + 1, totalPage);
         setCurrentPage(newPage);
-        router.push(`/announcement/universal/section/${sectionId}?page=${newPage}&limit=${params.limit}&sort=${params.sort}`);
+        if(props.regionType === 'local'){
+            router.push(`/announcement/local/${countryCode}/section/${sectionId}?page=${newPage}&limit=${props.limit}&sort=${props.sort}`);
+        }
+        else{
+            router.push(`/announcement/universal/section/${sectionId}?page=${newPage}&limit=${props.limit}&sort=${props.sort}`);
+        }
     };
 
-    const goToPage = (page: number) => {
+    const goToPage = (page: number) => { // 클릭 시 해당 숫자 페이지로 이동
         setCurrentPage(page);
-        router.push(`/announcement/universal/section/${sectionId}?page=${page}&limit=${params.limit}&sort=${params.sort}`);
+        if(props.regionType === 'local'){
+            router.push(`/announcement/local/${countryCode}/section/${sectionId}?page=${page}&limit=${props.limit}&sort=${props.sort}`);
+        }
+        else{
+            router.push(`/announcement/universal/section/${sectionId}?page=${page}&limit=${props.limit}&sort=${props.sort}`);
+        }
     };
 
     // 이전 페이지 그룹으로 이동
     const goToPreviousGroupPage = () => {
         const newPage = Math.max(start - 1, 1);
         setCurrentPage(newPage);
-        router.push(`/announcement/universal/section/${sectionId}?page=${newPage}&limit=${params.limit}&sort=${params.sort}`);
+        if(props.regionType === 'local'){
+            router.push(`/announcement/local/${countryCode}/section/${sectionId}?page=${newPage}&limit=${props.limit}&sort=${props.sort}`);
+        }
+        else{
+            router.push(`/announcement/universal/section/${sectionId}?page=${newPage}&limit=${props.limit}&sort=${props.sort}`);
+        }
     };
 
     // 다음 페이지 그룹으로 이동
     const goToNextGroupPage = () => {
         const newPage = Math.min(end + 1, totalPage);
         setCurrentPage(newPage);
-        router.push(`/announcement/universal/section/${sectionId}?page=${newPage}&limit=${params.limit}&sort=${params.sort}`);
+        if(props.regionType === 'local'){
+            router.push(`/announcement/local/${countryCode}/section/${sectionId}?page=${newPage}&limit=${props.limit}&sort=${props.sort}`);
+        }
+        else{
+            router.push(`/announcement/universal/section/${sectionId}?page=${newPage}&limit=${props.limit}&sort=${props.sort}`);
+        }
     };
 
     const handleSortChange=(e:React.ChangeEvent<HTMLSelectElement>)=>{
         const newPage = currentPage
         setSortOrder(e.target.value);
-        router.push(`/announcement/universal/section/${sectionId}?page=${newPage}&limit=${params.limit}&sort=${e.target.value}`);
+        if(props.regionType === 'local'){
+            router.push(`/announcement/local/${countryCode}/section/${sectionId}?page=${newPage}&limit=${props.limit}&sort=${e.target.value}`);
+        }
+        else{
+            router.push(`/announcement/universal/section/${sectionId}?page=${newPage}&limit=${props.limit}&sort=${e.target.value}`);
+        }
     }
 
     const fetchAnnouncement = async () => {
         try {
             const response = await axios.get(
-                `${process.env.NEXT_PUBLIC_BASE_URL}/api/announcements/section/${sectionId}?page=${params.page}&limit=${params.limit}&sort=${params.sort}`
+                `${process.env.NEXT_PUBLIC_BASE_URL}/api/announcements/section/${sectionId}?page=${props.page}&limit=${props.limit}&sort=${props.sort}`
             );
             setSectionAnnouncement(response.data.announcementData);
             setTotalPage(response.data.totalPages);
@@ -123,6 +161,7 @@ export default function SectionAnnouncement(params: SectionAnnouncementProps) {
                             likes={announcement.likes}
                             popular={announcement.popular}
                             comments={announcement.comments}
+                            regionType={props.regionType}
                         />
                     </div>
                 ))}

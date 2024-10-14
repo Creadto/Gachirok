@@ -7,6 +7,8 @@ import LikeButton from "@/core/components/LikeButton";
 import HateButton from "@/core/components/HateButton";
 import ToBeforeItem from "@/core/components/ToBeforeItem";
 import Reply from "@/core/components/Reply";
+import ReplyInput from "@/core/components/ReplyInput";
+import ToNextItem from "@/core/components/ToNextItem";
 
 interface NewsItem{
     title: string;
@@ -42,7 +44,7 @@ export default function LocalNewsPage({params} : {params : {'news-id': string}})
         const fetchNewsData = async()=>{
             try{
                 const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/news/${newsId}`);
-                setNewsData(response.data.news);
+                setNewsData(response.data.data);
             }
             catch(err){
                 console.log(err);
@@ -66,7 +68,7 @@ export default function LocalNewsPage({params} : {params : {'news-id': string}})
             {newsData ? (
                 <section className="px-96 py-5">
                     {/* 뉴스 카테고리와 제목 표시 */}
-                    <h4 className="text-xs text-gray-500">News &gt; {newsData.category}</h4>
+                    <h4 className="text-xs text-gray-500">Local &gt; News &gt; {newsData.category}</h4>
                     <div className="py-5">
                         <h1 className="font-bold text-3xl">{newsData.title}</h1>
                         <p className="text-xs text-gray-500 py-2">{newsData.date} | 조회3 추천3 댓글{repliesData.length}</p>
@@ -90,14 +92,14 @@ export default function LocalNewsPage({params} : {params : {'news-id': string}})
                     <div className="py-4">
                         {/* 댓글 수 및 댓글 입력 */}
                         <p className="font-bold py-4">댓글 {repliesData.length}</p>
-                        <ReplyInput/>
+                        <ReplyInput type="news" parentId={newsId}/>
                         <Reply reply={repliesData}/>
                     </div>
                     {/* 이전 뉴스 및 다음 뉴스로 이동하는 버튼 */}
                     <div>
-                        <ToBeforeItem basePath="/news/local" apiPath="/api/news" itemType="news"/>
+                        <ToBeforeItem itemType="news" regionType="local"/>
                         <hr/>
-                        <ToNextNews/>
+                        <ToNextItem itemType="news" regionType="local"/>
                     </div>
                 </section>
             ) : (

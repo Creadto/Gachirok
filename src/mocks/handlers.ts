@@ -34,10 +34,10 @@ export const handlers = [
     */
     http.get('/api/news/:newsId',({params})=>{
 
-        const news = mockNewsData.find((news)=>news.id === parseInt(params.newsId,10))
+        const data = mockNewsData.find((news)=>news.id === parseInt(params.newsId,10))
 
         return HttpResponse.json({
-            news
+            data
         })
     }),
     /*
@@ -162,10 +162,10 @@ export const handlers = [
     */
     http.get('/api/announcement/:announcementId',({params})=>{
 
-        const announcement = mockAnnouncementData.find((news)=>news.id === parseInt(params.announcementId,10))
+        const data = mockAnnouncementData.find((news)=>news.id === parseInt(params.announcementId,10))
 
         return HttpResponse.json({
-            announcement
+            data
         })
     }),
     /*
@@ -175,6 +175,12 @@ export const handlers = [
         const repliesData = mockReplyData.filter((reply)=> reply.id === parseInt(params.announcementId,10));
         return HttpResponse.json({
             repliesData
+        })
+    }),
+    http.post('/api/announcement/:announcementId/reply',({params,request})=>{
+
+        return HttpResponse.json({
+            message: "댓글 등록 성공~"
         })
     }),
 
