@@ -2,21 +2,30 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import {
+  interestsOptions,
   interestsOptions3,
-  interestsOptions4
+  interestsOptions4,
 } from "../types/InterestsAndExpertisesOptions";
+import {
+  InterestSelectIcon,
+  InterestUnselectIcon,
+} from "./icons/create-profile/InterestSelectIcon";
 
 interface InterestsSelectorProps {
   register: UseFormRegister<any>;
   errors: FieldErrors;
-  setValue: UseFormSetValue<any>
+  setValue: UseFormSetValue<any>;
 }
 
 /**
  * @Description 여행지 관심분야를 선택할 수 있는 버튼 모음
  * @author 김영서
  **/
-const InterestsSelector = ({ register, errors, setValue }: InterestsSelectorProps) => {
+const InterestsSelector = ({
+  register,
+  errors,
+  setValue,
+}: InterestsSelectorProps) => {
   // 선택된 관심 분야를 관리하는 상태
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
 
@@ -29,77 +38,63 @@ const InterestsSelector = ({ register, errors, setValue }: InterestsSelectorProp
 
       // react-hook-form의 상태를 배열로 업데이트
       setValue("interests", newSelectedInterests, {
-        shouldValidate: true
+        shouldValidate: true,
       });
       return newSelectedInterests;
     });
   };
 
   useEffect(() => {
-    console.log("interests", selectedInterests)
-  }, [selectedInterests])
+    console.log("interests", selectedInterests);
+  }, [selectedInterests]);
 
-  const options3 = interestsOptions3;
-  const options4 = interestsOptions4;
+  const options = interestsOptions;
 
   return (
     <div className="relative block text-left w-full">
       <div className="flex flex-row flex-1">
-        <div className="flex flex-col flex-1 w-full pt-1"  {...register("interests", { required: true })}>
-          <div className="flex flex-row gap-x-2">
-            {options3.map((option, index) => (
+        <div
+          className="flex flex-col flex-1 w-full mt-[10px]"
+          {...register("interests", { required: true })}
+        >
+          <div className="flex flex-wrap gap-x-[11px] w-full h-[296px] justify-between ">
+            {options.map((option, index) => (
               <button
-              
                 type="button"
                 key={index}
                 onClick={() => handleInterestClick(option.value)}
-                className={`w-[33%] block border border-gray-300 rounded-md px-2 py-4 mb-4 text-xs ${
+                className={`w-[280px] h-[92px] block border rounded-lg relative ${
                   selectedInterests.includes(option.value)
-                    ? "bg-pink-500 text-white"
-                    : ""
+                    ? "border-[#E62A2F] border-2"
+                    : "border-[#EEEEEE] "
                 }`}
               >
-                <div className="flex flex-row">
+                <div className="flex flex-row gap-x-[3px] ml-[15px] mt-[18px] items-center">
                   <Image
                     src={option.icon}
                     alt={option.value}
                     width={30}
                     height={30}
+                    className="w-[16px] h-[16px] "
                   />
-                  <span className="flex-1 justify-center items-center text-center text-base mt-0.5">
+                  <span
+                    className={`justify-start items-center text-center font-semibold text-[15px] ${
+                      selectedInterests.includes(option.value)
+                        ? "text-[#E62A2F] "
+                        : "text-black "
+                    } `}
+                  >
                     {option.label}
                   </span>
+                  <div className="absolute top-[15px] right-[15px]">
+                    {selectedInterests.includes(option.value) ? (
+                      <InterestSelectIcon />
+                    ) : (
+                      <InterestUnselectIcon />
+                    )}
+                  </div>
                 </div>
-                <p className="text-sm text-slate-300 text-start mt-2">
-                  {option.description}
-                </p>
-              </button>
-            ))}
-          </div>
-          <div className="flex flex-row gap-x-2">
-            {options4.map((option, index) => (
-              <button
-                type="button"
-                key={index}
-                onClick={() => handleInterestClick(option.value)}
-                className={`w-[25%] block border border-gray-300 rounded-md px-2 py-4 mb-4 text-xs ${
-                  selectedInterests.includes(option.value)
-                    ? "bg-pink-500 text-white"
-                    : ""
-                }`}
-              >
-                <div className="flex flex-row">
-                  <Image
-                    src={option.icon}
-                    alt={option.value}
-                    width={30}
-                    height={30}
-                  />
-                  <span className="flex-1 justify-center items-center text-center text-base mt-0.5">
-                    {option.label}
-                  </span>
-                </div>
-                <p className="text-sm text-slate-300 text-start mt-2">
+                <p className=" mx-[15px] mb-[15px] mt-[8px] text-xs text-[#808080] text-start">
                   {option.description}
                 </p>
               </button>

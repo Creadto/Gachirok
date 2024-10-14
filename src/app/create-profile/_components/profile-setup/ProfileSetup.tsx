@@ -4,9 +4,11 @@ import { ProfileCreateRequest } from "@/app/profile/_types/ProfileCreateRequest"
 import CustomAlert from "@/core/components/CustomAlert";
 import ExpertisesSelector from "@/core/components/ExpertisesSelector";
 import InterestSelector from "@/core/components/InterestsSelector";
+import SingleDateSelector from "@/core/components/SingleDateSelector";
 import usePostProfileCreateRequest from "@/core/hooks/usePostProfileCreateRequest";
 import { mapProfileResponse } from "@/core/mapper/profile-mapper";
 import useProfileStore, { Profile } from "@/core/store/profile-store";
+import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -17,7 +19,6 @@ import IntroductionForm from "./IntroductionForm";
 import NicknameForm from "./NicknameForm";
 import ProfileImageForm from "./ProfileImageForm";
 import TwoButtonForm from "./TwoButtonForm";
-import SingleDateSelector from "@/core/components/SingleDateSelector";
 
 /**
  * @Description 프로필 신규 생성의 메인 페이지
@@ -32,20 +33,25 @@ export default function CreateProfilePage() {
     handleSubmit,
     setValue,
     clearErrors,
+    watch,
     formState: { errors },
   } = useForm<ProfileCreateRequest>();
 
   //submit시 실행
   const onValid = async (data: ProfileCreateRequest) => {
-
+    if (nicknameAvailable === null) {
+      alert("닉네임 중복검사를 해주세요");
+    } else if (nicknameAvailable === false) {
+      alert("사용가능한 닉네임을 입력해주세요");
+    }
     console.log(data);
 
-    try{
+    try {
       setLoading(true);
-      const accessToken = `Bearer ${session?.accessToken}`
+      const accessToken = `Bearer ${session?.accessToken}`;
       const formData = appendProfileCreateRequestFormData(data); //data를 formData로 append
       const res = await usePostProfileCreateRequest(accessToken, formData); //API로 응답 Request
-  
+
       const result = await res.data;
       const updatedProfile: Profile = mapProfileResponse(result, profile); //응답으로 받은 ProfileResponse을 profile store에 Mapping
       setProfile(updatedProfile);
@@ -54,15 +60,18 @@ export default function CreateProfilePage() {
         setAlertMessage("Profile updated successfully!");
         setShowAlert(true);
       }
-    } catch(error) {
-      console.error("Failed to catch profile data", error)
-    } finally{
+    } catch (error) {
+      console.error("Failed to catch profile data", error);
+    } finally {
       setLoading(false);
     }
-   
   };
 
   const onInValid = (errors: FieldErrors) => console.log(errors);
+
+  const [nicknameAvailable, setNicknameAvailable] = useState<boolean | null>(
+    null
+  );
 
   const [male, setMale] = useState(true); // 초기값은 남자로 설정
   const [traveler, setTraveler] = useState(true); // 초기값은 여행자로 설정
@@ -101,6 +110,27 @@ export default function CreateProfilePage() {
     }
   };
 
+  //닉네임 체크
+  const handleNicknameCheck = async (nickname: string) => {
+    try {
+      const response = await axios.get(`/api/profiles/check-nickname`, {
+        params: { nickname },
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+        },
+      });
+      const data = await response.data;
+
+      if (data === true) {
+        setNicknameAvailable(true);
+      } else {
+        setNicknameAvailable(false); // 중복이 없으면 에러 메시지 제거
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
   // 프로필 업데이트되었다는 알림창 닫기
   const handleCloseAlert = () => {
     setShowAlert(false);
@@ -114,17 +144,99 @@ export default function CreateProfilePage() {
   }, [male, traveler, residenceYear, profileFile]);
 
   return (
-    <div className="bg-gray-100 min-h-screen flex justify-center">
-      <div className="w-full max-w-4xl p-8 bg-white shadow-lg rounded-lg justify">
-        <div className="flex items-center space-x-4 mb-8">
+    <div className="bg-white flex justify-center">
+      <div className="w-full max-w-4xl mt-[50px]">
+        <div className="flex items-center ml-[-45px] space-x-[15px]">
           <BackButton onClick={() => router.push("/")} />
-          <h1 className="text-2xl font-bold">프로필 설정</h1>
+          <h1 className="text-[22px] font-bold">프로필 설정</h1>
         </div>
 
         <form onSubmit={handleSubmit(onValid, onInValid)}>
+          {/* 프로필 사진 선택 INPUT */}
+          <ProfileImageForm
+            image={profileImage}
+            onImageUpload={handleProfileImageUpload}
+            label="프로필"
+          />
+
+          {/* 배경이미지 선택 INPUT */}
+          <BackgroundImageForm
+            image={backgroundImage}
+            onImageUpload={handleBackgroundImageUpload}
+            label="배경이미지"
+          />
+
+          {/* 닉네임 선택 INPUT */}
+          <NicknameForm
+            register={register}
+            label="닉네임"
+            name="nickname"
+            required={true}
+            errors={errors}
+            placeholder="닉네임을 입력하세요"
+            onNicknameCheck={handleNicknameCheck}
+            watch={watch}
+            nicknameAvailable={nicknameAvailable}
+            setNicknameAvailable={setNicknameAvailable}
+          />
+
+          {/* 자기소개 INPUT */}
+          <IntroductionForm
+            register={register}
+            label="소개"
+            name="introduction"
+            required={true}
+            errors={errors}
+            maxLength={100}
+          />
+
+          <div className="flex">
+            <div className="flex-1">
+              {/* 성별 INPUT */}
+              <TwoButtonForm
+                title="성별"
+                options={[
+                  { label: "남자", value: true },
+                  { label: "여자", value: false },
+                ]}
+                activeValue={male}
+                onChange={setMale}
+              />
+            </div>
+
+            <div className="flex-1">
+              {/* 거주자 INPUT */}
+              <TwoButtonForm
+                title="구분"
+                options={[
+                  { label: "여행자", value: true },
+                  { label: "거주자", value: false },
+                ]}
+                activeValue={traveler}
+                onChange={setTraveler}
+              />
+            </div>
+          </div>
+
+          {/* 생일 INPUT */}
+          <label className="block mt-[40px] text-[13px] text-[#808080]">
+            생일
+          </label>
+          <SingleDateSelector
+            selectedDate={selectedDate}
+            onDateChange={setSelectedDate}
+            register={register}
+            errors={errors}
+            name="birth"
+            placeholder="생일을 입력해주세요"
+            setValue={setValue}
+          />
+
+          <hr className="w-full h-[1px] mt-[50px] mb-[68px] bg-[#EEEEEE]" />
+
           {/* 거주국가 INPUT */}
           {/* <ResidenceForm register={register} errors={errors} /> */}
-          <label className="block mb-2">장소</label>
+          <label className="block text-[13px] text-[#808080]">거주 장소</label>
           <CountryStateCitySelector
             registerCountryCode="residenceCountryCode"
             registerStateCode="residenceStateCode"
@@ -140,90 +252,42 @@ export default function CreateProfilePage() {
             setValue={setValue}
           />
 
-          {/* 여행자/거주자 INPUT */}
-          <TwoButtonForm
-            title="구분"
-            options={[
-              { label: "여행자", value: true },
-              { label: "거주자", value: false },
-            ]}
-            activeValue={traveler}
-            onChange={setTraveler}
-          />
-
           {/* 거주년도 INPUT */}
-          <div className="mb-6">
-            <label className="block mb-2 text-gray-700">거주 년수</label>
-            <input
-              type="range"
-              min={1}
-              max={20}
-              value={residenceYear}
-              onChange={(e) => setResidenceYear(Number(e.target.value))}
-              className="w-full"
-            />
-            <div className="text-center mt-2">{residenceYear}년</div>
+
+          <label className="block mt-[40px] text-[13px] text-[#808080]">
+            거주 년수
+          </label>
+          <div className="flex items-start mt-[5px] font-bold">
+            {residenceYear}년
+          </div>
+          <input
+            type="range"
+            min={1}
+            max={20}
+            step={1}
+            value={residenceYear}
+            onChange={(e) => setResidenceYear(Number(e.target.value))}
+            className="w-full"
+          />
+          <div className="w-full flex justify-between text-[11px] h-5 relative">
+            <span className="flex-1 absolute left-0 top-1">1년</span>{" "}
+            {/* Align to the left */}
+            <span className="flex-1 absolute left-[21%] top-1">5년</span>{" "}
+            {/* Center aligned */}
+            <span className="flex-1 absolute left-[46%] top-1">10년</span>{" "}
+            {/* Center aligned */}
+            <span className="flex-1 absolute left-[72%] top-1">15년</span>{" "}
+            {/* Center aligned */}
+            <span className="flex-1 absolute right-0 top-1">20년</span>{" "}
+            {/* Align to the right */}
           </div>
 
-          {/* 프로필 사진 선택 INPUT */}
-          <ProfileImageForm
-            image={profileImage}
-            onImageUpload={handleProfileImageUpload}
-            label="프로필 이미지 업로드"
-          />
-
-          {/* 배경이미지 선택 INPUT */}
-          <BackgroundImageForm
-            image={backgroundImage}
-            onImageUpload={handleBackgroundImageUpload}
-            label="배경 사진 업로드"
-          />
-
-          {/* 닉네임 선택 INPUT */}
-          <NicknameForm
-            register={register}
-            label="닉네임"
-            name="nickname"
-            required={true}
-            errors={errors}
-            placeholder="닉네임을 입력하세요"
-          />
-
-          {/* 자기소개 INPUT */}
-          <IntroductionForm
-            register={register}
-            label="소개"
-            name="introduction"
-            required={true}
-            errors={errors}
-            maxLength={100}
-          />
-
-          {/* 성별 INPUT */}
-          <TwoButtonForm
-            title="성별"
-            options={[
-              { label: "남자", value: true },
-              { label: "여자", value: false },
-            ]}
-            activeValue={male}
-            onChange={setMale}
-          />
-
-          {/* 생일 INPUT */}
-          <label className="block mb-4 text-gray-700">생일</label>
-          <SingleDateSelector
-            selectedDate={selectedDate}
-            onDateChange={setSelectedDate}
-            register={register}
-            errors={errors}
-            name="birth"
-            placeholder="생일을 입력해주세요"
-            setValue={setValue}
-          />
+          <hr className="w-full h-[1px] mt-[50px] mb-[68px] bg-[#EEEEEE]" />
 
           {/* 여행지 관심분야 INPUT */}
-          <span className="text-gray-700">여행지 관심분야</span>
+          <label className="block mt-[40px] text-[13px] text-[#808080]">
+            여행지 관심분야
+          </label>
           <InterestSelector
             register={register}
             errors={errors}
@@ -231,7 +295,9 @@ export default function CreateProfilePage() {
           />
 
           {/* 거주지 전문분야 INPUT */}
-          <span className="text-gray-700">거주지 전문분야</span>
+          <label className="block mt-[40px] text-[13px] text-[#808080]">
+            거주지 전문분야
+          </label>
           <ExpertisesSelector
             register={register}
             errors={errors}
@@ -239,11 +305,14 @@ export default function CreateProfilePage() {
           />
 
           {/* 프로필 성정 완료 버튼 */}
-          <input
-            type="submit"
-            className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
-            value="프로필 생성"
-          />
+          <div className="w-full flex items-center justify-center">
+            <input
+              type="submit"
+              className="mt-[80px] w-[300px] h-[60px] bg-[#E62A2F] text-white rounded-lg font-semibold"
+              value="프로필 설정완료!"
+            />
+          </div>
+
           {showAlert && (
             <CustomAlert
               message={alertMessage}

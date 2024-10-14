@@ -1,3 +1,5 @@
+import { BackIcon } from "@/core/components/icons/BackIcon";
+
 interface BackButtonProps {
     onClick: () => void;
 }
@@ -11,7 +13,7 @@ export const BackButton = ({onClick}: BackButtonProps) => {
         className="text-gray-500"
         onClick={onClick}
       >
-        &lt; 뒤로
+        <BackIcon />
       </button>
     )
 }

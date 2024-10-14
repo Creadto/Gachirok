@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import useUserStore from "../../store/user-store";
 import { ProfileDropdown } from "./ProfileDropdown";
+import { NoProfileIcon } from "../icons/NoProfileIcon";
 
 /**
  * @Description 프로필 아이콘 컴포넌트(User없을 때는 로그인/회원가입, 있을 때는 사진+이름)
@@ -64,7 +65,7 @@ const ProfileIcon = () => {
           onClick={() => setIsProfileOpen((prev) => !prev)}
           className="bg-black text-white rounded-[50px] h-[40px] relative flex items-center justify-center w-full box-border"
         >
-          <div className="mx-[12px] my-[5px] w-[104px] flex h-[30px]">
+          <div className=" ml-[5px] mr-[12px] my-[5px] w-[104px] flex h-[30px] gap-x-[5px]">
             {user.profile?.profilePhotoUrl ? (
               <img
                 src={user.profile?.profilePhotoUrl}
@@ -72,15 +73,18 @@ const ProfileIcon = () => {
                 className="object-cover w-[30px] h-[30px] border-none rounded-full"
               />
             ) : (
-              <></>
+              <div className="object-cover w-[30px] h-[30px] border-none rounded-full">
+                <NoProfileIcon />
+              </div>
+              
             )}
-            <span className="block w-full text-[14px] whitespace-nowrap items-center justify-center my-auto ml-[5px]">
-              {session?.user?.name}님
+            <span className="block w-full text-[14px] whitespace-nowrap items-center justify-center my-auto">
+            {session?.user?.name}님
             </span>
           </div>
         </button>
       ) : (
-        <div className="bg-black text-white rounded-[50px] h-[40px]  flex items-center justify-center w-full box-border">
+        <div className="bg-black text-white rounded-[50px] h-[40px] flex items-center justify-center w-full box-border">
           <Link
             href="/?modal=signin"
             as="/signin"
