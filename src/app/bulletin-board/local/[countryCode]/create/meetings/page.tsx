@@ -68,20 +68,19 @@ export default function AddMeetingsLocalBulletinBoardPage({
       console.log("updatedData", updatedData);
 
       const formData = appendMeetingCreateRequestFromData(updatedData);
-      
+
       console.log("formData", formData);
 
-
       if (formData !== null) {
-      console.log("실행됨1")
-       const response =  await axios.post("/api/meetings", formData, {
-            headers: {
+        console.log("실행됨1");
+        const response = await axios.post("/api/meetings", formData, {
+          headers: {
             "Content-Type": "multipart/form-data",
-              Authorization: `Bearer ${accessToken}`,
-            },
-          });
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
 
-        console.log(response)
+        console.log(response);
       }
     } catch (err) {
       console.error("Error:", err);
@@ -180,7 +179,7 @@ export default function AddMeetingsLocalBulletinBoardPage({
   };
 
   const formatEndTime = (time: string): string => {
-        let [hours, minutes] = time.split(":");
+    let [hours, minutes] = time.split(":");
     hours = parseInt(hours, 10).toString(); // 앞의 '0' 제거
     minutes = parseInt(minutes, 10).toString();
     return `${hours}시 ${minutes}분`;
@@ -246,13 +245,21 @@ export default function AddMeetingsLocalBulletinBoardPage({
   };
 
   return (
-    <div className="min-w-xl mx-auto bg-white p-6 rounded-lg">
-      <BackButton
-        onClick={() => router.push(`/bulletin-board/local/${country}`)}
-      />
-      <div className="flex flex-row items-center my-auto">
-        <h1 className="text-2xl font-bold">글쓰기</h1>
-        <div className="bg-slate-400 ml-2 rounded-md">Local</div>
+    <div className="max-w-4xl mx-auto bg-white mt-[50px] rounded-lg">
+      {/* 글쓰기 HEADER */}
+      <div className="flex items-center ml-[-45px] space-x-[5px]">
+        <BackButton
+          onClick={() => router.push(`/bulletin-board/local/${country}`)}
+        />
+        <h1 className="text-[22px] font-bold">글쓰기</h1>
+        <div className="bg-[#DDDDDD] px-[7px] py-[3px] rounded-[4px] text-[#808080]">
+          Local
+        </div>
+        <div className="flex items-end justify-end flex-1">
+          <button className="px-[12px] py-[10px] border border-[#EEEEEE] rounded-lg">
+            미리보기
+          </button>
+        </div>
       </div>
 
       {/* 카테고리-자유게시판, 소모임, 부동산, 벼룩시장, 구인구직*/}
@@ -275,17 +282,24 @@ export default function AddMeetingsLocalBulletinBoardPage({
         }
       />
 
+      <hr className="w-full bg-[#EEEEEE] mt-[40px] mb-[30px]" />
+
       <form onSubmit={handleSubmit(onValid)}>
         {/* 모임 목적*/}
-        <label className="block mb-2 text-xs">모임 목적</label>
+        <label className="block mt-[40px] text-xs text-[#808080] mb-[10px]">
+          모임 목적
+        </label>
         <InterestSelector
           register={register}
           errors={errors}
           setValue={setValue}
         />
+        <hr className="w-full bg-[#EEEEEE] mt-[40px] mb-[30px]" />
 
         {/* 장소에 대한 dropdown */}
-        <label className="block mb-2 text-xs">장소</label>
+        <label className="block mt-[40px] text-xs text-[#808080] mb-[10px]">
+          장소
+        </label>
         <CountryStateCitySelector
           registerCountryCode="countryCode"
           registerStateCode="stateCode"
@@ -302,11 +316,14 @@ export default function AddMeetingsLocalBulletinBoardPage({
         />
 
         {/* 위치 선택 */}
-        <label className="block mt-2 text-xs">위치</label>
+        <label className="block mt-[40px] text-xs text-[#808080] mb-[10px]">
+          위치
+        </label>
         <input
           type="text"
           {...register("location", { required: true })}
-          className="block w-full border border-gray-300 rounded-md p-2 mb-4"
+          className="block w-full border bg-[#F6F6F6] text-black text-[14px] h-[50px]
+   rounded-lg p-[15px]"
           placeholder="위치를 입력해 주세요."
         />
         {errors.location && (

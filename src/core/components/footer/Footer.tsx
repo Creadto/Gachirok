@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { TextLogo } from "../TextLogo";
 import { FacebookIcon, InstagramIcon, YoutubeIcon } from "../icons/SNSIcon";
 

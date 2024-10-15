@@ -150,18 +150,16 @@ const CountryStateCitySelector = ({
         )}
         {/* Country Dropdown */}
         {isCountryDropdownOpen && (
-          <div className="absolute z-20 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+          <div className="top-[50px] absolute z-20 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
             {countries.map(({ code, name, icon }) => (
-              <div className="flex flex-row px-4 py-2 space-x-[10px]">
+              <button
+                key={code}
+                onClick={() => handleCountrySelect(code)}
+                className="w-full text-left flex items-center space-x-[10px] px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition-colors duration-150"
+              >
                 {icon}
-                <button
-                  key={code}
-                  onClick={() => handleCountrySelect(code)}
-                  className="w-full text-left block text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition-colors duration-150"
-                >
-                  {name}
-                </button>
-              </div>
+                <span>{name}</span>
+              </button>
             ))}
           </div>
         )}

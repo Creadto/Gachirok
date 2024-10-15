@@ -21,7 +21,6 @@ export const CategorySelector = ({
   onClickFleaMarketCategory,
   onClickRecruitingCategory,
 }: CategorySelectorProps) => {
-
   //현재 활성화되어 있는 버튼, 기본은 자유게시판
   const [activeButton, setActiveButton] = useState<number>(1);
   const pathname = usePathname();
@@ -47,23 +46,21 @@ export const CategorySelector = ({
   }, [pathname]); // pathname 변경 시마다 실행
 
   return (
-    <>
     <div className="flex flex-col">
-      <p className="text-xs text-slate-300 mt-8 -mb-4">카테고리</p>
-      <div className="flex flex-row gap-x-4">
-
+      <label className="block mt-[40px] text-xs text-[#808080] mb-[10px]">카테고리</label>
+      <div className="flex flex-row gap-x-[5px]">
         {/* 자유게시판 */}
         <button
-          className="flex flex-col mt-5"
+          className="flex flex-col11"
           onClick={() => handleButtonClick(1, onClickDefaultCategory)}
           key={1}
         >
           <div
             className={`flex items-center justify-center ${
               activeButton === 1
-                ? "bg-pink-400 text-white"
-                : "bg-slate-200 text-black"
-            }  w-[85px] h-12  rounded-md mb-10`}
+                ? "bg-[#E62A2F] text-white"
+                : "bg-white text-[#A3A3A3] border border-[#EEEEEE] text-sm "
+            }  w-[100px] h-[50px]  rounded-lg`}
           >
             자유게시판
           </div>
@@ -71,16 +68,16 @@ export const CategorySelector = ({
 
         {/* 소모임 */}
         <button
-          className="flex flex-col mt-5"
+          className="flex flex-col"
           onClick={() => handleButtonClick(2, onClickMeetingsCategory)}
           key={2}
         >
           <div
             className={`flex items-center justify-center ${
               activeButton === 2
-                ? "bg-pink-400 text-white"
-                : "bg-slate-200 text-black"
-            }  w-[85px] h-12  rounded-md mb-10`}
+                ? "bg-[#E62A2F] text-white"
+                : "bg-white text-[#A3A3A3] border border-[#EEEEEE] text-sm"
+            }  w-[100px] h-[50px]  rounded-lg`}
           >
             소모임
           </div>
@@ -88,16 +85,16 @@ export const CategorySelector = ({
 
         {/* 부동산 */}
         <button
-          className="flex flex-col mt-5"
+          className="flex flex-col"
           onClick={() => handleButtonClick(3, onClickRealEstateCategory)}
           key={3}
         >
           <div
             className={`flex items-center justify-center ${
               activeButton === 3
-                ? "bg-pink-400 text-white"
-                : "bg-slate-200 text-black"
-            }  w-[85px] h-12  rounded-md mb-10`}
+                ? "bg-[#E62A2F] text-white"
+                : "bg-white text-[#A3A3A3] border border-[#EEEEEE] text-sm"
+            }  w-[100px] h-[50px]  rounded-lg`}
           >
             부동산
           </div>
@@ -105,16 +102,16 @@ export const CategorySelector = ({
 
         {/* 벼룩시장 */}
         <button
-          className="flex flex-col mt-5"
+          className="flex flex-col"
           onClick={() => handleButtonClick(4, onClickFleaMarketCategory)}
           key={4}
         >
           <div
             className={`flex items-center justify-center ${
               activeButton === 4
-                ? "bg-pink-400 text-white"
-                : "bg-slate-200 text-black"
-            }  w-[85px] h-12  rounded-md mb-10`}
+                ? "bg-[#E62A2F] text-white"
+                : "bg-white text-[#A3A3A3] border border-[#EEEEEE] text-sm"
+            }  w-[100px] h-[50px]  rounded-lg`}
           >
             벼룩시장
           </div>
@@ -122,22 +119,21 @@ export const CategorySelector = ({
 
         {/* 구인구직 */}
         <button
-          className="flex flex-col mt-5"
+          className="flex flex-col "
           onClick={() => handleButtonClick(5, onClickRecruitingCategory)}
           key={5}
         >
           <div
             className={`flex items-center justify-center ${
               activeButton === 5
-                ? "bg-pink-400 text-white"
-                : "bg-slate-200 text-black"
-            }  w-[85px] h-12  rounded-md mb-10`}
+                ? "bg-[#E62A2F] text-white"
+                : "bg-white text-[#A3A3A3] border border-[#EEEEEE] text-sm"
+            }  w-[100px] h-[50px]  rounded-lg`}
           >
             구인구직
           </div>
         </button>
       </div>
-      </div>
-    </>
+    </div>
   );
-}
+};

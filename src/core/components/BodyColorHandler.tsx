@@ -15,7 +15,7 @@ export default function BodyColorHandler({font} : BodyColorHandlerProps) {
   
   useEffect(() => {
     // 특정 페이지에 따라 배경색 변경
-    if (pathname.startsWith("/sign-up") || pathname.startsWith("/create-profile"))
+    if (pathname.startsWith("/sign-up") || pathname.startsWith("/create-profile") || pathname.includes('create'))
       //  ||  routing 다른 조건들 활성화
      {
       document.body.className = `bg-white ${font.className}`; // 회원가입 페이지일 때 배경색 흰색

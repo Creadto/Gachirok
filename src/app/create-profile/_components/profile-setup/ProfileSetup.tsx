@@ -149,6 +149,7 @@ export default function CreateProfilePage() {
         <div className="flex items-center ml-[-45px] space-x-[15px]">
           <BackButton onClick={() => router.push("/")} />
           <h1 className="text-[22px] font-bold">프로필 설정</h1>
+          
         </div>
 
         <form onSubmit={handleSubmit(onValid, onInValid)}>

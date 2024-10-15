@@ -75,14 +75,14 @@ const Sidebar = () => {
   if (pathname.startsWith("/sign-up") || pathname.startsWith("/create-profile")) return null;
   else {
     return (
-      <aside className="fixed top-[100px] left-[20px] h-[845 px] w-[230px] bg-white rounded-[15px]">
+      <aside className="fixed top-[100px] left-[20px] w-[230px] bg-white rounded-[15px] z-40 border-[#EEEEEE] border-2">
         {/* 국가선택 */}
-        <div className="w-full  h-[82px] mt-[5px] relative shadow-sm">
-          <div className="flex flex-col w-[190px] h-[47px] absolute top-[15px] left-[20px]">
+        <div className="w-full  h-[72px] mt-[5px] relative shadow-sm">
+          <div className="flex flex-col w-[190px] h-[37px] absolute top-[15px] left-[20px]">
             <span className="block h-[18px] w-full text-[#A3A3A3] text-[13px]">
               현재국가
             </span>
-            <div className="mt-[5px]  h-[24px] w-full flex flex-row space-x-[10px]">
+            <div className="mt-[5px]  h-[22px] w-full flex flex-row space-x-[10px]">
               <div className="w-[36px] h-full">
                 {country
                   ? countryList.find((countries) => countries.code === country)
@@ -98,9 +98,9 @@ const Sidebar = () => {
 
         {/* Home */}
         <div
-          className={`flex items-center text-start mt-[13px] w-full h-[16px] text-[12px] ${
+          className={`flex items-center text-start ml-[20px] mt-[6px] w-full h-[16px] text-[12px] ${
             activeItems.home ? "text-[#E62A2F]" : "text-[#808080]"
-          }  mb-[13px]`}
+          }  mb-[6px]`}
         >
           Main
         </div>
@@ -116,13 +116,13 @@ const Sidebar = () => {
 
         {/* Universal */}
         <div
-          className={`flex items-center text-start mt-[13px] w-full h-[16px] text-[12px] ${
+          className={`flex items-center text-start  ml-[20px] mt-[6px] w-full h-[16px] text-[12px] ${
             activeItems.universalAnnouncement ||
             activeItems.universalBulletinBoard ||
             activeItems.universalNews
               ? "text-[#E62A2F]"
               : "text-[#808080]"
-          }  mb-[13px]`}
+          }  mb-[6px]`}
         >
           Universal
         </div>
@@ -160,7 +160,7 @@ const Sidebar = () => {
 
         {/* Local */}
         <div
-          className={`flex items-center text-start mt-[13px] w-full h-[16px] text-[12px] ${
+          className={`flex items-center text-start mt-[6px] w-full h-[16px] text-[12px] ml-[20px] ${
             activeItems.localAnnouncement ||
             activeItems.localBulletinBoard ||
             activeItems.localFleaMarket ||
@@ -171,7 +171,7 @@ const Sidebar = () => {
             activeItems.localShop
               ? "text-[#E62A2F]"
               : "text-[#808080]"
-          }  mb-[13px]`}
+          }  mb-[6px]`}
         >
           Local
         </div>

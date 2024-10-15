@@ -5,6 +5,9 @@ import { countryStore } from "@/core/store/country-store";
 import { getCountryCode } from "@/core/utils/handleCountryStateCityModify";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import SearchIcon from "../icons/top-bar/SearchIcon";
+import { count } from "console";
+import CloseIcon from "../icons/CloseIcon";
 
 /**
  * @Description 현재 국가 선택 Dropdown
@@ -14,9 +17,16 @@ const CountrySelector = () => {
   const { setCountry, countryName } = countryStore();
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState("");
+  const countryOptions = CountryList;
+
+  const filteredCountries = countryOptions.filter(
+    (country) =>
+      country.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      country.code.toUpperCase().includes(searchQuery.toUpperCase())
+  );
 
   // CountryList에 대한 객체
-  const countryOptions = CountryList;
   const handleCountryDropdown = () => {
     setIsOpen(!isOpen);
   };
@@ -56,15 +66,47 @@ const CountrySelector = () => {
 
       {/* 국가 선택 Dropdown */}
       {isOpen && (
-        <div className="absolute left-0 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-          <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
-            {countryOptions.map((country) => (
+        <div className="absolute -left-2 mt-2 w-[400px] rounded-md h-[380px] bg-white focus:outline-none">
+          <div className="relative z-10 w-full bg-white border h-[380px] border-gray-300 rounded-md overflow-y-auto">
+
+            {/* 국가설정 HEADER */}
+            <div className="w-full h-[30px] flex items-start justify-start pl-[15px] mt-[13px] shadow-sm font-bold">
+              국가 설정
+            </div>
+            {/* 닫기 버튼 */}
+            <button
+              className="absolute top-[8px] right-[15px]"
+              onClick={() => setIsOpen(false)}
+            >
+              <CloseIcon />
+            </button>
+
+            {/* 검색기능 */}
+            <div className="w-[340px] ml-[15px] mr-[15px] flex h-[40px] mt-[10px] bg-[#F6F6F6] relative border rounded-[5px]">
+              <div className="absolute top-[20px] left-[5px]">
+                <SearchIcon />
+              </div>
+              <input
+                type="text"
+                placeholder="국가 또는 지역 검색"
+                className="w-full ml-[40px] bg-[#F6F6F6] pl-2"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)} // Update search query
+              />
+            </div>
+
+            <hr className="w-[350px] h-[1px] my-[10px] mx-auto flex items-center justify-center" />
+
+            {filteredCountries.map((country) => (
               <button
                 key={country.code}
                 onClick={() => handleCountrySelect(country.name)}
-                className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition-colors duration-150"
+                className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition-colors duration-150 flex items-center gap-x-2"
               >
-                {country.name}
+                <div className="flex">{country.icon}</div>
+                <span className="flex items-start justify-start text-[14px]">
+                  {country.name}
+                </span>
               </button>
             ))}
           </div>

@@ -34,15 +34,15 @@ export default function RootLayout({
     <html lang="en" className={`${pretendard.variable}`}>
       <MSWComponent/>
       <BodyColorHandler font={pretendard} />
-      <body className={` ${pretendard.className}`}>
+      <body className={` ${pretendard.className}` }>
         <ReactQueryProvider>
           <AuthProvider>
             <Topbar />
             <Sidebar />
             <div className="pt-[80px]">
               {children}
-            </div>
               {modal}
+            </div>
               <Footer />
 
           </AuthProvider>
