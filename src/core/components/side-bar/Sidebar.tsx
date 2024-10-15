@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 import CountrySelector from "./CountrySelector";
 import { countryStore } from "@/core/store/country-store";
 import { usePathname, useRouter } from "next/navigation";
@@ -24,7 +23,6 @@ import {
 } from "../icons/side-bar/RealEstateIcon";
 import { ActiveRecruitIcon, RecruitIcon } from "../icons/side-bar/RecruitIcon";
 import { ActiveShopIcon, ShopIcon } from "../icons/side-bar/ShopIcon";
-import CountrySelector from "./CountrySelector";
 import { useEffect, useState } from "react";
 
 import SidebarItem from "./SidebarItem";
@@ -134,7 +132,7 @@ const Sidebar = () => {
             {/* News */}
             <SidebarItem
               isActive={activeItems.universalNews}
-              onClick={() => router.push("/news")}
+              onClick={() => router.push("/news/universal")}
               activeIcon={<ActiveNewsIcon />}
               inactiveIcon={<NewsIcon />}
               label="News"
@@ -143,7 +141,7 @@ const Sidebar = () => {
             {/* Announcement */}
             <SidebarItem
               isActive={activeItems.universalAnnouncement}
-              onClick={() => router.push("/announcement")}
+              onClick={() => router.push("/announcement/universal/section/1?page=1&limit=8&sort=newest")}
               activeIcon={<ActiveAnnouncementIcon />}
               inactiveIcon={<AnnouncementIcon />}
               label="Announcement"
@@ -192,7 +190,7 @@ const Sidebar = () => {
             {/* Announcement */}
             <SidebarItem
               isActive={activeItems.localAnnouncement}
-              onClick={() => router.push(`/announcement/local/${country}`)}
+              onClick={() => router.push(`/announcement/local/${country}/section/1?page=1&limit=8&sort=newest`)}
               activeIcon={<ActiveAnnouncementIcon />}
               inactiveIcon={<AnnouncementIcon />}
               label="Announcement"
