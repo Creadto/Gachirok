@@ -51,10 +51,10 @@ const DoubleDateTimeSelector: React.FC<DoubleDateTimeSelectorProps> = ({
   }, [selectedStartTime, selectedEndTime]);
 
   return (
-    <div className="flex flex-col space-y-4">
+    <div className="flex flex-row space-x-4">
       {/* 날짜 선택 */}
-      <div className="relative">
-        <label className="block text-gray-700 mb-1 text-xs">날짜</label>
+      <div className="w-full">
+      <label className="block text-xs text-[#808080] mb-[10px]">날짜</label>
         <div className="flex items-center border border-gray-300 rounded-lg p-2">
           <FaCalendarAlt className="text-gray-500 mr-2" />
           <DatePicker
@@ -72,8 +72,8 @@ const DoubleDateTimeSelector: React.FC<DoubleDateTimeSelectorProps> = ({
       </div>
 
       {/* 시작 시간 선택 */}
-      <div className="relative">
-        <label className="block text-gray-700 mb-1 text-xs">시작 시간</label>
+      <div className="w-full">
+      <label className="block text-xs text-[#808080] mb-[10px]">시작 시간</label>
         <div className="flex items-center border border-gray-300 rounded-lg p-2">
           <FaClock className="text-gray-500 mr-2" />
           <select
@@ -103,8 +103,8 @@ const DoubleDateTimeSelector: React.FC<DoubleDateTimeSelectorProps> = ({
       </div>
 
       {/* 종료 시간 선택 */}
-      <div className="relative">
-        <label className="block text-gray-700 mb-1 text-xs">종료 시간</label>
+      <div className="w-full relative">
+      <label className="block  text-xs text-[#808080] mb-[10px]">종료 시간</label>
         <div className="flex items-center border border-gray-300 rounded-lg p-2">
           <FaClock className="text-gray-500 mr-2" />
           <select

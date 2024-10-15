@@ -31,6 +31,7 @@ const RangeSlider = ({ onRangeChange }: RangeSliderProps) => {
       step={1}
       minCaption={minCaption}
       maxCaption={maxCaption}
+      style={{boxShadow: 'none', border: 'none'}}
       onInput={(e: ChangeResult) => {
         set_minCaption(agePoint[e.minValue]);
         set_maxCaption(agePoint[e.maxValue]);

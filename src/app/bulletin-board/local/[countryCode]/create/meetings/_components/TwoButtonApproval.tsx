@@ -1,3 +1,7 @@
+import {
+  InterestSelectIcon,
+  InterestUnselectIcon,
+} from "@/core/components/icons/create-profile/InterestSelectIcon";
 import React from "react";
 
 interface TwoButtonApprovalProps {
@@ -23,18 +27,30 @@ const TwoButtonApproval: React.FC<TwoButtonApprovalProps> = ({
           <button
             type="button"
             key={option.label}
-            className={`w-1/2 border-2 rounded-lg p-4 text-left transition-colors duration-300 ${
+            className={`w-1/2 border-2 rounded-lg p-4 text-left relative bg-white text-[#808080] ${
               activeValue === option.value
-                ? "border-pink-500 text-pink-500 bg-pink-50"
-                : "border-gray-300 text-gray-500 bg-white"
+                ? "border-[#E62A2F]  "
+                : "border-[#EEEEEE]  "
             }`}
             onClick={() => onChange(option.value)}
           >
             <div className="flex justify-between items-center">
-              <span className="font-semibold">{option.label}</span>
-              {activeValue === option.value && (
-                <span className="text-pink-500 font-bold">&#10003;</span>
-              )}
+              <span
+                className={`font-semibold ${
+                  activeValue === option.value
+                    ? "text-[#E62A2F] "
+                    : "text-[#A3A3A3] "
+                }`}
+              >
+                {option.label}
+              </span>
+              <div className="absolute top-[15px] right-[15px]">
+                {activeValue === option.value ? (
+                  <InterestSelectIcon />
+                ) : (
+                  <InterestUnselectIcon />
+                )}
+              </div>
             </div>
             <p className="text-sm mt-2">
               {option.description.split("\n").map((line, index) => (

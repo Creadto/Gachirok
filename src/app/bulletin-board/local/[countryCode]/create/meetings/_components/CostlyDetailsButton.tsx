@@ -9,10 +9,10 @@ const CostlyDetailsButton: React.FC<CostlyDetailsButtonProps> = ({value, title, 
     return (
         <button
         type="button"
-        className={`border border-slate-500 rounded-md border-solid ${
+        className={`border border-[#EEEEEE] rounded-[50px] px-[12px] py-[9px] ${
           value
             ? "bg-black text-white"
-            : "bg-white text-slate-500"
+            : "bg-white text-black"
         }`}
         onClick={onClick}
       >

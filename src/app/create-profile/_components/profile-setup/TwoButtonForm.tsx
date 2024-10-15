@@ -19,10 +19,10 @@ const TwoButtonForm: React.FC<TwoButtonFormProps> = ({
 }) => {
   return (
     <div>
-      <label className="block mt-[40px] text-[13px] text-[#808080]">
+      <label className="block mt-[40px] text-xs text-[#808080] mb-[10px]">
         {title}
       </label>
-      <div className="flex space-x-[5px]">
+      <div className="flex space-x-[5px] mt-[10px]">
         {options.map((option) => (
           <button
             type="button"

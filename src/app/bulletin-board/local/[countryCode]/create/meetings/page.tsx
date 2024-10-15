@@ -20,6 +20,7 @@ import RangeSlider from "./_components/RangeSlider";
 import TwoButtonApproval from "./_components/TwoButtonApproval";
 import appendMeetingCreateRequestFromData from "./_utils/appendMeetingCreateRequestFormData";
 import { sexTypes } from "@/core/types/DataForUI";
+import CustomAlert from "@/core/components/CustomAlert";
 
 interface AddFleaMarketLocalBulletinBoardPageProps {
   params: {
@@ -59,20 +60,19 @@ export default function AddMeetingsLocalBulletinBoardPage({
 
   const [loading, setLoading] = useState(false);
 
+  //개설 완료되었을 때 등장하는 팝업
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+
+
   const onValid = async (updatedData: any) => {
     setLoading(true);
     try {
       if (!accessToken) {
         throw new Error("Access token is missing");
       }
-      console.log("updatedData", updatedData);
-
       const formData = appendMeetingCreateRequestFromData(updatedData);
-
-      console.log("formData", formData);
-
       if (formData !== null) {
-        console.log("실행됨1");
         const response = await axios.post("/api/meetings", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -80,7 +80,11 @@ export default function AddMeetingsLocalBulletinBoardPage({
           },
         });
 
-        console.log(response);
+        if(response.data)
+        {
+          setAlertMessage("미팅이 성공적으로 개설되었습니다!");
+          setShowAlert(true);
+        }
       }
     } catch (err) {
       console.error("Error:", err);
@@ -90,7 +94,7 @@ export default function AddMeetingsLocalBulletinBoardPage({
     }
   };
   //Image의 변동사항을 실시간으로 체크하기 위한 watch
-  const watchImages: File[] | undefined = watch("photos") as File[];
+  const watchImages: FileList | undefined = watch("images") as FileList;
 
   //장소 선택 시 필요한 Country, State, City에 관한 상태
   const [selectedCountry, setSelectedCountry] = useState<string>("");
@@ -188,8 +192,12 @@ export default function AddMeetingsLocalBulletinBoardPage({
   //값이 변경될 때마다 setValue()로 useForm의 data에 저장
   useEffect(() => {
     clearErrors(); //Submit시 오류가 뜨고, 수정하면 오류 삭제되게끔
-    setValue("meetingStartTime", formatStartTime(selectedStartTime));
-    setValue("meetingEndTime", formatEndTime(selectedEndTime));
+    if (selectedStartTime !== "") {
+      setValue("meetingStartTime", formatStartTime(selectedStartTime));
+    }
+    if (selectedEndTime !== "") {
+      setValue("meetingEndTime", formatEndTime(selectedEndTime));
+    }
     setValue("approval", approval);
     setValue("startAge", parseInt(minValue, 10));
     setValue("endAge", parseInt(maxValue, 10));
@@ -343,8 +351,7 @@ export default function AddMeetingsLocalBulletinBoardPage({
 
         {/* 날짜 및 시간 선택 */}
         {isDateVisible && (
-          <div className="block w-full border text-black rounded-md p-2 mb-4 mt-12">
-            <label className="block mb-2 flex-1 text-xs">일시</label>
+          <div className="block w-full border text-black rounded-md p-2 mb-4 mt-[20px]">
             <DoubleDateTimeSelector
               selectedDate={selectedDate}
               onDateChange={setSelectedDate}
@@ -358,18 +365,22 @@ export default function AddMeetingsLocalBulletinBoardPage({
           </div>
         )}
 
+        <hr className="w-full bg-[#EEEEEE] mt-[40px] mb-[30px]" />
+
         {/* 모집 멤버 */}
         <div>
-          <label className="block text-gray-700 mb-2">모집 멤버</label>
-          <div className="flex space-x-4">
+          <label className="block mt-[40px] text-xs text-[#808080] mb-[10px]">
+            모집 멤버
+          </label>
+          <div className="flex space-x-[5px]">
             {sexTypes.map((type) => (
               <button
                 key={type.label}
                 type="button"
-                className={`px-4 py-2 rounded-lg border-2 transition-colors duration-300 ${
+                className={`w-[100px] h-[50px] text-[14px] border border-[#EEEEEE] flex items-center justify-center rounded-lg ${
                   activeSexType === type.value
-                    ? "bg-pink-500 text-white"
-                    : "bg-gray-100 text-gray-500"
+                    ? "bg-[#E62A2F] text-white border-none"
+                    : "bg-white"
                 }`}
                 onClick={() => {
                   setActiveSexType(type.value);
@@ -380,16 +391,19 @@ export default function AddMeetingsLocalBulletinBoardPage({
             ))}
           </div>
 
-          {/* 모집 멤버 설명 */}
-          <div className="mt-2 p-4 bg-gray-100 rounded-lg text-gray-500">
+          {/* 모집 멤버 인원수 */}
+          <div className="relative">
             <input
               type="number"
               value={maxMember}
               {...register("maxMember", { required: true })}
+              className=" mt-[10px] block w-full border bg-[#F6F6F6] text-black text-[14px] h-[50px] rounded-lg p-[15px]"
+              placeholder="모집 멤버를 입력해주세요."
               onChange={(e) => setMaxMember(parseInt(e.target.value, 10))}
-              className="block w-full border bg-slate-300  rounded-md p-2 mb-4"
             />
-            <span className="text-sm text-gray-500">(명) 호스트 포함</span>
+            <span className="block absolute text-[14px] bottom-[14px] text-[#808080] left-[200px]">
+              (명) 호스트 포함
+            </span>
             {errors.maxMember && (
               <p className="text-red-500">
                 모임의 인원수 선정은 필수 항목입니다.
@@ -400,15 +414,22 @@ export default function AddMeetingsLocalBulletinBoardPage({
 
         {/* 나이대 */}
         <div className="block w-full">
-          <label className="block text-gray-700 mb-2">나이대</label>
-          <span className="text-gray-700">전체</span>
+          <label className="block mt-[40px] text-xs text-[#808080] mb-[10px]">
+            나이대
+          </label>
+          <span className="font-bold">
+            {minValue === "20" && maxValue === "50"
+              ? "전체"
+              : `${minValue}~${maxValue}세`}
+          </span>
           <div>
             <RangeSlider onRangeChange={onRangeChange} />
           </div>
         </div>
         {/* 나이대 */}
 
-        <br />
+        <hr className="w-full bg-[#EEEEEE] mt-[40px] mb-[30px]" />
+
         {/* 모집 방식 */}
         <TwoButtonApproval
           options={[
@@ -432,11 +453,14 @@ export default function AddMeetingsLocalBulletinBoardPage({
         {/* 승인제-질문 */}
         {isQuestionVisible && (
           <>
-            <label className="block mb-2 text-xs">질문사항</label>
+            <label className="block mt-[40px] text-xs text-[#808080] mb-[10px]">
+              질문사항 (선택)
+            </label>
             <input
               type="text"
               {...register("question", { required: true, maxLength: 30 })}
-              className="block w-full border bg-slate-300  rounded-md p-2 mb-4"
+              className="block w-full border bg-[#F6F6F6] text-black text-[14px] h-[50px]
+   rounded-lg p-[15px]"
               placeholder="신청자에게 할 질문을 입력하세요!"
             />
             {errors.question && (
@@ -447,13 +471,18 @@ export default function AddMeetingsLocalBulletinBoardPage({
           </>
         )}
 
+        <hr className="w-full bg-[#EEEEEE] mt-[40px] mb-[30px]" />
+
         {/* 모임소개 */}
         {/* 제목 */}
-        <label className="block mb-2 text-xs">모임 소개</label>
+        <label className="block mt-[40px] text-xs text-[#808080] mb-[10px]">
+          모임 소개
+        </label>
         <input
           type="text"
           {...register("title", { required: true, maxLength: 30 })}
-          className="block w-full border bg-slate-300  rounded-md p-2 mb-4"
+          className="block w-full border bg-[#F6F6F6] text-black text-[14px] h-[50px]
+   rounded-lg p-[15px]"
           placeholder="모임의 이름을 입력해주세요 (30자 이내)"
         />
         {errors.title && (
@@ -461,6 +490,9 @@ export default function AddMeetingsLocalBulletinBoardPage({
         )}
 
         {/* 본문 */}
+        <label className="block mt-[40px] text-xs text-[#808080] mb-[10px]">
+          내용
+        </label>
         <QuillEditor
           register={register}
           placeholder={`모임 소개글을 작성해주세요 \n소개글을 자세히 작성하면 참석률과 신청률이 70% 높아집니다.`}
@@ -481,15 +513,15 @@ export default function AddMeetingsLocalBulletinBoardPage({
             <input
               type="file"
               accept="image/*"
-              {...register("photos")}
+              {...register("images")}
               multiple
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             />
-            <div className="px-4 py-2 bg-blue-500 text-white rounded-md text-center cursor-pointer">
+            <div className="px-4 py-2 bg-[#E62A2F] text-white rounded-md text-center cursor-pointer">
               {customFileLabel}
             </div>
           </div>
-          <p>
+          <p className="mt-[10px]">
             {watchImages
               ? `10개 중 ${watchImages.length}개 업로드됨`
               : "10개 중 0개 업로드"}
@@ -514,19 +546,18 @@ export default function AddMeetingsLocalBulletinBoardPage({
         </div>
 
         {/* 안내사항 */}
-        <div className="mt-5">
-          <label className="block mb-2 text-xs">안내사항</label>
-          <>
-            <textarea
-              {...register("information", { required: true })}
-              className="block w-full border bg-slate-300  rounded-md p-2 mb-4 mt-2 h-[150px]"
-              placeholder={`안내사항을 입력하세요. \n예) 타인을 배려하는 마음을 갖고 신청해주세요`}
-            />
-            {errors.information && (
-              <p className="text-red-500">안내사항 입력은 필수항목입니다.</p>
-            )}
-          </>
-        </div>
+        <label className="block mt-[40px] text-xs text-[#808080] mb-[10px]">
+          안내사항
+        </label>
+        <textarea
+          {...register("information", { required: true })}
+          className="block w-full border bg-[#F6F6F6] text-black text-[14px] h-[150px]
+   rounded-lg p-[15px]"
+          placeholder={`안내사항을 입력하세요. \n예) 타인을 배려하는 마음을 갖고 신청해주세요`}
+        />
+        {errors.information && (
+          <p className="text-red-500">안내사항 입력은 필수항목입니다.</p>
+        )}
 
         {/* 필요한 비용 */}
         <TwoButtonForm
@@ -545,9 +576,25 @@ export default function AddMeetingsLocalBulletinBoardPage({
           setValue={setValue}
           isCostlyItemOpen={isCostlyItemOpen}
         />
-        {/* 미리보기와 작성완료 버튼 */}
-        <PreviewAndSubmitButton onClick={handleModal} />
+
+        {/* 작성완료 */}
+        <div className="flex items-center justify-center mt-[80px] mb-[150px]">
+          <input
+            type="submit"
+            className="py-[19px] px-[124px] w-[300px] rounded-lg bg-[#E62A2F] text-white hover:cursor-pointer"
+            value="개설하기"
+          />
+        </div>
       </form>
+
+      {showAlert && (
+          <CustomAlert
+            message={alertMessage}
+            onClose={() => setShowAlert(false)}
+            route={`/bulletin-board/local/${countryCode}`}
+          />
+        )}
+        
 
       {/* 미리보기 모달창 */}
       {/* <PreviewModalMeetings

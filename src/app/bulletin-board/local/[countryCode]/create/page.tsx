@@ -259,7 +259,7 @@ export default function AddFreeLocalBulletinBoardPage({
           </button>
         </div>
 
-        {/* 미리보기 버튼 및 작성완료 */}
+        {/* 작성완료 */}
         <div className="flex items-center justify-center mt-[80px] mb-[150px]">
           <input
             type="submit"
