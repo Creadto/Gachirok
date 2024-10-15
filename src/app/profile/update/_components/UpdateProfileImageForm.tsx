@@ -1,13 +1,20 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
+import { UseFormRegister } from "react-hook-form";
 
 interface UpdateProfileImageFormProps {
   imagePreviewURL: string | null;
   onFileChange: (file: File) => void;
+  register: UseFormRegister<any>;
 }
 
+/**
+ * @Description 프로필을 업데이트 하는 Form(이미지 only)
+ * @author 김영서
+ **/
 const UpdateProfileImageForm: React.FC<UpdateProfileImageFormProps> = ({
   imagePreviewURL,
   onFileChange,
+  register
 }) => {
   const [localImageURL, setLocalImageURL] = useState<string | null>(
     imagePreviewURL
@@ -49,6 +56,7 @@ const UpdateProfileImageForm: React.FC<UpdateProfileImageFormProps> = ({
         <div>
           <label>Upload New Image:</label>
           <input
+          {...register("photo")}
             type="file"
             accept="image/*"
             onChange={handleFileChange}

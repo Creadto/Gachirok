@@ -12,6 +12,7 @@
 |REFACTOR|코드 리팩토링에 대한 커밋|
 |TEST|테스트 코드 수정에 대한 커밋|
 |PERF|성능 개선에 대한 커밋|
+|UI|UI 구현 혹은 UI 수정에 대한 커밋|
 
 ## Github Flow
 

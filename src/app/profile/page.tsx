@@ -1,38 +1,33 @@
 "use client";
-import axios from "axios";
+import useGetProfileResponse from "@/core/hooks/useGetProfileResponse";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 //Client SIde Rendering
 const ProfilePage = () => {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
   const [profileData, setProfileData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
+  const fetchProfileData = async () => {
+    if (session?.accessToken) {
+      try {
+        const response = await useGetProfileResponse(session.accessToken);
+        const data = response.data;
+        if (data) {
+          setLoading(false);
+        }
+        setProfileData(data);
+
+      } catch (error) {
+        console.error("Error fetching profile data:", error);
+      }
+    }
+  };
 
   useEffect(() => {
-    // Log session data to check if accessToken is present
-    const fetchProfileData = async () => {
-      if (session?.accessToken) {
-        try {
-          const response = await axios.get("/api/profiles", {
-            headers: {
-              Authorization: `Bearer ${session.accessToken}`,
-            },
-          });
-          if (response.data) {
-            setLoading(false);
-          }
-          setProfileData(response.data);
-
-        } catch (error) {
-          console.error("Error fetching profile data:", error);
-        }
-      }
-    };
-
     fetchProfileData();
   }, [session]);
 
@@ -41,6 +36,7 @@ const ProfilePage = () => {
     router.push("/profile/update"); // 버튼 클릭 시 리디렉션
   };
 
+  //로그아웃 담당
   const SignOut = () => {
     return (
       session?.user && (
@@ -55,10 +51,6 @@ const ProfilePage = () => {
       )
     );
   }; 
-
-  const RedirectToLogin = () => {
-    router.push("/signin")
-  }
 
   return (
     <div>
@@ -92,7 +84,7 @@ const ProfilePage = () => {
           <SignOut />
         </div>
       ) : (
-        <button className="w-full px-4 py-2 text-white bg-blue-500 rounded-md shadow-md hover:bg-blue-600" onClick={RedirectToLogin}>Sign in Button</button>
+        <button className="w-full px-4 py-2 text-white bg-blue-500 rounded-md shadow-md hover:bg-blue-600" onClick={() => router.push('/')}>Sign in Button</button>
       )}
     </div>
   );

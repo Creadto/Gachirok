@@ -1,106 +1,101 @@
 "use client";
 
+import { ProfileUI } from "@/app/profile/_types/ProfileUI";
 import CustomAlert from "@/core/components/CustomAlert";
-import useStore from "@/core/store/user-store";
-import { ProfileResponse } from "@/core/types/Profile";
-import { ProfileUI } from "@/core/types/ProfileUI";
-import { ProfileUpdateRequest } from "@/core/types/Profile";
+
+import useGetProfileResponse from "@/core/hooks/useGetProfileResponse";
+import usePutProfileUpdateRequest from "@/core/hooks/usePutProfileUpdateRequest";
+import {
+  mapProfileResponse,
+  mapProfileUI,
+  mapProfileUpdateRequest,
+} from "@/core/mapper/profile-mapper";
+import useProfileStore, { Profile } from "@/core/store/profile-store";
 import { useSession } from "next-auth/react";
 import { ChangeEvent, useEffect, useState } from "react";
-import { getProfileData } from "../_utils/useGetProfile";
+import { useForm } from "react-hook-form";
+import { ProfileUpdateRequest } from "../_types/ProfileUpdateRequest";
 import UpdateProfileForm from "./_components/UpdateProfileForm";
 import UpdateProfileImageForm from "./_components/UpdateProfileImageForm";
-import useUserStore from "@/core/store/user-store";
+import appendProfileUpdateRequestFormData from "./_utils/appendProfileUpdateRequestFormData";
+
+/**
+ * @Description 프로필을 업데이트 하는 메인 페이지
+ * @author 김영서
+ **/
 
 export default function ProfilePage() {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    clearErrors,
+    formState: { errors },
+  } = useForm();
+
   //해당 파일에서 사용되는 변수들
   const [loading, setLoading] = useState<boolean>(false);
   const { data: session } = useSession();
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const accessToken = session?.accessToken;
-  const [profileUI, setProfileUI] = useState<ProfileUI | null>(null);
+
+  const [profileUI, setProfileUI] = useState<ProfileUI | null>(null); //사용자가 볼 수 있는 기존 프로필 정보를 출력하는  Type
   const [profileUrl, setProfileUrl] = useState<string>("");
   const [updateProfile, setUpdateProfile] =
     useState<ProfileUpdateRequest | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [imagePreviewURL, setImagePreviewURL] = useState<string | null>(null);
   //전역변수 사용
-  const { user, setUser } = useUserStore();
+  const { profile, setProfile } = useProfileStore();
+
+  //화면에 그리는 초기 정보 불러오기
+  async function loadProfile() {
+    try {
+      if (accessToken) {
+        const initialData = await useGetProfileResponse(accessToken);
+        if (initialData) {
+          setProfileUI(mapProfileUI(initialData.data));
+          setImagePreviewURL(initialData.data.profilePhotoUrl);
+        }
+      }
+    } catch (error) {
+      console.error("Error loading profile:", error);
+    }
+  }
 
   useEffect(() => {
-    async function loadProfile() {
-      try {
-        if (accessToken) {
-          const initialData: ProfileResponse = await getProfileData(
-            accessToken
-          );
-          if (initialData) {
-            setProfileUI({
-              traveler: initialData.traveler,
-              residenceYear: initialData.residenceYear,
-              nickname: initialData.nickname,
-              residenceCountryCode: initialData.residenceCountryCode,
-              residenceStateCode: initialData.residenceStateCode,
-              residenceCityCode: initialData.residenceCityCode,
-              introduction: initialData.introduction,
-              photo: initialData.profilePhotoUrl,
-              interests: initialData.interests,
-              expertises: initialData.expertises,
-            });
-            setImagePreviewURL(initialData.profilePhotoUrl);
-          }
-        }
-      } catch (error) {
-        console.error("Error loading profile:", error);
-      }
-    }
     loadProfile();
   }, [session]);
 
+  useEffect(() => {
+    console.log("profileUI", profileUI);
+    setValue("traveler", profileUI?.traveler);
+    setValue("residenceYear", profileUI?.residenceYear);
+    setValue("nickname", profileUI?.nickname);
+    setValue("introduction", profileUI?.introduction);
+    setValue("interests", profileUI?.interests);
+    setValue("expertises", profileUI?.expertises);
+    setValue("photo", selectedFile);
+  }, [profileUI, selectedFile]);
 
+  //File이 변경될 때마다 setUpdateProfile을 update함
   useEffect(() => {
     if (profileUI && selectedFile) {
-      setUpdateProfile({
-        traveler: profileUI.traveler,
-        residenceYear: profileUI.residenceYear,
-        nickname: profileUI.nickname,
-        residenceCountryCode: profileUI.residenceCountryCode,
-        residenceStateCode: profileUI.residenceStateCode,
-        residenceCityCode: profileUI.residenceCityCode,
-        introduction: profileUI.introduction,
-        photo: selectedFile,
-        interests: profileUI.interests,
-        expertises: profileUI.expertises,
-      });
+      setUpdateProfile(mapProfileUpdateRequest(profileUI, selectedFile));
+      console.log("effect");
     }
-    console.log("effect");
   }, [selectedFile]);
 
-  // useEffect(() => { //유저가 파일 선택을 통해서 이미지를 변경할 때 상단 topbar에 이를 반영
-  //   if (profileUrl && userResponse?.profile) {
-  //     setUserResponse({
-  //       ...userResponse,
-  //       profile: {
-  //         ...userResponse?.profile,
-  //         profilePhotoUrl: profileUrl,
-  //       },
-  //     });
-  //   }
-  // }, [profileUrl]);
-
-  const handleCloseAlert = () => {
-    setShowAlert(false);
-  };
+  //프로필 업데이트가 성공되었다는 알림창 닫기
+  const handleCloseAlert = () => setShowAlert(false);
 
   const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked } = e.target;
 
     setProfileUI((prevProfile) => {
       if (!prevProfile) return null;
-
       let updatedArray: string[] = [];
-
       if (name === "interests" || name === "expertises") {
         updatedArray = checked
           ? [
@@ -113,7 +108,6 @@ export default function ProfilePage() {
 
         return { ...prevProfile, [name]: updatedArray };
       }
-
       return prevProfile;
     });
   };
@@ -127,79 +121,39 @@ export default function ProfilePage() {
     );
   };
 
+  //파일 변경 시 실행
   const handleFileChange = (file: File) => {
     setSelectedFile(file);
     const fileProfileUrl = URL.createObjectURL(file);
     console.log("사진링크1", fileProfileUrl);
     setProfileUrl(fileProfileUrl);
-
-    // Update the updateProfile state if needed
-    if (selectedFile) {
-      setUpdateProfile((prevUpdateProfile) => {
-        if (!prevUpdateProfile) return prevUpdateProfile;
-        return {
-          ...prevUpdateProfile,
-          photo: file,
-        };
-      });
-    }
-    console.log("사진링크", profileUrl);
   };
 
-  const handleSave = async () => {
+  //프로필 업데이트 버튼 누를 때 실행
+  const onValid = async (updatedData: any) => {
     setLoading(true);
     try {
       if (!accessToken) {
         throw new Error("Access token is missing");
       }
-
-      const formData = new FormData();
-      formData.append("traveler", String(profileUI?.traveler));
-      formData.append("residenceYear", String(profileUI?.residenceYear));
-      formData.append("nickname", profileUI?.nickname || "");
-      formData.append(
-        "residenceCountryCode",
-        profileUI?.residenceCountryCode || ""
-      );
-      formData.append("residenceStateCode", profileUI?.residenceStateCode || "");
-      formData.append("residenceCityCode", profileUI?.residenceCityCode || "");
-      formData.append("introduction", profileUI?.introduction || "");
-
-      profileUI?.interests.forEach((interest) =>
-        formData.append("interests", interest)
-      );
-      profileUI?.expertises.forEach((expertise) =>
-        formData.append("expertises", expertise)
-      );
-
-      if (updateProfile?.photo) {
-        formData.append("photo", updateProfile?.photo);
-      }
-
-      const res = await fetch("/api/profiles", {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: formData,
-      });
-
-      if (res.ok) {
-        setAlertMessage("Profile updated successfully!");
-        setShowAlert(true); // Show the alert if the response is OK
-        if (profileUrl && user?.profile) {
-          //최종적으로 upload하는 이미지는 변경하고자 하는 이미지이기 때문에
-          //useState으로 정의한 local변수 profileUrl에 해당 이미지 링크를 담은 후, 이를 userResponse에 넣기
-          setUser({
-            ...user,
-            profile: {
-              ...user?.profile,
-              profilePhotoUrl: profileUrl,
-            },
-          });
+      if (profileUI !== null) {
+        const formData = appendProfileUpdateRequestFormData(
+          updatedData,
+          updateProfile //사진이 바뀌지 않았으면 updateProfile은 null
+        );
+        const response = await usePutProfileUpdateRequest(
+          `Bearer ${accessToken}`,
+          formData
+        );
+        const data = response.data;
+        if (data) {
+          const updatedProfile: Profile = mapProfileResponse(data, profile);
+          setProfile(updatedProfile);
+          setAlertMessage("Profile updated successfully!");
+          setShowAlert(true);
+        } else {
+          alert("Failed to update prof1ile");
         }
-      } else {
-        alert("Failed to update prof1ile");
       }
     } catch (err) {
       console.error("Error:", err);
@@ -209,36 +163,47 @@ export default function ProfilePage() {
     }
   };
 
-  return (
-    <div className="max-w-3xl p-6 mx-auto mt-6 bg-white rounded-lg shadow-md">
-      <h1 className="mb-4 text-2xl font-semibold text-center">Profile</h1>
 
-      <UpdateProfileImageForm
-        imagePreviewURL={imagePreviewURL}
-        onFileChange={handleFileChange}
-      />
-      <div className="h-8"></div>
-
-      <UpdateProfileForm
-        profile={profileUI}
-        onInputChange={handleInputChange}
-        onCheckboxChange={handleCheckboxChange}
-      />
-
-      <button
-        onClick={handleSave}
-        disabled={loading}
-        className="w-full px-4 py-2 text-white bg-indigo-500 rounded-md shadow-md hover:bg-indigo-600 disabled:bg-gray-400"
+  if (profileUI) {
+    return (
+      <form
+        className="max-w-3xl p-6 mx-auto mt-6 bg-white rounded-lg shadow-md"
+        onSubmit={handleSubmit(onValid)}
       >
-        {loading ? "Saving..." : "Save"}
-      </button>
-      {showAlert && (
-        <CustomAlert
-          message={alertMessage}
-          onClose={handleCloseAlert}
-          route="/profile"
+        <h1 className="mb-4 text-2xl font-semibold text-center">Profile</h1>
+
+        {/* 프로필 업데이트 Form(이미지 only) */}
+        <UpdateProfileImageForm
+          imagePreviewURL={imagePreviewURL}
+          onFileChange={handleFileChange}
+          register={register}
         />
-      )}
-    </div>
-  );
+        <div className="h-8"></div>
+
+        {/* 프로필 업데이트 Form(이미지 제외) */}
+        <UpdateProfileForm
+          profile={profileUI}
+          onInputChange={handleInputChange}
+          onCheckboxChange={handleCheckboxChange}
+          register={register}
+          errors={errors}
+          setValue={setValue}
+        />
+
+        {/* 프로필 업데이트 버튼 */}
+        <input
+          type="submit"
+          className="py-2 px-4 rounded bg-blue-500 hover:bg-blue-700 text-white"
+          value="프로필 업데이트"
+        />
+        {showAlert && (
+          <CustomAlert
+            message={alertMessage}
+            onClose={handleCloseAlert}
+            route="/profile"
+          />
+        )}
+      </form>
+    );
+  }
 }

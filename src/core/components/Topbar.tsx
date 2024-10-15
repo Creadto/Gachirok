@@ -1,9 +1,7 @@
 import { FaBell, FaCommentAlt, FaEdit, FaGlobe } from "react-icons/fa";
 import ProfileIcon from "./ProfileIcon";
-import Country from "@/core/components/Country";
 
 export default function Topbar() {
-
   return (
     <header className="fixed top-0 left-0 w-full bg-white shadow z-50">
       <div className="container mx-auto px-4 py-2 flex items-center justify-between">
@@ -16,7 +14,7 @@ export default function Topbar() {
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
             <span>🌍</span> {/* 위치 아이콘 */}
-            <Country/> {/* 나라 이름 */}
+            <span>싱가포르</span>
           </div>
           <input
             type="text"
