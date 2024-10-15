@@ -66,7 +66,7 @@ const MyGachigaPost = () => {
   }
   return (
     <>
-      <p className="font-bold flex-1">{meetings.length}개 모임</p>
+      <p className="font-bold flex-1 mt-[20px]">{meetings.length}개 모임</p>
       <div className="grid grid-cols-5 grid-rows-2 gap-4 pt-5 gap-y-5 ">
         {currentMeetings.map((meeting, index) => (
           <div

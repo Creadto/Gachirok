@@ -95,11 +95,11 @@ const GachigaPost = ({ countryCode }: GachigaPostProps) => {
   }
   return (
     <>
-      <p className="font-bold flex-1">{meetings.length}개 모임</p>
-      <div className="grid grid-cols-5 grid-rows-2 gap-4 pt-5 gap-y-5 ">
+      <p className="font-bold mt-[20px]">{meetings.length}개 모임</p>
+      <div className="flex flex-row gap-x-5 mt-[15px] flex-wrap gap-y-5">
         {currentMeetings.map((meeting, index) => (
           <div
-            className="bg-white shadow-xl rounded-lg w-[300px] h-[340px] relative"
+            className="bg-white shadow-xl rounded-lg w-[256px] h-[308px] relative"
             key={index}
           >
             <img

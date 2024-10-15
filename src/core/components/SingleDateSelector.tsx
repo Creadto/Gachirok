@@ -38,10 +38,10 @@ const SingleDateSelector: React.FC<SingleDateSelectorProps> = ({
   };
 
   return (
-    <div className="flex flex-col space-y-4">
+    <div className="flex flex-col space-y-4 mt-[10px]">
       {/* 날짜 선택 */}
       <div className="relative">
-        <div className="flex items-center border border-gray-300 rounded-lg p-2">
+        <div className="flex w-[40%] items-center border border-gray-300 rounded-lg p-2 relative">
           <FaCalendarAlt className="text-gray-500 mr-2" />
           <DatePicker
             {...register(`${name}`, { required: true })}

@@ -9,7 +9,7 @@ export const interestsOptions = [
     label: "액티비티",
     value: "activity",
     description:
-      "테마파크, 클라이밍, 테니스, 배드민턴, 등산, 자전거, 농구, 축구, 야구, 볼링, 골프, 서핑, 스키, 스노우보드, 다이빙 등",
+      "테마파크, 클라이밍, 테니스, 배드민턴, 등산, 자전거, 농구, 축구, 야구, 볼링, 골프 등",
     icon: "/images/interests&expertises/activity@3.webp",
   },
   {
@@ -64,7 +64,6 @@ export const interestsOptions3 = [
     description: "카페, 디저트, 로컬맛집, 요리, 파인다이닝, 칵테일, 와인 등",
     icon: "/images/interests&expertises/food@3.webp",
   },
- 
 ];
 
 export const interestsOptions4 = [
@@ -92,7 +91,7 @@ export const interestsOptions4 = [
     description: "자문, 학교투어, 육아, 법률, 부동산, 교육, 벼룩시장 등",
     icon: "/images/interests&expertises/local@3.webp",
   },
-]
+];
 
 export const expertisesOptions = [
   {
@@ -105,7 +104,8 @@ export const expertisesOptions = [
     label: "액티비티",
     value: "activity",
     description:
-      "테마파크, 클라이밍, 테니스, 배드민턴, 등산, 자전거, 농구, 축구, 야구, 볼링, 골프, 서핑, 스키, 스노우보드, 다이빙 등",
+      "테마파크, 클라이밍, 테니스, 배드민턴, 등산, 자전거, 농구, 축구, 야구, 볼링, 골프 등",
+
     icon: "/images/interests&expertises/activity@3.webp",
   },
   {
@@ -140,7 +140,6 @@ export const expertisesOptions = [
   },
 ];
 
-
 export const expertisesOptions3 = [
   {
     label: "문화예술",
@@ -161,7 +160,6 @@ export const expertisesOptions3 = [
     description: "카페, 디저트, 로컬맛집, 요리, 파인다이닝, 칵테일, 와인 등",
     icon: "/images/interests&expertises/food@3.webp",
   },
- 
 ];
 
 export const expertisesOptions4 = [
@@ -189,4 +187,4 @@ export const expertisesOptions4 = [
     description: "자문, 학교투어, 육아, 법률, 부동산, 교육, 벼룩시장 등",
     icon: "/images/interests&expertises/local@3.webp",
   },
-]
+];

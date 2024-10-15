@@ -125,7 +125,11 @@ const CountryStateCitySelector = ({
   return (
     <div className="flex flex-wrap space-x-4">
       {/* Country 버튼 */}
-      <div className="relative">
+      <div className="relative flex flex-row items-center justify-center gap-x-[10px]">
+        {selectedCountry
+          ? countries.find((countries) => countries.code === selectedCountry)
+              ?.icon
+          : ""}
         <button
           type="button"
           onClick={toggleCountryDropdown}
@@ -146,14 +150,15 @@ const CountryStateCitySelector = ({
         )}
         {/* Country Dropdown */}
         {isCountryDropdownOpen && (
-          <div className="absolute z-20 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
-            {countries.map(({ code, name, emoji }) => (
+          <div className="top-[50px] absolute z-20 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+            {countries.map(({ code, name, icon }) => (
               <button
                 key={code}
                 onClick={() => handleCountrySelect(code)}
-                className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition-colors duration-150"
+                className="w-full text-left flex items-center space-x-[10px] px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition-colors duration-150"
               >
-                {emoji} {name}
+                {icon}
+                <span>{name}</span>
               </button>
             ))}
           </div>

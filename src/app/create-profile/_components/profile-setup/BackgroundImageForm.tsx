@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import { PictureIcon } from "@/core/components/icons/create-profile/PictureIcon";
 
 interface BackgroundImageFormProps {
   image: string | null;
@@ -16,19 +17,17 @@ const BackgroundImageForm: React.FC<BackgroundImageFormProps> = ({
   label,
 }) => {
   return (
-    <div className="mb-6 text-center">
-      <label className="block mb-2 text-gray-700">{label}</label>
-      <div className="relative inline-block">
+    <div className="flex items-start flex-col">
+      <label className="block mt-[40px] text-[13px] text-[#808080]">
+        {label}
+      </label>
+      <div className="relative inline-block mt-[10px]">
         {image ? (
-          <Image
-            src={image}
-            alt={label}
-            width={100}
-            height={100}
-          />
+          <Image src={image} alt={label} width={400} height={172} />
         ) : (
-            <div className="w-[700px] h-48 bg-gray-200  flex items-center justify-center">
-            <span className="text-gray-500">이미지 없음</span>
+          <div className="w-[400px] h-[172px] bg-[#F6F6F6]  flex items-center justify-center relative rounded-[10px]">
+            <PictureIcon className="absolute top-[65px] left-[185px]"/>
+            <span className="absolute top-[95px] mx-auto">배경 이미지 첨부</span>
           </div>
         )}
         <input

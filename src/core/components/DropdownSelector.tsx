@@ -52,15 +52,15 @@ const DropdownSelector = ({
   
   return (
     <div className="relative block text-left w-full">
-      <label className="block mb-2 text-xs">{label}</label>
+      <label className="block mb-[10px] text-xs text-[#808080]">{label}</label>
       <input
         type="text"
         {...register(name, { required: true })}
         value={selectedValue}
         onClick={toggleDropdown}
         readOnly
-        className="block w-full border bg-slate-300 text-black 
-         rounded-md p-2 mb-4"
+        className="block w-full border bg-[#F6F6F6] text-black text-[14px] h-[50px]
+         rounded-lg p-[15px]"
         placeholder={placeholder}
       />
 
@@ -73,7 +73,7 @@ const DropdownSelector = ({
                 type="button"
                 key={index}
                 onClick={() => handleOptionClick(option)}
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                className="block p-[15px] text-[13px] text-black hover:bg-gray-100 w-full text-left shadow-sm"
               >
                 {option}
               </button>

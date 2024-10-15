@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 
 interface IntroductionFormProps {
@@ -9,7 +9,6 @@ interface IntroductionFormProps {
   errors: FieldErrors;
   maxLength: number;
 }
-
 
 /**
  * @Description 프로필 신규 생성의 Introduction 생성
@@ -23,15 +22,23 @@ const IntroductionForm: React.FC<IntroductionFormProps> = ({
   errors,
   maxLength,
 }) => {
+  const [currentLength, setCurrentLength] = useState(0);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setCurrentLength(e.target.value.length);
+  };
+
   return (
-    <label className="block mb-4">
-      <span className="text-gray-700">{label}</span>
+    <label className="block mt-[40px] text-[13px] text-[#808080]">
+      {label}
       <textarea
         {...register(name, { required, maxLength })} //maxLength로 최대길이 지정
-        className="mt-1 block h-32 w-full border bg-slate-100 border-gray-300 rounded-md shadow-sm focus:ring focus:ring-opacity-50"
+        className="mt-[10px] block h-[100px] w-full border bg-[#F6F6F6] pl-[15px] pt-[15px] text-[14px] rounded-lg focus:ring focus:ring-opacity-50"
+        placeholder="자기소개를 입력해주세요." 
+        onChange={handleInputChange}
       />
       <div className="text-right text-sm text-gray-400">
-        0/{maxLength}
+        {currentLength}/{maxLength}
       </div>
       {errors[name] && (
         <span className="text-red-500">자기소개는 필수항목입니다.</span>

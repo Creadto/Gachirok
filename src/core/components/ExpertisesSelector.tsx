@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
-import { expertisesOptions3, expertisesOptions4 } from "../types/InterestsAndExpertisesOptions";
+import { expertisesOptions, expertisesOptions3, expertisesOptions4 } from "../types/InterestsAndExpertisesOptions";
+import { InterestSelectIcon, InterestUnselectIcon } from "./icons/create-profile/InterestSelectIcon";
 
 
 interface ExpertisesSelectorProps {
@@ -37,66 +38,50 @@ const ExpertisesSelector = ({ register, errors, setValue }: ExpertisesSelectorPr
     console.log("expertises", selectedExpertises)
   }, [selectedExpertises])
 
-  const options3 = expertisesOptions3;
-  const options4 = expertisesOptions4;
+  const options = expertisesOptions;
 
   return (
     <div className="relative block text-left w-full">
       <div className="flex flex-row flex-1">
-        <div className="flex flex-col flex-1 w-full pt-1"   {...register("expertises", { required: true })}>
-          <div className="flex flex-row gap-x-2">
-            {options3.map((option, index) => (
+        <div className="flex flex-col flex-1 w-full mt-[10px]"   {...register("expertises", { required: true })}>
+        <div className="flex flex-wrap gap-x-[11px] w-full h-[296px] justify-between ">
+            {options.map((option, index) => (
               <button
                 type="button"
                 key={index}
                 onClick={() => handleExpertiseClick(option.value)}
-                className={`w-[33%] block border border-gray-300 rounded-md px-2 py-4 mb-4 text-xs ${
+                className={`w-[280px] h-[92px] block border rounded-lg relative ${
                   selectedExpertises.includes(option.value)
-                    ? "bg-pink-500 text-white"
-                    : ""
+                    ? "border-[#E62A2F] border-2"
+                    : "border-[#EEEEEE] "
                 }`}
               >
-                <div className="flex flex-row">
+                <div className="flex flex-row gap-x-[3px] ml-[15px] mt-[18px] items-center">
                   <Image
                     src={option.icon}
                     alt={option.value}
                     width={30}
                     height={30}
+                    className="w-[16px] h-[16px] "
                   />
-                  <span className="flex-1 justify-center items-center text-center text-base mt-0.5">
+                  <span
+                    className={`justify-start items-center text-center font-semibold text-[15px] ${
+                      selectedExpertises.includes(option.value)
+                        ? "text-[#E62A2F] "
+                        : "text-black "
+                    } `}
+                  >
                     {option.label}
                   </span>
+                  <div className="absolute top-[15px] right-[15px]">
+                    {selectedExpertises.includes(option.value) ? (
+                      <InterestSelectIcon />
+                    ) : (
+                      <InterestUnselectIcon />
+                    )}
+                  </div>
                 </div>
-                <p className="text-sm text-slate-300 text-start mt-2">
-                  {option.description}
-                </p>
-              </button>
-            ))}
-          </div>
-          <div className="flex flex-row gap-x-2">
-            {options4.map((option, index) => (
-              <button
-                type="button"
-                key={index}
-                onClick={() => handleExpertiseClick(option.value)}
-                className={`w-[25%] block border border-gray-300 rounded-md px-2 py-4 mb-4 text-xs ${
-                  selectedExpertises.includes(option.value)
-                    ? "bg-pink-500 text-white"
-                    : ""
-                }`}
-              >
-                <div className="flex flex-row">
-                  <Image
-                    src={option.icon}
-                    alt={option.value}
-                    width={30}
-                    height={30}
-                  />
-                  <span className="flex-1 justify-center items-center text-center text-base mt-0.5">
-                    {option.label}
-                  </span>
-                </div>
-                <p className="text-sm text-slate-300 text-start mt-2">
+                <p className=" mx-[15px] mb-[15px] mt-[8px] text-xs text-[#808080] text-start break-words">
                   {option.description}
                 </p>
               </button>

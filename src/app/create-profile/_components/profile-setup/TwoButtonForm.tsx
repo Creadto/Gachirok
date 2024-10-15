@@ -18,17 +18,19 @@ const TwoButtonForm: React.FC<TwoButtonFormProps> = ({
   onChange,
 }) => {
   return (
-    <div className="mb-4">
-      <label className="block text-gray-700 mb-2 text-xs">{title}</label>
-      <div className="flex space-x-4">
+    <div>
+      <label className="block mt-[40px] text-[13px] text-[#808080]">
+        {title}
+      </label>
+      <div className="flex space-x-[5px]">
         {options.map((option) => (
           <button
             type="button"
             key={option.label}
-            className={`px-4 py-2 rounded ${
+            className={`w-[100px] h-[50px] text-[14px] border border-[#EEEEEE] flex items-center justify-center rounded-lg ${
               activeValue === option.value
-                ? "bg-pink-500 text-white"
-                : "bg-gray-300"
+                ? "bg-[#E62A2F] text-white border-none"
+                : "bg-white"
             }`}
             onClick={() => onChange(option.value)}
           >

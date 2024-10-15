@@ -42,7 +42,7 @@ const GachigaPage = ({ params }: GachigaPageProps) => {
   };
   return (
     <>
-      <div className=" ml-10 w-[95%] pr-24">
+      <div className=" mt-[30px]  w-[1360px] h-[full] ml-[405px] mr-[155px]">
         <div className="flex flex-row gap-x-[10px] mt-3 text-[22px] items-center">
           <div>
             <GachigaIcon />
@@ -82,12 +82,6 @@ const GachigaPage = ({ params }: GachigaPageProps) => {
                 )
               }
             />
-          </div>
-        </div>
-        <div className="pt-5">
-          <div className=" p-1.5 flex flex-row items-center text-xs justify-end">
-            <button onClick={() => handleToggle()}>신규순</button>
-            {isOrderMeetingOpen ? <ArrowUpIcon /> : <ArrowDownIcon />}
           </div>
         </div>
         {isMyyMeetingsSelected ? (

@@ -11,7 +11,7 @@ interface PageNavigationProps {
 const PageNavigation = ({currentPage, totalPages, handlePageChange}: PageNavigationProps) => {
 
   return(
-    <div className="flex justify-center mt-8 space-x-2 mb-10">
+    <div className="flex justify-center mt-8 space-x-2 mb-[200px]">
         <button
           className="px-4 py-2 rounded text-black"
           onClick={() => handlePageChange(1)}

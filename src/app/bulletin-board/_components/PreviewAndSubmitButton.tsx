@@ -11,13 +11,6 @@ export const PreviewAndSubmitButton = ({onClick}: PreviewAndSubmitButtonProps) =
     <div className="flex justify-between gap-x-5">
 
         {/* 미리보기 버튼 */}
-      <button
-        type="button"
-        className="py-2 px-4 rounded bg-gray-300 hover:bg-gray-400 ml-auto"
-        onClick={onClick}
-      >
-        미리보기
-      </button>
 
       {/* 작성 완료 버튼 */}
       <input
