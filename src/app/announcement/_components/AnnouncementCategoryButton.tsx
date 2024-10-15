@@ -9,20 +9,24 @@ interface AnnouncementCategoryButtonProps{
     regionType : string;
 }
 
+/**
+ *
+ * @Description 공지사항 섹션을 선택할 수 있는 버튼을 렌더링
+ * @Author 민동현
+ */
+
 export default function AnnouncementCategoryButton(props: AnnouncementCategoryButtonProps){
 
     const router = useRouter();
     const params = useParams();
 
-    const countryCode = params['country-code'];
-    const category = props.section;
+    const {'country-code': countryCode} = params; // local 이면 undefined
+    const {section:category, currentSection:currentCategory, regionType:region} = props;
+
     const categoryId = AnCategoryToNumber[category];
-    const currentCategory = props.currentSection;
-
-
 
     const onClickHandler = () => {
-        if(props.regionType === 'local'){
+        if(region === 'local'){
             router.push(`/announcement/local/${countryCode}/section/${categoryId}?page=1&limit=8&sort=newest`);
         }
         else{

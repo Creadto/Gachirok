@@ -33,51 +33,50 @@ export default function SectionAnnouncement(props: SectionAnnouncementProps) {
     const params = useParams();
     const searchParams = useSearchParams();
 
+    const {section:section, page:page, limit:limit, sort:sort, regionType:regionType} = props;
 
-    const sectionId = AnCategoryToNumber[props.section];
-
-    const [sectionAnnouncement, setSectionAnnouncement] = useState<AnnouncementItem[]>([]);
-    const [currentPage, setCurrentPage] = useState(parseInt(props.page));
-    const [totalPage, setTotalPage] = useState(0);
-    const [totalLength, setTotalLength] = useState(0);
-    const [sortOrder, setSortOrder] = useState("newest"); // 기본 정렬: 신규순
-
+    const sectionId = AnCategoryToNumber[section];
     const countryCode = params['country-code']; // local 일 경우
 
-    const maxPageGroupSize = 5; // 페이지 그룹에 보여줄 페이지 개수
+    const [sectionAnnouncement, setSectionAnnouncement] = useState<AnnouncementItem[]>([]); // 섹션의 공지사항 목록
+    const [currentPage, setCurrentPage] = useState(parseInt(page)); // 현재 페이지
+    const [totalPageCount, setTotalPageCount] = useState(0); // 페이지 총 개수
+    const [totalAnnouncementsCount, setTotalAnnouncementsCount] = useState(0); // 공지 총 개수
+    const [sortOrder, setSortOrder] = useState("newest"); // 기본 정렬: 신규순
 
-    const start = Math.floor((currentPage - 1) / maxPageGroupSize) * maxPageGroupSize + 1;
-    const end = Math.min(start + maxPageGroupSize - 1, totalPage);
+    const maxPageGroupSize = 5; // 하단 페이지 그룹에 보여줄 페이지 개수
+    const start = Math.floor((currentPage - 1) / maxPageGroupSize) * maxPageGroupSize + 1; // 하단 페이지 그룹의 시작
+    const end = Math.min(start + maxPageGroupSize - 1, totalPageCount); // 하단 페이지 그룹의 끝
 
     const goToPreviousPage = () => {
         const newPage = Math.max(currentPage - 1, 1);
         setCurrentPage(newPage);
-        if(props.regionType === 'local'){
-            router.push(`/announcement/local/${countryCode}/section/${sectionId}?page=${newPage}&limit=${props.limit}&sort=${props.sort}`);
+        if(regionType === 'local'){
+            router.push(`/announcement/local/${countryCode}/section/${sectionId}?page=${newPage}&limit=${limit}&sort=${sort}`);
         }
         else{
-            router.push(`/announcement/universal/section/${sectionId}?page=${newPage}&limit=${props.limit}&sort=${props.sort}`);
+            router.push(`/announcement/universal/section/${sectionId}?page=${newPage}&limit=${limit}&sort=${sort}`);
         }
     };
 
     const goToNextPage = () => {
-        const newPage = Math.min(currentPage + 1, totalPage);
+        const newPage = Math.min(currentPage + 1, totalPageCount);
         setCurrentPage(newPage);
-        if(props.regionType === 'local'){
-            router.push(`/announcement/local/${countryCode}/section/${sectionId}?page=${newPage}&limit=${props.limit}&sort=${props.sort}`);
+        if(regionType === 'local'){
+            router.push(`/announcement/local/${countryCode}/section/${sectionId}?page=${newPage}&limit=${limit}&sort=${sort}`);
         }
         else{
-            router.push(`/announcement/universal/section/${sectionId}?page=${newPage}&limit=${props.limit}&sort=${props.sort}`);
+            router.push(`/announcement/universal/section/${sectionId}?page=${newPage}&limit=${limit}&sort=${sort}`);
         }
     };
 
     const goToPage = (page: number) => { // 클릭 시 해당 숫자 페이지로 이동
         setCurrentPage(page);
-        if(props.regionType === 'local'){
-            router.push(`/announcement/local/${countryCode}/section/${sectionId}?page=${page}&limit=${props.limit}&sort=${props.sort}`);
+        if(regionType === 'local'){
+            router.push(`/announcement/local/${countryCode}/section/${sectionId}?page=${page}&limit=${limit}&sort=${sort}`);
         }
         else{
-            router.push(`/announcement/universal/section/${sectionId}?page=${page}&limit=${props.limit}&sort=${props.sort}`);
+            router.push(`/announcement/universal/section/${sectionId}?page=${page}&limit=${limit}&sort=${sort}`);
         }
     };
 
@@ -85,45 +84,45 @@ export default function SectionAnnouncement(props: SectionAnnouncementProps) {
     const goToPreviousGroupPage = () => {
         const newPage = Math.max(start - 1, 1);
         setCurrentPage(newPage);
-        if(props.regionType === 'local'){
-            router.push(`/announcement/local/${countryCode}/section/${sectionId}?page=${newPage}&limit=${props.limit}&sort=${props.sort}`);
+        if(regionType === 'local'){
+            router.push(`/announcement/local/${countryCode}/section/${sectionId}?page=${newPage}&limit=${limit}&sort=${sort}`);
         }
         else{
-            router.push(`/announcement/universal/section/${sectionId}?page=${newPage}&limit=${props.limit}&sort=${props.sort}`);
+            router.push(`/announcement/universal/section/${sectionId}?page=${newPage}&limit=${limit}&sort=${sort}`);
         }
     };
 
     // 다음 페이지 그룹으로 이동
     const goToNextGroupPage = () => {
-        const newPage = Math.min(end + 1, totalPage);
+        const newPage = Math.min(end + 1, totalPageCount);
         setCurrentPage(newPage);
-        if(props.regionType === 'local'){
-            router.push(`/announcement/local/${countryCode}/section/${sectionId}?page=${newPage}&limit=${props.limit}&sort=${props.sort}`);
+        if(regionType === 'local'){
+            router.push(`/announcement/local/${countryCode}/section/${sectionId}?page=${newPage}&limit=${limit}&sort=${sort}`);
         }
         else{
-            router.push(`/announcement/universal/section/${sectionId}?page=${newPage}&limit=${props.limit}&sort=${props.sort}`);
+            router.push(`/announcement/universal/section/${sectionId}?page=${newPage}&limit=${limit}&sort=${sort}`);
         }
     };
 
     const handleSortChange=(e:React.ChangeEvent<HTMLSelectElement>)=>{
         const newPage = currentPage
         setSortOrder(e.target.value);
-        if(props.regionType === 'local'){
-            router.push(`/announcement/local/${countryCode}/section/${sectionId}?page=${newPage}&limit=${props.limit}&sort=${e.target.value}`);
+        if(regionType === 'local'){
+            router.push(`/announcement/local/${countryCode}/section/${sectionId}?page=${newPage}&limit=${limit}&sort=${e.target.value}`);
         }
         else{
-            router.push(`/announcement/universal/section/${sectionId}?page=${newPage}&limit=${props.limit}&sort=${e.target.value}`);
+            router.push(`/announcement/universal/section/${sectionId}?page=${newPage}&limit=${limit}&sort=${e.target.value}`);
         }
     }
 
     const fetchAnnouncement = async () => {
         try {
             const response = await axios.get(
-                `${process.env.NEXT_PUBLIC_BASE_URL}/api/announcements/section/${sectionId}?page=${props.page}&limit=${props.limit}&sort=${props.sort}`
+                `${process.env.NEXT_PUBLIC_BASE_URL}/api/announcements/section/${sectionId}?page=${page}&limit=${limit}&sort=${sort}`
             );
             setSectionAnnouncement(response.data.announcementData);
-            setTotalPage(response.data.totalPages);
-            setTotalLength(response.data.length);
+            setTotalPageCount(response.data.totalPages);
+            setTotalAnnouncementsCount(response.data.length);
         } catch (err) {
             console.log(err);
         }
@@ -136,7 +135,7 @@ export default function SectionAnnouncement(props: SectionAnnouncementProps) {
     return (
         <div className="py-4">
             <div className="flex justify-between items-center">
-                <h2 className="font-bold text-xl py-4">{totalLength}개의 공지</h2>
+                <h2 className="font-bold text-xl py-4">{totalAnnouncementsCount}개의 공지</h2>
                 <select
                     value={sortOrder}
                     onChange={handleSortChange}
@@ -193,14 +192,14 @@ export default function SectionAnnouncement(props: SectionAnnouncementProps) {
                 <button
                     className="px-4 rounded hover:bg-gray-300"
                     onClick={goToNextPage}
-                    disabled={currentPage === totalPage}
+                    disabled={currentPage === totalPageCount}
                 >
                     &gt;
                 </button>
                 <button
                     className="px-2 rounded hover:bg-gray-300"
                     onClick={goToNextGroupPage}
-                    disabled={currentPage === totalPage}
+                    disabled={currentPage === totalPageCount}
                 >
                     &raquo;
                 </button>
