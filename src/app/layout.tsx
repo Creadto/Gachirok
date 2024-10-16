@@ -38,10 +38,12 @@ export default function RootLayout({
         <ReactQueryProvider>
           <AuthProvider>
             <Topbar />
+            <div className="flex">
             <Sidebar />
-            <div className="pt-[80px]">
+            <div className="flex-1 pt-[80px]">
               {children}
               {modal}
+            </div>
             </div>
               <Footer />
 

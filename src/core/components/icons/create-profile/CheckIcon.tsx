@@ -24,3 +24,26 @@ export const CheckIcon = () => {
     </svg>
   );
 };
+
+interface CheckColorIconProps {
+  color: string;
+}
+export const CheckColorIcon = ({color}: CheckColorIconProps) => {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M4.13281 7.66034L7.11409 10.6416L11.8725 5.36133"
+        stroke={color}
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};

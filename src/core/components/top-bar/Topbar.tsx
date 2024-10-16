@@ -57,7 +57,7 @@ export default function Topbar() {
         </button>
 
         {/* 중앙 검색 바 */}
-        <div className=" flex mx-auto justify-center items-center">
+        <div className=" flex mx-[37.5%] justify-center items-center">
           <div className="relative w-[480px] h-[40px]">
             <SearchIcon />
             <input

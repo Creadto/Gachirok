@@ -4,16 +4,15 @@ import { BackButton } from "@/app/bulletin-board/_components/BackButton";
 import PreviewModalFree from "@/app/bulletin-board/_components/PreviewModalFree";
 import { QuillEditor } from "@/app/bulletin-board/_components/QuillEditor";
 import DropdownSelector from "@/core/components/DropdownSelector";
+import CloseIcon from "@/core/components/icons/CloseIcon";
+import { LocationIcon } from "@/core/components/icons/LocationIcon";
+import SearchIcon from "@/core/components/icons/top-bar/SearchIcon";
 import { countryStore } from "@/core/store/country-store";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import "react-quill/dist/quill.snow.css";
 import { CategorySelector } from "./_components/CategorySelector";
-import { PreviewAndSubmitButton } from "@/app/bulletin-board/_components/PreviewAndSubmitButton";
-import CloseIcon from "@/core/components/icons/CloseIcon";
-import SearchIcon from "@/core/components/icons/top-bar/SearchIcon";
-import { LocationIcon } from "@/core/components/icons/LocationIcon";
 
 interface AddFreeLocalBulletinBoardPageProps {
   params: {
@@ -106,6 +105,8 @@ export default function AddFreeLocalBulletinBoardPage({
     setIsPreviewModalOpen(!isPreviewModalOpen);
   };
 
+
+//위치 선택 모달 열림 여부
   const handleLocationModal = () => {
     setIsLocationModalOpen(!isLocationModalOpen);
   };

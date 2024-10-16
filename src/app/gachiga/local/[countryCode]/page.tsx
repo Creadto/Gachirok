@@ -42,7 +42,7 @@ const GachigaPage = ({ params }: GachigaPageProps) => {
   };
   return (
     <>
-      <div className=" mt-[30px]  w-[1360px] h-[full] ml-[405px] mr-[155px]">
+      <div className=" mt-[30px] h-full ml-[8.1%] mr-[8.1%] bg-red-500">
         <div className="flex flex-row gap-x-[10px] mt-3 text-[22px] items-center">
           <div>
             <GachigaIcon />

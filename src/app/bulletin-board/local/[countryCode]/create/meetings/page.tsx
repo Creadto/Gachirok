@@ -64,7 +64,6 @@ export default function AddMeetingsLocalBulletinBoardPage({
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
 
-
   const onValid = async (updatedData: any) => {
     setLoading(true);
     try {
@@ -80,8 +79,7 @@ export default function AddMeetingsLocalBulletinBoardPage({
           },
         });
 
-        if(response.data)
-        {
+        if (response.data) {
           setAlertMessage("미팅이 성공적으로 개설되었습니다!");
           setShowAlert(true);
         }
@@ -397,7 +395,7 @@ export default function AddMeetingsLocalBulletinBoardPage({
               type="number"
               value={maxMember}
               {...register("maxMember", { required: true })}
-              className=" mt-[10px] block w-full border bg-[#F6F6F6] text-black text-[14px] h-[50px] rounded-lg p-[15px]"
+              className="mt-[10px] block w-full border bg-[#F6F6F6] text-black text-[14px] h-[50px] rounded-lg p-[15px]"
               placeholder="모집 멤버를 입력해주세요."
               onChange={(e) => setMaxMember(parseInt(e.target.value, 10))}
             />
@@ -588,13 +586,12 @@ export default function AddMeetingsLocalBulletinBoardPage({
       </form>
 
       {showAlert && (
-          <CustomAlert
-            message={alertMessage}
-            onClose={() => setShowAlert(false)}
-            route={`/bulletin-board/local/${countryCode}`}
-          />
-        )}
-        
+        <CustomAlert
+          message={alertMessage}
+          onClose={() => setShowAlert(false)}
+          route={`/bulletin-board/local/${countryCode}`}
+        />
+      )}
 
       {/* 미리보기 모달창 */}
       {/* <PreviewModalMeetings
