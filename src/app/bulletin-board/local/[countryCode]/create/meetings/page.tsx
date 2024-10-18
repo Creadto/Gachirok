@@ -92,7 +92,7 @@ export default function AddMeetingsLocalBulletinBoardPage({
     }
   };
   //Image의 변동사항을 실시간으로 체크하기 위한 watch
-  const watchImages: FileList | undefined = watch("images") as FileList;
+  const watchImages: FileList | undefined = watch("photos") as FileList;
 
   //장소 선택 시 필요한 Country, State, City에 관한 상태
   const [selectedCountry, setSelectedCountry] = useState<string>("");
@@ -416,7 +416,7 @@ export default function AddMeetingsLocalBulletinBoardPage({
             나이대
           </label>
           <span className="font-bold">
-            {minValue === "20" && maxValue === "50"
+            {minValue === "20" && maxValue === "60"
               ? "전체"
               : `${minValue}~${maxValue}세`}
           </span>
@@ -511,7 +511,7 @@ export default function AddMeetingsLocalBulletinBoardPage({
             <input
               type="file"
               accept="image/*"
-              {...register("images")}
+              {...register("photos")}
               multiple
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             />
@@ -589,7 +589,7 @@ export default function AddMeetingsLocalBulletinBoardPage({
         <CustomAlert
           message={alertMessage}
           onClose={() => setShowAlert(false)}
-          route={`/bulletin-board/local/${countryCode}`}
+          route={`/gachiga/local/${countryCode}`}
         />
       )}
 

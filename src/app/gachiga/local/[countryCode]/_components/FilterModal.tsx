@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import DatePicker from "react-datepicker";
 import { FaCalendarAlt, FaClock } from "react-icons/fa";
+import { ko } from "date-fns/locale"; // date-fns의 한국어 로케일
 
 interface FilterModalProps {
   onClose: () => void;
@@ -334,6 +335,7 @@ const FilterModal = ({ onClose, countryCode }: FilterModalProps) => {
                     dateFormat="yyyy-MM-dd"
                     className="w-full border-none outline-none text-base bg-transparent"
                     placeholderText="시작날짜"
+                    locale={ko}
                   />
                 </div>
               </div>

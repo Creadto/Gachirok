@@ -1,6 +1,4 @@
 "use client";
-import ArrowDownIcon from "@/core/components/icons/ArrowDownIcon";
-import ArrowUpIcon from "@/core/components/icons/ArrowUpIcon";
 import GachigaIcon from "@/core/components/icons/GachigaIconPost";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -9,7 +7,7 @@ import GachigaPost from "./_components/GachigaPost";
 import MyGachigaPost from "./_components/MyGachigaPost";
 
 import "react-datepicker/dist/react-datepicker.css";
-import FilterModal from "./_components/FilterModal";
+import { FilterSection } from "./_components/FilterSection";
 
 interface GachigaPageProps {
   params: {
@@ -25,24 +23,12 @@ const GachigaPage = ({ params }: GachigaPageProps) => {
   const { countryCode } = params;
   const router = useRouter();
 
-  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isMyyMeetingsSelected, setIsMyMeetingsSelected] = useState(false);
   const [isOrderMeetingOpen, setIsOrderMeetingOpen] = useState(false);
 
-  const handleToggle = () => {
-    setIsOrderMeetingOpen((prev) => !prev);
-  };
-
-  const handleFilterModal = () => {
-    setIsFilterModalOpen(true);
-  };
-
-  const onClose = () => {
-    setIsFilterModalOpen(false);
-  };
   return (
     <>
-      <div className=" mt-[30px] h-full ml-[8.1%] mr-[8.1%] bg-red-500">
+      <div className=" mt-[30px] h-full ml-[8.1%] mr-[8.1%] ">
         <div className="flex flex-row gap-x-[10px] mt-3 text-[22px] items-center">
           <div>
             <GachigaIcon />
@@ -65,15 +51,6 @@ const GachigaPage = ({ params }: GachigaPageProps) => {
               내 모임
             </p>
           </button>
-        </div>
-        <div className="flex mt-5 text-xs">
-          <div className="border border-gray-500 border-solid rounded-2xl bg-white p-1.5 flex flex-row items-center">
-            <button onClick={() => handleFilterModal()}>필터 적용하기</button>
-          </div>
-          {/* 검색 필터 모달창  */}
-          {isFilterModalOpen && (
-            <FilterModal onClose={onClose} countryCode={countryCode} />
-          )}
           <div className=" ml-auto items-end">
             <CreateMeetingsButton
               onClick={() =>
@@ -83,6 +60,25 @@ const GachigaPage = ({ params }: GachigaPageProps) => {
               }
             />
           </div>
+        </div>
+        <div className="flex flex-row">
+          <FilterSection countryCode={countryCode}/>
+        </div>
+        <div className="flex mt-5 text-xs gap-x-[5px]">
+          {/* <div className=" flex flex-row items-center justify-center">
+            <button
+              onClick={() => handleFilterModal()}
+              className="flex border border-[#eeeeee] rounded-[50px] bg-white  py-[9px] pl-[12px] pr-[8px] gap-x-[2px] "
+            >
+              <span className="text-[13px]">관심분야</span>
+              <ArrowDownIcon />
+            </button>
+          </div> */}
+
+          {/* 검색 필터 모달창  */}
+          {/* {isFilterModalOpen && (
+            <FilterModal onClose={onClose} countryCode={countryCode} />
+          )} */}
         </div>
         {isMyyMeetingsSelected ? (
           <MyGachigaPost />

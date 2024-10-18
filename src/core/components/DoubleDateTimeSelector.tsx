@@ -4,6 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import { FaCalendarAlt, FaClock } from "react-icons/fa";
+import { ko } from "date-fns/locale"; // date-fns의 한국어 로케일
 
 // Props 타입 정의
 interface DoubleDateTimeSelectorProps {
@@ -64,6 +65,7 @@ const DoubleDateTimeSelector: React.FC<DoubleDateTimeSelectorProps> = ({
             dateFormat="yyyy-MM-dd"
             className="w-full border-none outline-none"
             placeholderText="날짜를 선택해주세요."
+            locale={ko}
           />
         </div>
         {errors.meetingDate && (

@@ -3,7 +3,7 @@ interface CreateMeetingsButtonProps {
 }
 
 /** 모임 개설하기 버튼
- * @Description 
+ * @Description
  * @author 김영서
  **/
 export const CreateMeetingsButton = ({
@@ -11,7 +11,7 @@ export const CreateMeetingsButton = ({
 }: CreateMeetingsButtonProps) => {
   return (
     <button
-      className=" border-double border-4 border-white rounded-2xl  bg-black  flex flew-row text-white w-max p-2 gap-[10px]"
+      className=" mt-5 whitespace-nowrap border-double border-4 border-white rounded-[50px] text-[13px] bg-black  flex flew-row  text-white w-max py-[7px] pl-[10px] pr-[12px] gap-[5px]"
       onClick={onClick}
     >
       <svg

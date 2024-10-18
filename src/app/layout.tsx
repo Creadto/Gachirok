@@ -40,7 +40,7 @@ export default function RootLayout({
             <Topbar />
             <div className="flex">
             <Sidebar />
-            <div className="flex-1 pt-[80px]">
+            <div className="flex-1 items-center pt-[80px]">
               {children}
               {modal}
             </div>

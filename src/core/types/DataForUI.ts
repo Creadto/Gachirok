@@ -8,11 +8,11 @@ export const sexTypes = [
 ];
 
 export const weekdayOptions = [
-  { value: "1", label: "일" },
-  { value: "2", label: "월" },
-  { value: "3", label: "화" },
-  { value: "4", label: "수" },
-  { value: "5", label: "목" },
-  { value: "6", label: "금" },
-  { value: "7", label: "토" },
+  { value: "1", label: "일요일" },
+  { value: "2", label: "월요일" },
+  { value: "3", label: "화요일" },
+  { value: "4", label: "수요일" },
+  { value: "5", label: "목요일" },
+  { value: "6", label: "금요일" },
+  { value: "7", label: "토요일" },
 ];

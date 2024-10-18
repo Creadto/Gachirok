@@ -4,7 +4,6 @@ import useEditButtonStore from "@/core/store/button-store";
 import { countryStore } from "@/core/store/country-store";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import ArrowDownIcon from "../icons/ArrowDownIcon";
 import ChatIcon from "../icons/top-bar/ChatIcon";
 import LanguageIcon from "../icons/top-bar/LanguageIcon";
 import NotificationIcon from "../icons/top-bar/NotificationIcon";
@@ -12,6 +11,7 @@ import SearchIcon from "../icons/top-bar/SearchIcon";
 import CreatePostButton from "./CreatePostButton";
 import CreatePostModal from "./CreatePostModal";
 import ProfileIcon from "./ProfileIcon";
+import { ArrowDownIcon } from "../icons/ArrowDownIcon";
 
 /** 상단 navigation bar에 대한 컴포넌트
  * @Description

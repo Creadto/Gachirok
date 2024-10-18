@@ -1,5 +1,5 @@
 import { FaBell, FaCommentAlt, FaEdit, FaGlobe } from "react-icons/fa";
-import ProfileIcon from "./ProfileIcon";
+import ProfileIcon from "./top-bar/ProfileIcon";
 
 export default function Topbar() {
   return (
