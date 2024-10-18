@@ -18,10 +18,11 @@ interface FilterSectionProps {
   page: number;
   size: number;
   countryCode: string;
+  setPage?:(page: number) => void;
 
 }
 
-export const FilterSection = ({countryCode, page, size} : FilterSectionProps) => {
+export const FilterSection = ({countryCode, page, size, setPage} : FilterSectionProps) => {
   const router = useRouter();
   const {data: session} = useSession();
 
@@ -229,9 +230,10 @@ export const FilterSection = ({countryCode, page, size} : FilterSectionProps) =>
     if (startHour !== null && startMinute !== null)
       params.set("meetingStartTime", formatTime(startHour, startMinute));
     if (endHour !== null && endMinute !== null) params.set("meetingEndTime", formatTime(endHour, endMinute));
+    // params.set("page", "0");
+    // params.set("size", "10")
 
-params.delete("page")
-params.delete("size")
+
 
     try {
       if (session?.accessToken) {
@@ -259,7 +261,7 @@ params.delete("size")
             cost !== null ||
             approval !== null ||
             sexType !== null ||
-            (startAge !== "20" && endAge !== "60") ||
+            (startAge !== "20" || endAge !== "60") ||
             slot !== 0 ||
             startDate !== undefined ||
             endDate !== undefined ||

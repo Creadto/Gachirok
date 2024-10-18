@@ -71,11 +71,21 @@ const FilteredPage = () => {
     }
   }
 
+
+  useEffect(() =>{
+setPage(0);
+  }, [meetingsParam])
+
   useEffect(() => {
-    if (session?.accessToken) {
+    if (session?.accessToken && meetingsParam) {
       loadFilteredMeetings();
+      const params = new URLSearchParams(meetingsParam);
+      params.set("page", page.toString());
+      params.set("size", size.toString());
+      router.push(`/gachiga/local?${params.toString()}`);
     }
-  }, [session?.accessToken, router, page, meetingsParam]);
+  }, [page, size, router, meetingsParam, session?.accessToken]);
+
 
   //즐겨찾기 버튼 눌렀을 때 API 요청보내는 함수
   const handleBookmark = (meeting: MeetingPreviewResponse) => {
