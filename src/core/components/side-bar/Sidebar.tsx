@@ -199,7 +199,7 @@ const Sidebar = () => {
             {/* Gachiga */}
             <SidebarItem
               isActive={activeItems.localGachiga}
-              onClick={() => router.push(`/gachiga/local/${country}`)}
+              onClick={() => router.push(`/gachiga/local/${country}?page=0&size=10`)}
               activeIcon={<ActiveGachigaIcon />}
               inactiveIcon={<GachigaIcon />}
               label="Gachiga"

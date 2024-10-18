@@ -16,11 +16,11 @@ import "react-quill/dist/quill.snow.css";
 import { CategorySelector } from "../_components/CategorySelector";
 import CostlyDetails from "./_components/CostlyDetails";
 import CountryStateCitySelector from "./_components/CountryStateCitySelector";
-import RangeSlider from "./_components/RangeSlider";
 import TwoButtonApproval from "./_components/TwoButtonApproval";
 import appendMeetingCreateRequestFromData from "./_utils/appendMeetingCreateRequestFormData";
 import { sexTypes } from "@/core/types/DataForUI";
 import CustomAlert from "@/core/components/CustomAlert";
+import { RangeSlider } from "./_components/RangeSlider";
 
 interface AddFleaMarketLocalBulletinBoardPageProps {
   params: {

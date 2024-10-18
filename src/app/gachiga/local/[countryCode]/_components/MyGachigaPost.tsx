@@ -19,10 +19,11 @@ const MyGachigaPost = () => {
  const [meetings, setMeetings] = useState<MeetingPreviewResponse[]>([]);
  //로딩여부
  const [loading, setLoading] = useState(true);
+
  //현재 페이지
  const [currentPage, setCurrentPage] = useState(1);
  //페이지당 미팅 개수
- const meetingsPerPage = 10;
+ const meetingsPerPage = 50;
  //전체 페이지 개수
  const totalPages = Math.ceil(meetings.length / meetingsPerPage);
 
@@ -169,9 +170,9 @@ const MyGachigaPost = () => {
 
       {/* 하단 페이지 이동 네비게이션 */}
       <PageNavigation
-        currentPage={currentPage}
+        page={currentPage}
         totalPages={totalPages}
-        handlePageChange={handlePageChange}
+        setPage={handlePageChange}
       />
     </>
   );

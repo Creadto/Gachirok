@@ -1,21 +1,25 @@
+import { useEffect } from "react";
+
 interface PageNavigationProps {
-  currentPage : number;
+  page : number;
   totalPages: number;
-  handlePageChange: (pageNumber: number) => void;
+  setPage: (pageNumber: number) => void;
 
 }
 /**
  * @Description 페이지를 이동하게 해주는 Component
  * @author 김영서
  **/
-const PageNavigation = ({currentPage, totalPages, handlePageChange}: PageNavigationProps) => {
+const PageNavigation = ({page, totalPages, setPage}: PageNavigationProps) => {
 
   return(
     <div className="flex justify-center mt-8 space-x-2 mb-[200px]">
+
+      {/* 첫번째 페이지로 이동 */}
         <button
           className="px-4 py-2 rounded text-black"
-          onClick={() => handlePageChange(1)}
-          disabled={currentPage === 1}
+          onClick={() => setPage(0)}
+          disabled={page-1 === 0}
         >
           <svg
             width="15"
@@ -40,12 +44,14 @@ const PageNavigation = ({currentPage, totalPages, handlePageChange}: PageNavigat
             />
           </svg>
         </button>
+
+        {/* 이전 페이지로 이동 */}
         <button
           className={`px-4 py-2 rounded ${
-            currentPage === 1 ? "" : "text-black"
+            page === 0 ? "" : "text-black"
           }`}
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
+          onClick={() => setPage(page -2)}
+          disabled={page-1 === 0}
         >
           <svg
             width="15"
@@ -69,22 +75,24 @@ const PageNavigation = ({currentPage, totalPages, handlePageChange}: PageNavigat
           <button
             key={index}
             className={`px-4 py-2 rounded ${
-              currentPage === index + 1
+              page === index +1
                 ? "bg-black text-white"
                 : "text-neutral-400"
             }`}
-            onClick={() => handlePageChange(index + 1)}
+            onClick={() => setPage(index)}
           >
             {index + 1}
           </button>
         ))}
 
+
+{/* 다음 페이지 버튼 */}
         <button
           className={`px-4 py-2 rounded ${
-            currentPage === totalPages ? "" : " text-black"
+            page === totalPages ? "" : " text-black"
           }`}
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
+          onClick={() => setPage(page)}
+          disabled={page === totalPages}
         >
           <svg
             width="15"
@@ -102,10 +110,12 @@ const PageNavigation = ({currentPage, totalPages, handlePageChange}: PageNavigat
             />
           </svg>
         </button>
+
+        {/* 마지막 페이지 버튼 */}
         <button
           className="px-4 py-2 rounded text-black"
-          onClick={() => handlePageChange(totalPages)}
-          disabled={currentPage === totalPages}
+          onClick={() => setPage(totalPages-1)}
+          disabled={page === totalPages}
         >
           <svg
             width="15"

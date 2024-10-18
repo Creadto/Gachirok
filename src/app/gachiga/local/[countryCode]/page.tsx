@@ -1,6 +1,6 @@
 "use client";
 import GachigaIcon from "@/core/components/icons/GachigaIconPost";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { CreateMeetingsButton } from "./_components/CreateMeetingsButton";
 import GachigaPost from "./_components/GachigaPost";
@@ -21,22 +21,25 @@ interface GachigaPageProps {
  **/
 const GachigaPage = ({ params }: GachigaPageProps) => {
   const { countryCode } = params;
+  const searchParams = useSearchParams();
   const router = useRouter();
 
   const [isMyyMeetingsSelected, setIsMyMeetingsSelected] = useState(false);
-  const [isOrderMeetingOpen, setIsOrderMeetingOpen] = useState(false);
+
+  const size = Number(searchParams.get("size")) || 10; // Default to 20 if not specified
+  const [page, setPage] = useState(Number(searchParams.get("page")) || 0)
 
   return (
     <>
       <div className=" mt-[30px] h-full ml-[8.1%] mr-[8.1%] ">
-        <div className="flex flex-row gap-x-[10px] mt-3 text-[22px] items-center">
+        <div className="flex flex-row gap-x-[10px] text-[22px] items-center">
           <div>
             <GachigaIcon />
           </div>
           <button onClick={() => setIsMyMeetingsSelected(false)}>
             <p
               className={`${
-                isMyyMeetingsSelected ? "text-slate-300" : "font-bold"
+                isMyyMeetingsSelected ? "text-[#a3a3a3] font-bold" : "font-bold"
               }`}
             >
               전체모임
@@ -45,7 +48,7 @@ const GachigaPage = ({ params }: GachigaPageProps) => {
           <button onClick={() => setIsMyMeetingsSelected(true)}>
             <p
               className={` ${
-                isMyyMeetingsSelected ? "font-bold" : "text-slate-300"
+                isMyyMeetingsSelected ? "font-bold" : "font-bold text-[#a3a3a3]"
               }`}
             >
               내 모임
@@ -62,28 +65,12 @@ const GachigaPage = ({ params }: GachigaPageProps) => {
           </div>
         </div>
         <div className="flex flex-row">
-          <FilterSection countryCode={countryCode}/>
-        </div>
-        <div className="flex mt-5 text-xs gap-x-[5px]">
-          {/* <div className=" flex flex-row items-center justify-center">
-            <button
-              onClick={() => handleFilterModal()}
-              className="flex border border-[#eeeeee] rounded-[50px] bg-white  py-[9px] pl-[12px] pr-[8px] gap-x-[2px] "
-            >
-              <span className="text-[13px]">관심분야</span>
-              <ArrowDownIcon />
-            </button>
-          </div> */}
-
-          {/* 검색 필터 모달창  */}
-          {/* {isFilterModalOpen && (
-            <FilterModal onClose={onClose} countryCode={countryCode} />
-          )} */}
+          <FilterSection countryCode={countryCode} page={page} size={size}/>
         </div>
         {isMyyMeetingsSelected ? (
           <MyGachigaPost />
         ) : (
-          <GachigaPost countryCode={countryCode} />
+          <GachigaPost countryCode={countryCode} page={page} size={size} setPage={setPage}/>
         )}
       </div>
     </>

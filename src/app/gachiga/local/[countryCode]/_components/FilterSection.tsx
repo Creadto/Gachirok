@@ -1,4 +1,7 @@
+import { useGetFilteredMeetings } from "@/core/hooks/useGetMeetings";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FilterAgeButton } from "./FilterAgeButton";
 import { FilterApprovalButton } from "./FilterApprovalButton";
@@ -10,17 +13,15 @@ import { FilterSexTypesButton } from "./FilterSexTypesButton";
 import { FilterSlotButton } from "./FilterSlotButton";
 import { FilterStartTimeButton } from "./FilterStartTimeButton";
 import { FilterWeekDaysButton } from "./FilterWeekDaysButton";
-import { useGetFilteredMeetings } from "@/core/hooks/useGetMeetings";
-import { useRouter } from "next/navigation";
-import { Session } from "next-auth";
-import { useSession } from "next-auth/react";
 
 interface FilterSectionProps {
+  page: number;
+  size: number;
   countryCode: string;
 
 }
 
-export const FilterSection = ({countryCode} : FilterSectionProps) => {
+export const FilterSection = ({countryCode, page, size} : FilterSectionProps) => {
   const router = useRouter();
   const {data: session} = useSession();
 
@@ -64,6 +65,83 @@ export const FilterSection = ({countryCode} : FilterSectionProps) => {
 
   //모집요일
   const [weekDays, setWeekDays] = useState<string[]>([]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.has("title")) setSearchContent(params.get("title"));
+    if (params.has("daysOfWeek")) setWeekDays(params.get("daysOfWeek")!.split(","));
+    if (params.has("interests")) setSelectedInterests(params.get("interests")!.split(","));
+    if (params.has("slot")) setSlot(Number(params.get("slot")));
+    if (params.has("costly")) setCost(params.get("costly") === 'true');
+    if (params.has("approval")) setApproval(params.get("approval") === 'true');
+    if (params.has("sexType")) setSexType(params.get("sexType"));
+    if (params.has("startAge")) setStartAge(params.get("startAge")!);
+    if (params.has("endAge")) setEndAge(params.get("endAge")!);
+    if (params.has("meetingStartDate")) {
+      const startDateStr = params.get("meetingStartDate")!;
+      
+      // '2024년 9월 29일' 문자열에서 숫자 추출
+      const [startYear, startMonth, startDay] = startDateStr.match(/\d+/g)!.map(Number);
+    
+      // 추출된 값을 바탕으로 Date 객체 생성 및 상태 할당
+      setStartDate(new Date(startYear, startMonth - 1, startDay)); // Month는 0부터 시작하므로 -1
+    }
+    
+    if (params.has("meetingEndDate")) {
+      const endDateStr = params.get("meetingEndDate")!;
+      
+      // '2024년 10월 5일' 문자열에서 숫자 추출
+      const [endYear, endMonth, endDay] = endDateStr.match(/\d+/g)!.map(Number);
+    
+      // 추출된 값을 바탕으로 Date 객체 생성 및 상태 할당
+      setEndDate(new Date(endYear, endMonth - 1, endDay)); // Month는 0부터 시작하므로 -1
+    }
+    
+    if (params.has("meetingStartTime")) {
+      const time = params.get("meetingStartTime")!;
+      const hourMatch = time.match(/(\d+)시/);   // '시' 앞의 숫자 추출
+      const minuteMatch = time.match(/(\d+)분/); // '분' 앞의 숫자 추출
+  
+      const hour = hourMatch ? parseInt(hourMatch[1], 10) : null;
+      const minute = minuteMatch ? parseInt(minuteMatch[1], 10) : null;
+    
+      // 추출한 값으로 상태 업데이트
+      setStartHour(hour);
+      setStartMinute(minute);
+    }
+    if (params.has("meetingEndTime")) {
+      const time = params.get("meetingEndTime")!;
+      const hourMatch = time.match(/(\d+)시/);   // '시' 앞의 숫자 추출
+      const minuteMatch = time.match(/(\d+)분/); // '분' 앞의 숫자 추출
+  
+      const hour = hourMatch ? parseInt(hourMatch[1], 10) : null;
+      const minute = minuteMatch ? parseInt(minuteMatch[1], 10) : null;
+    
+      // 추출한 값으로 상태 업데이트
+      setEndHour(hour);
+      setEndMinute(minute);
+    }
+
+    const fetchData = async () => {
+      try {
+        if (session?.accessToken) {
+
+          // sessionStorage에 새로운 데이터 넣기
+          sessionStorage.removeItem("meetingsParam")
+          sessionStorage.setItem("meetingsParam", params.toString())
+          //필터적용이 된 페이지로 이동
+          router.push(`/gachiga/local?${params.toString()}`);
+        }
+      } catch (error) {
+        console.error("Error fetching meetings:", error);
+      }
+    };
+
+    if (params.toString()) {
+      fetchData();
+    }
+  }, [router]);
 
   // 관심분야 선택 로직
   const handleInterestClick = (value: string) => {
@@ -109,6 +187,7 @@ export const FilterSection = ({countryCode} : FilterSectionProps) => {
     setEndHour(null);
     setEndMinute(null);
     setWeekDays([]);
+    router.push(`/gachiga/local/${countryCode}`)
   };
 
     //API Request의 형식에 맞게 날짜 format 바꾸기
@@ -127,14 +206,18 @@ export const FilterSection = ({countryCode} : FilterSectionProps) => {
   };
 
   const handleFilterClick = async() => {
+  
     const params = new URLSearchParams();
+
+    
+
 
     if (countryCode) params.set("countryCode", countryCode);
     if (searchContent !== null) params.set("title", searchContent);
     if (weekDays.length > 0) params.set("daysOfWeek", weekDays.join(","));
     if (selectedInterests.length > 0)
       params.set("interests", selectedInterests.join(","));
-    if (slot !== null) params.set("slot", slot.toString());
+    if (slot !== 0) params.set("slot", slot.toString());
     if (cost !== null) params.set("costly", cost.toString());
     if (approval !== null) params.set("approval", approval.toString());
     if (sexType !== null) params.set("sexType", sexType);
@@ -147,16 +230,13 @@ export const FilterSection = ({countryCode} : FilterSectionProps) => {
       params.set("meetingStartTime", formatTime(startHour, startMinute));
     if (endHour !== null && endMinute !== null) params.set("meetingEndTime", formatTime(endHour, endMinute));
 
+params.delete("page")
+params.delete("size")
+
     try {
       if (session?.accessToken) {
-        const response = await useGetFilteredMeetings(
-          session.accessToken,
-          params.toString()
-        );
-        //sessionStorage 초기화
-        sessionStorage.removeItem("meetings");
-        //sessionStorage에 새로운 데이터 넣기
-        sessionStorage.setItem("meetings", JSON.stringify(response));
+        sessionStorage.removeItem("meetingsParam")
+        sessionStorage.setItem("meetingsParam", params.toString())
         //필터적용이 된 페이지로 이동
         router.push(`/gachiga/local?${params.toString()}`);
       }
@@ -164,11 +244,6 @@ export const FilterSection = ({countryCode} : FilterSectionProps) => {
       console.error("ERROR", error);
     }
   }
-
-  useEffect(() => {
-    console.log("start", startAge);
-    console.log("end", endAge);
-  }, [startAge, endAge]);
 
   return (
     <div className="flex mt-5 text-xs gap-x-[5px] w-full">
@@ -277,7 +352,7 @@ export const FilterSection = ({countryCode} : FilterSectionProps) => {
       cost !== null ||
       approval !== null ||
       sexType !== null ||
-      (startAge !== "20" && endAge !== "60") ||
+      (startAge !== "20" || endAge !== "60") ||
       slot !== 0 ||
       startDate !== undefined ||
       endDate !== undefined ||

@@ -12,13 +12,16 @@ import { CoinIcon } from "@/core/components/icons/CoinIcon";
 
 interface GachigaPostProps {
   countryCode: string;
+  page: number;
+  size: number;
+  setPage: (page: number) => void;
 }
 
 /**
  * @Description 메인 페이지 '전체모임'을 그려주는 Component
  * @author 김영서
  **/
-const GachigaPost = ({ countryCode }: GachigaPostProps) => {
+const GachigaPost = ({ countryCode, page, size, setPage }: GachigaPostProps) => {
   const { data: session } = useSession();
   const router = useRouter();
   const accessToken = session?.accessToken;
@@ -27,33 +30,40 @@ const GachigaPost = ({ countryCode }: GachigaPostProps) => {
   const [meetings, setMeetings] = useState<MeetingPreviewResponse[]>([]);
   //로딩여부
   const [loading, setLoading] = useState(true);
+
+  const[totalElements, setTotalElements] = useState(0);
+  const [totalPage, setTotalPage] = useState(0);
+
+  
+
   //현재 페이지
-  const [currentPage, setCurrentPage] = useState(1);
+  // const [currentPage, setCurrentPage] = useState(1);
   //페이지당 미팅 개수
-  const meetingsPerPage = 10;
   //전체 페이지 개수
-  const totalPages = Math.ceil(meetings.length / meetingsPerPage);
+  // const totalPages = Math.ceil(meetings.length / meetingsPerPage);
 
   // 현재 페이지에서 보여줄 meetings 슬라이싱
-  const indexOfLastMeeting = currentPage * meetingsPerPage;
-  const indexOfFirstMeeting = indexOfLastMeeting - meetingsPerPage;
-  const currentMeetings = meetings.slice(
-    indexOfFirstMeeting,
-    indexOfLastMeeting
-  );
+  // const indexOfLastMeeting = currentPage * meetingsPerPage;
+  // const indexOfFirstMeeting = indexOfLastMeeting - meetingsPerPage;
+  // const currentMeetings = meetings.slice(
+  //   indexOfFirstMeeting,
+  //   indexOfLastMeeting
+  // );
 
   // 페이지 변경 핸들러
-  const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-  };
+
 
   //API로부터 소모임을 가져오는 함수
   async function loadMeetings() {
     try {
       setLoading(true);
       if (accessToken) {
-        const data = await useGetMeetings(accessToken, countryCode);
-        setMeetings(data);
+        router.push(`/gachiga/local/${countryCode}?page=${page}&size=${size}`)
+        const data = await useGetMeetings(accessToken, countryCode, page, size);
+        setMeetings(data.content);
+        setTotalElements(data.totalElements)
+        setTotalPage(data.totalPages)
+
       }
     } catch (error) {
       console.error("Error loading profile:", error);
@@ -84,7 +94,8 @@ const GachigaPost = ({ countryCode }: GachigaPostProps) => {
     if (accessToken) {
       loadMeetings();
     }
-  }, [accessToken, router]);
+  }, [accessToken, router, page]);
+
 
   if (loading) {
     return <div>Loading...</div>;
@@ -95,17 +106,17 @@ const GachigaPost = ({ countryCode }: GachigaPostProps) => {
   }
   return (
     <>
-      <p className="font-bold mt-[20px]">{meetings.length}개 모임</p>
-      <div className="flex flex-row gap-x-5 mt-[15px] flex-wrap gap-y-5">
-        {currentMeetings.map((meeting, index) => (
+      <p className="font-bold mt-[20px]">{totalElements}개 모임</p>
+      <div className="grid grid-cols-5 gap-x-5 mt-[15px] flex-wrap gap-y-5">
+        {meetings.map((meeting, index) => (
           <div
-            className="bg-white shadow-xl rounded-lg w-[256px] h-[308px] relative"
+            className="bg-white shadow-xl rounded-lg w-auto h-[308px] relative"
             key={index}
           >
             <img
               src={meeting.meetingPhotoUrl}
               alt="Event Image"
-              className=" rounded-md object-cover w-[300px] h-[155px]"
+              className=" rounded-md object-cover w-full h-[155px]"
             />
             <div className="absolute top-2 left-2 bg-black text-white px-2 py-1 text-xs rounded">
               진행중
@@ -175,9 +186,9 @@ const GachigaPost = ({ countryCode }: GachigaPostProps) => {
 
       {/* 하단 페이지 이동 네비게이션 */}
       <PageNavigation
-        currentPage={currentPage}
-        totalPages={totalPages}
-        handlePageChange={handlePageChange}
+        page={page+1}
+        totalPages={totalPage}
+        setPage={setPage}
       />
     </>
   );
