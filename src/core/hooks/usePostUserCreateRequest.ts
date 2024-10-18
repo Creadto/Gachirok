@@ -13,7 +13,7 @@ export async function usePostUserCreateRequest(
 
     {
       deviceToken: Math.floor(Math.random() * 1000).toString(),
-      countryCode: "China",
+      countryCode: "KR",
       noticeMarketing: noticeMarketing
     },
     {

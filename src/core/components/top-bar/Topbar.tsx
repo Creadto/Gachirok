@@ -88,12 +88,12 @@ export default function Topbar() {
             </div>
 
             {/* 언어 선택 */}
-            <div className="relative m-0 h-full">
+            {/* <div className="relative m-0 h-full">
               <button className="flex items-center justify-center">
                 <LanguageIcon />
                 <ArrowDownIcon />
               </button>
-            </div>
+            </div> */}
             {/* 프로필 아이콘 */}
           </div>
           <ProfileIcon />
