@@ -2,20 +2,28 @@
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { FieldErrors, UseFormRegister } from "react-hook-form";
+import { FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { FaCalendarAlt, FaClock } from "react-icons/fa";
 import { ko } from "date-fns/locale"; // date-fns의 한국어 로케일
+import { MeetingResponse } from "@/app/gachiga/_types/MeetingResponse";
+import { StartTimeButton } from "@/app/bulletin-board/local/[countryCode]/create/meetings/_components/StartTimeButton";
+import { EndTimeButton } from "@/app/bulletin-board/local/[countryCode]/create/meetings/_components/EndTimeButton";
 
 // Props 타입 정의
 interface DoubleDateTimeSelectorProps {
   selectedDate: Date | null;
   onDateChange: (date: Date | null) => void;
-  selectedStartTime: string;
-  selectedEndTime: string;
-  onStartTimeChange: (time: string) => void;
-  onEndTimeChange: (time: string) => void;
   register: UseFormRegister<any>;
   errors: FieldErrors;
+  setValue: UseFormSetValue<any>;
+  startHour: number | null;
+  startMinute: number | null;
+  setStartHour: (hour: number | null) => void;
+  setStartMinute: (minute: number | null) => void;
+  endHour: number | null;
+  endMinute: number | null;
+  setEndHour: (hour: number | null) => void;
+  setEndMinute: (minute: number | null) => void;
 }
 
 /**
@@ -25,38 +33,26 @@ interface DoubleDateTimeSelectorProps {
 const DoubleDateTimeSelector: React.FC<DoubleDateTimeSelectorProps> = ({
   selectedDate,
   onDateChange,
-  selectedStartTime,
-  selectedEndTime,
-  onStartTimeChange,
-  onEndTimeChange,
+  startHour,
+  setStartHour,
+  startMinute,
+  setStartMinute,
+  endHour,
+  endMinute,
+  setEndHour,
+  setEndMinute,
   register,
   errors,
+  setValue,
 }) => {
   const [timeError, setTimeError] = useState<string | null>(null);
 
-  useEffect(() => {
-    // 시작시간과 종료시간에 대한 비교 / 종료시간이 시작시간보다 이르면 오류 출력
-    if (selectedStartTime && selectedEndTime) {
-      const [startHour, startMinute] = selectedStartTime.split(":").map(Number);
-      const [endHour, endMinute] = selectedEndTime.split(":").map(Number);
-
-      const startTime = new Date().setHours(startHour, startMinute);
-      const endTime = new Date().setHours(endHour, endMinute);
-
-      if (endTime <= startTime) {
-        setTimeError("종료 시간은 시작 시간보다 늦어야 합니다.");
-      } else {
-        setTimeError(null);
-      }
-    }
-  }, [selectedStartTime, selectedEndTime]);
-
   return (
-    <div className="flex flex-row space-x-4">
+    <div className="flex flex-row justify-between w-full gap-x-[10px]">
       {/* 날짜 선택 */}
-      <div className="w-full">
-      <label className="block text-xs text-[#808080] mb-[10px]">날짜</label>
-        <div className="flex items-center border border-gray-300 rounded-lg p-2">
+      <div className="flex flex-col flex-1">
+        <label className="block text-xs text-[#808080] mb-[10px]">날짜</label>
+        <div className="flex items-center border border-gray-300 rounded-lg p-2 h-[42px]">
           <FaCalendarAlt className="text-gray-500 mr-2" />
           <DatePicker
             {...register("meetingDate", { required: true })}
@@ -73,68 +69,36 @@ const DoubleDateTimeSelector: React.FC<DoubleDateTimeSelectorProps> = ({
         )}
       </div>
 
-      {/* 시작 시간 선택 */}
-      <div className="w-full">
-      <label className="block text-xs text-[#808080] mb-[10px]">시작 시간</label>
-        <div className="flex items-center border border-gray-300 rounded-lg p-2">
-          <FaClock className="text-gray-500 mr-2" />
-          <select
-            className="w-full border-none outline-none"
-            value={selectedStartTime}
-            {...register("meetingStartTime", { required: true })}
-            onChange={(e) => onStartTimeChange(e.target.value)}
-          >
-            <option value="">시간을 선택해주세요.</option>
-            {Array.from({ length: 24 }, (_, hour) =>
-              Array.from({ length: 2 }, (_, half) => {
-                const formattedTime = `${hour < 10 ? `0${hour}` : hour}:${
-                  half === 0 ? "00" : "30"
-                }`;
-                return (
-                  <option key={formattedTime} value={formattedTime}>
-                    {formattedTime}
-                  </option>
-                );
-              })
-            )}
-          </select>
-        </div>
-        {errors.meetingStartTime && (
-          <p className="text-red-500">시작 시간은 필수항목입니다.</p>
+      <div className="flex flex-1 flex-col">
+        <label className="block text-xs text-[#808080] mb-[10px]">
+          시작 시간
+        </label>
+        <StartTimeButton
+          startHour={startHour}
+          startMinute={startMinute}
+          setStartHour={setStartHour}
+          setStartMinute={setStartMinute}
+        />
+        {startHour === null || startMinute === null && (
+           <p className="text-red-500">시작 시간은 필수항목입니다.</p>
         )}
       </div>
 
-      {/* 종료 시간 선택 */}
-      <div className="w-full relative">
-      <label className="block  text-xs text-[#808080] mb-[10px]">종료 시간</label>
-        <div className="flex items-center border border-gray-300 rounded-lg p-2">
-          <FaClock className="text-gray-500 mr-2" />
-          <select
-            className="w-full border-none outline-none"
-            value={selectedEndTime}
-            {...register("meetingEndTime", { required: true })}
-            onChange={(e) => onEndTimeChange(e.target.value)}
-          >
-            <option value="">시간을 선택해주세요.</option>
-            {Array.from({ length: 24 }, (_, hour) =>
-              Array.from({ length: 2 }, (_, half) => {
-                const formattedTime = `${hour < 10 ? `0${hour}` : hour}:${
-                  half === 0 ? "00" : "30"
-                }`;
-                return (
-                  <option key={formattedTime} value={formattedTime}>
-                    {formattedTime}
-                  </option>
-                );
-              })
-            )}
-          </select>
-        </div>
-        {errors.meetingEndTime && (
-          <p className="text-red-500">종료 시간은 필수항목입니다.</p>
+      <div className="flex flex-1 flex-col">
+        <label className="block text-xs text-[#808080] mb-[10px]">
+          시작 시간
+        </label>
+        <EndTimeButton
+          endHour={endHour}
+          endMinute={endMinute}
+          setEndHour={setEndHour}
+          setEndMinute={setEndMinute}
+        />
+        {endHour === null || endMinute === null && (
+           <p className="text-red-500">종료 시간은 필수항목입니다.</p>
         )}
-        {timeError && <p className="text-red-500">{timeError}</p>}
       </div>
+
     </div>
   );
 };

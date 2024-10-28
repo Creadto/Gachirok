@@ -66,7 +66,7 @@ const CountrySelector = () => {
 
       {/* 국가 선택 Dropdown */}
       {isOpen && (
-        <div className="absolute -left-2 mt-2 w-[400px] rounded-md h-[380px] bg-white focus:outline-none">
+        <div className="absolute -left-2 mt-2 w-[400px] rounded-md h-[380px] bg-white focus:outline-none z-50">
           <div className="relative z-10 w-full bg-white border h-[380px] border-gray-300 rounded-md overflow-y-auto">
 
             {/* 국가설정 HEADER */}

@@ -1,3 +1,4 @@
+import { MeetingResponse } from "@/app/gachiga/_types/MeetingResponse";
 import axios from "axios";
 
 
@@ -6,7 +7,7 @@ import axios from "axios";
  * @author 김영서
  **/
 export async function useGetMeetings(accessToken: string, countryCode: string, page: number, size: number) {
-  const response = await axios.get(`/api/meetings/?countryCode=${countryCode}&page=${page}&size=${size}`, {
+  const response = await axios.get(`/api/meetings2/?countryCode=${countryCode}&page=${page}&size=${size}`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
@@ -30,6 +31,16 @@ export async function useGetFilteredMeetings(accessToken: string, url: string, p
       Authorization: `Bearer ${accessToken}`,
     },
   });
+
+  return response.data;
+}
+
+export async function useGetMeetingsId(meetingId: number,  accessToken: string | undefined) {
+  const response = await axios.get(`/api/meetings/${meetingId}`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
 
   return response.data;
 }

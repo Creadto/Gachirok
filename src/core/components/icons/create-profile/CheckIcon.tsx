@@ -28,7 +28,7 @@ export const CheckIcon = () => {
 interface CheckColorIconProps {
   color: string;
 }
-export const CheckColorIcon = ({color}: CheckColorIconProps) => {
+export const CheckColorIcon = ({ color }: CheckColorIconProps) => {
   return (
     <svg
       width="16"
@@ -44,6 +44,33 @@ export const CheckColorIcon = ({color}: CheckColorIconProps) => {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
+    </svg>
+  );
+};
+
+export const BlueCheckIcon = () => {
+  return (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 12 12"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g clipPath="url(#tqsvmmacva)">
+        <path
+          d="M2.523 6.098 4.775 8.35l4.7-4.7"
+          stroke="#0676FC"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </g>
+      <defs>
+        <clipPath id="tqsvmmacva">
+          <path fill="#fff" d="M0 0h12v12H0z" />
+        </clipPath>
+      </defs>
     </svg>
   );
 };

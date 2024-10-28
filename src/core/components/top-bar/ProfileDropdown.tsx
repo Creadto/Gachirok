@@ -22,7 +22,7 @@ import { useState } from "react";
 import SignOutModal from "../SignOutModal";
 
 interface ProfileDropdownProps {
-  profile: Profile;
+  profile: Profile | null;
   closeModal: () => void;
 }
 
@@ -41,7 +41,7 @@ export const ProfileDropdown = ({
 
   return (
     <>
-      <div className="absolute w-[320px] h-[681px] top-[50px] right-0 bg-white rounded-[15px] border border-[#EEEEEE]">
+      <div className="absolute w-[320px] h-[681px] top-[50px] right-0 bg-white rounded-[15px] border border-[#EEEEEE] z-30">
         {/* 프로필 아이콘 버튼 */}
         <button
           onClick={() => {
@@ -63,18 +63,18 @@ export const ProfileDropdown = ({
               <div className="flex flex-col  mt-[4px] space-y-[5px]">
                 <div className="flex gap-x-[5px] w-[125px] text-start">
                   <p className="w-full  h-[28px] text-[20px] font-bold">
-                    {profile.nickname}
+                    {profile?.nickname}
                   </p>
                   <div className="flex w-[34px] h-[18px] bg-[#EEEEEE] my-[5px] mr-[1px] text-[#808080} text-[10px] items-center justify-center">
-                    lv.{profile.answerPoint}
+                    lv.{profile?.answerPoint}
                   </div>
                 </div>
 
                 <div className="flex-row flex w-full bg-white space-x-[5px] items-start">
                   <ResidentIcon />
                   <div className="text-[13px] whitespace-nowrap">
-                    {getCountryName(profile.residenceCountryCode)}/
-                    {profile.residenceYear}년
+                    {getCountryName(profile?.residenceCountryCode)}/
+                    {profile?.residenceYear}년
                   </div>
                 </div>
               </div>
@@ -94,7 +94,7 @@ export const ProfileDropdown = ({
             <div className="flex flex-col space-y-[2px]">
               <div className="text-[13px] text-[#E6A45E]">보유 포인트</div>
               <div className="text-[18px] font-bold">
-                {profile.purchaseProfile?.coin}
+                {profile?.purchaseProfile?.coin}
               </div>
             </div>
           </div>

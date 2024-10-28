@@ -9,6 +9,7 @@ import FilledStarIcon from "@/core/components/icons/FilledStarIcon";
 import EmptyStarIcon from "@/core/components/icons/EmptyStarIcon";
 import { usePostMeetingsBookmark } from "@/core/hooks/usePostMeetings";
 import { CoinIcon } from "@/core/components/icons/CoinIcon";
+import { LoadingSpinner } from "@/core/components/LoadingSpinner";
 
 interface GachigaPostProps {
   countryCode: string;
@@ -21,7 +22,12 @@ interface GachigaPostProps {
  * @Description 메인 페이지 '전체모임'을 그려주는 Component
  * @author 김영서
  **/
-const GachigaPost = ({ countryCode, page, size, setPage }: GachigaPostProps) => {
+const GachigaPost = ({
+  countryCode,
+  page,
+  size,
+  setPage,
+}: GachigaPostProps) => {
   const { data: session } = useSession();
   const router = useRouter();
   const accessToken = session?.accessToken;
@@ -31,10 +37,8 @@ const GachigaPost = ({ countryCode, page, size, setPage }: GachigaPostProps) => 
   //로딩여부
   const [loading, setLoading] = useState(true);
 
-  const[totalElements, setTotalElements] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
   const [totalPage, setTotalPage] = useState(0);
-
-  
 
   //현재 페이지
   // const [currentPage, setCurrentPage] = useState(1);
@@ -52,18 +56,16 @@ const GachigaPost = ({ countryCode, page, size, setPage }: GachigaPostProps) => 
 
   // 페이지 변경 핸들러
 
-
   //API로부터 소모임을 가져오는 함수
   async function loadMeetings() {
     try {
       setLoading(true);
       if (accessToken) {
-        router.push(`/gachiga/local/${countryCode}?page=${page}&size=${size}`)
+        router.push(`/gachiga/local/${countryCode}?page=${page}&size=${size}`);
         const data = await useGetMeetings(accessToken, countryCode, page, size);
         setMeetings(data.content);
-        setTotalElements(data.totalElements)
-        setTotalPage(data.totalPages)
-
+        setTotalElements(data.totalElements);
+        setTotalPage(data.totalPages);
       }
     } catch (error) {
       console.error("Error loading profile:", error);
@@ -96,12 +98,19 @@ const GachigaPost = ({ countryCode, page, size, setPage }: GachigaPostProps) => 
     }
   }, [accessToken, router, page]);
 
-
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex flex-col justify-center items-center h-screen">
+        <LoadingSpinner loading={loading} />
+        {/* 로딩 스피너 */}
+        <span className="text-3xl font-bold mt-[20px]">
+          로딩중... 잠시만 기다려주세요
+        </span>
+      </div>
+    );
   }
 
-  if (!meetings.length) {
+  if (!meetings?.length) {
     return <div>소모임이 존재하지 않습니다.</div>;
   }
   return (
@@ -119,7 +128,7 @@ const GachigaPost = ({ countryCode, page, size, setPage }: GachigaPostProps) => 
               className=" rounded-md object-cover w-full h-[155px]"
             />
             <div className="absolute top-2 left-2 bg-black text-white px-2 py-1 text-xs rounded">
-              진행중
+              {meeting.finished ? ("모임완료") : ("진행중")}
             </div>
             <div className="absolute top-0.5 right-1 p-1">
               <button onClick={() => handleBookmark(meeting)}>
@@ -131,13 +140,13 @@ const GachigaPost = ({ countryCode, page, size, setPage }: GachigaPostProps) => 
               onClick={() => router.push(`/gachiga/${meeting.meetingId}`)}
             >
               <div className="p-3 ">
-                <p className="text-xs text-gray-300 pt-1 flex">
+                <p className="text-xs text-[#a3a3a3] pt-1 flex">
                   {meeting.meetingDate} {meeting.meetingStartTime} <br />
                 </p>
                 <h2 className=" font-bold mt-0.5 text-sm flex">
                   {meeting.title}
                 </h2>
-                <div className="flex flex-row items-center gap-1 mt-2 text-xs text-gray-400">
+                <div className="flex flex-row items-center gap-1 mt-2 text-xs text-[#808080]">
                   <LocationIcon />
                   <p>{meeting.location}</p>
                 </div>
@@ -159,10 +168,12 @@ const GachigaPost = ({ countryCode, page, size, setPage }: GachigaPostProps) => 
                     </svg>
                     <div className="text-gray-500">20</div>
                   </div> */}
-                <div className="flex items-center w-full absolute bottom-3 left-3 text-start justify-start">
-                    <CoinIcon width={24} height={24} />
-                    <div className="text-slate-300 text-xs">{meeting.coin ? meeting.coin : "무료"}</div>
+                {/* <div className="flex items-center w-full absolute bottom-3 left-3 text-start justify-start">
+                  <CoinIcon width={24} height={24} />
+                  <div className="text-slate-300 text-sm">
+                    1
                   </div>
+                </div> */}
                 <div className="flex items-center w-full absolute bottom-3 right-3 text-end justify-end">
                   <div className="flex -space-x-5 hover:space-x-0.5 transition duration-1000">
                     {meeting.members.map((member, index) => (
@@ -174,7 +185,7 @@ const GachigaPost = ({ countryCode, page, size, setPage }: GachigaPostProps) => 
                       />
                     ))}
                   </div>
-                  <div className="text-gray-700 text-xs ml-3">
+                  <div className="text-[#a3a3a3] text-xs ml-3">
                     {meeting.members.length} / {meeting.maxMember}
                   </div>
                 </div>
@@ -186,7 +197,7 @@ const GachigaPost = ({ countryCode, page, size, setPage }: GachigaPostProps) => 
 
       {/* 하단 페이지 이동 네비게이션 */}
       <PageNavigation
-        page={page+1}
+        page={page + 1}
         totalPages={totalPage}
         setPage={setPage}
       />

@@ -2,9 +2,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import {
-  interestsOptions,
-  interestsOptions3,
-  interestsOptions4,
+  interestsOptions
 } from "../types/InterestsAndExpertisesOptions";
 import {
   InterestSelectIcon,

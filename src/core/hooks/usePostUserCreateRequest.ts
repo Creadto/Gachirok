@@ -12,8 +12,6 @@ export async function usePostUserCreateRequest(
     "/api/users",
 
     {
-      deviceToken: Math.floor(Math.random() * 1000).toString(),
-      countryCode: "KR",
       noticeMarketing: noticeMarketing
     },
     {

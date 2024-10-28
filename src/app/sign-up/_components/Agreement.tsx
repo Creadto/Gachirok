@@ -116,7 +116,7 @@ const Agreement = () => {
     }
   };
   return (
-    <div className="fixed inset-0 flex mx-auto items-center justify-center h-[566px] w-[390px] my-auto flex-col gap-y-[20px]">
+    <div className="mt-[5%] mb-[5%] inset-0 flex mx-auto items-center justify-center h-[566px] w-[390px] my-auto flex-col gap-y-[20px]">
       <div className="flex mx-auto mb-0">
         <img
           src="images/logo.png"

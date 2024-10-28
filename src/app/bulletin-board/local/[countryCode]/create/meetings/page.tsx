@@ -1,12 +1,13 @@
 "use client";
 
 import { BackButton } from "@/app/bulletin-board/_components/BackButton";
-import { PreviewAndSubmitButton } from "@/app/bulletin-board/_components/PreviewAndSubmitButton";
 import { QuillEditor } from "@/app/bulletin-board/_components/QuillEditor";
 import TwoButtonForm from "@/app/create-profile/_components/profile-setup/TwoButtonForm";
+import CustomAlert from "@/core/components/CustomAlert";
 import DoubleDateTimeSelector from "@/core/components/DoubleDateTimeSelector";
 import InterestSelector from "@/core/components/InterestsSelector";
 import { countryStore } from "@/core/store/country-store";
+import { sexTypes } from "@/core/types/DataForUI";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -16,11 +17,9 @@ import "react-quill/dist/quill.snow.css";
 import { CategorySelector } from "../_components/CategorySelector";
 import CostlyDetails from "./_components/CostlyDetails";
 import CountryStateCitySelector from "./_components/CountryStateCitySelector";
+import { RangeSlider } from "./_components/RangeSlider";
 import TwoButtonApproval from "./_components/TwoButtonApproval";
 import appendMeetingCreateRequestFromData from "./_utils/appendMeetingCreateRequestFormData";
-import { sexTypes } from "@/core/types/DataForUI";
-import CustomAlert from "@/core/components/CustomAlert";
-import { RangeSlider } from "./_components/RangeSlider";
 
 interface AddFleaMarketLocalBulletinBoardPageProps {
   params: {
@@ -79,20 +78,20 @@ export default function AddMeetingsLocalBulletinBoardPage({
           },
         });
 
-        if (response.data) {
+        if (response) {
           setAlertMessage("미팅이 성공적으로 개설되었습니다!");
           setShowAlert(true);
         }
       }
     } catch (err) {
       console.error("Error:", err);
-      alert("An error occurred while updating the profile.");
+      alert("미팅을 생성하는데 오류가 발생하였습니다.");
     } finally {
       setLoading(false);
     }
   };
   //Image의 변동사항을 실시간으로 체크하기 위한 watch
-  const watchImages: FileList | undefined = watch("photos") as FileList;
+  // const watchImages: FileList | undefined = watch("photos") as FileList;
 
   //장소 선택 시 필요한 Country, State, City에 관한 상태
   const [selectedCountry, setSelectedCountry] = useState<string>("");
@@ -104,8 +103,19 @@ export default function AddMeetingsLocalBulletinBoardPage({
 
   //모임 종류가 하루만일 때 날짜 선택 변수
   const [isDateVisible, setIsDateVisible] = useState(true);
-  const [selectedStartTime, setSelectedStartTime] = useState("");
-  const [selectedEndTime, setSelectedEndTime] = useState("");
+  //시작시간
+  const [startHour, setStartHour] = useState<number | null>(null);
+  const [startMinute, setStartMinute] = useState<number | null>(null);
+
+  //종료시간
+  const [endHour, setEndHour] = useState<number | null>(null);
+  const [endMinute, setEndMinute] = useState<number | null>(null);
+
+  //시간 비교 오류
+  const [timeError, setTimeError] = useState<string | null>(null);
+
+  // const [selectedStartTime, setSelectedStartTime] = useState("");
+  // const [selectedEndTime, setSelectedEndTime] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const [activeSexType, setActiveSexType] = useState(sexTypes[0].value); //모집 멤버의 기본값은 누구나
@@ -115,7 +125,7 @@ export default function AddMeetingsLocalBulletinBoardPage({
 
   // 나이대 선택하는 변수
   const [minValue, setMinValue] = useState<string>("20");
-  const [maxValue, setMaxValue] = useState<string>("50");
+  const [maxValue, setMaxValue] = useState<string>("60");
 
   // 모집방식(선착순, 승인제)
   const [approval, setApproval] = useState(false);
@@ -128,36 +138,52 @@ export default function AddMeetingsLocalBulletinBoardPage({
 
   //이미지 thumbnail
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [photoList, setPhotoList] = useState<File[]>([])
+
+  const watchImages = watch("photos");
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files; // Get the FileList from the input
+    if (files) {
+      const newFiles = Array.from(files); // Convert FileList to array
+      setPhotoList((prev) => [...prev, ...newFiles]); // Append new files to existing
+
+      // Create URLs for previews
+      const newImageUrls = newFiles.map((file) => URL.createObjectURL(file));
+      setImagePreviews((prev) => [...prev, ...newImageUrls]); // Update previews
+
+      // Update the photos field in react-hook-form
+      setValue("photos", [...photoList, ...newFiles]); // Update the form state
+    }
+  };
+
+  // Cleanup object URLs on unmount
+  useEffect(() => {
+    return () => {
+      imagePreviews.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [imagePreviews]);
+
+
   const customFileLabel =
     watchImages && watchImages.length > 0
       ? `${watchImages.length}개의 파일 선택됨`
       : "파일 선택";
 
-  useEffect(() => {
-    if (watchImages && watchImages.length > 0) {
-      const imageFiles = Array.from(watchImages); // 파일 배열로 변환
-      const imageUrls = imageFiles.map((file) => URL.createObjectURL(file)); // 각 파일에 대한 URL 생성
-      setImagePreviews(imageUrls); // URL 상태로 저장
-
-      // 메모리 누수 방지 위해 URL 해제
-      return () => {
-        imageUrls.forEach((url) => URL.revokeObjectURL(url));
+      const handleImageRemove = (index: number) => {
+        const updatedImages = Array.from(watchImages || []).filter(
+          (_, i) => i !== index
+        );
+    
+        // Update FileList in react-hook-form
+        const dataTransfer = new DataTransfer();
+        updatedImages.forEach((file) => dataTransfer.items.add(file as File));
+        setValue("photos", dataTransfer.files);
+    
+        // Update image previews
+        const updatedPreviews = imagePreviews.filter((_, i) => i !== index);
+        setImagePreviews(updatedPreviews);
       };
-    }
-  }, [watchImages]);
-
-  const handleImageRemove = (index: number) => {
-    const updatedImages = Array.from(watchImages).filter((_, i) => i !== index);
-
-    // react-hook-form의 setValue로 FileList 업데이트
-    const dataTransfer = new DataTransfer();
-    updatedImages.forEach((file) => dataTransfer.items.add(file));
-    setValue("photos", dataTransfer.files);
-
-    // 미리보기 이미지 업데이트
-    const updatedPreviews = imagePreviews.filter((_, i) => i !== index);
-    setImagePreviews(updatedPreviews);
-  };
 
   // 미리보기
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
@@ -172,30 +198,48 @@ export default function AddMeetingsLocalBulletinBoardPage({
   const handleModal = () => {
     setIsPreviewModalOpen(!isPreviewModalOpen);
   };
-
-  const formatStartTime = (time: string): string => {
-    let [hours, minutes] = time.split(":");
-    hours = parseInt(hours, 10).toString(); // 앞의 '0' 제거
-    minutes = parseInt(minutes, 10).toString();
+  const formatTime = (hours: number | null, minutes: number | null) => {
     return `${hours}시 ${minutes}분`;
   };
 
-  const formatEndTime = (time: string): string => {
-    let [hours, minutes] = time.split(":");
-    hours = parseInt(hours, 10).toString(); // 앞의 '0' 제거
-    minutes = parseInt(minutes, 10).toString();
-    return `${hours}시 ${minutes}분`;
+  const handleTimeCompare = (
+    startHour: number | null,
+    startMinute: number | null,
+    endHour: number | null,
+    endMinute: number | null
+  ) => {
+    // 모든 값이 유효한지 확인
+    if (
+      startHour !== null &&
+      startMinute !== null &&
+      endHour !== null &&
+      endMinute !== null
+    ) {
+      const startTime = new Date().setHours(startHour, startMinute);
+      const endTime = new Date().setHours(endHour, endMinute);
+
+      if (endTime <= startTime) {
+        setTimeError("종료 시간은 시작 시간보다 늦어야 합니다.");
+      } else {
+        setTimeError(null); // 정상적일 경우 에러를 null로 설정
+      }
+    }
   };
 
   //값이 변경될 때마다 setValue()로 useForm의 data에 저장
   useEffect(() => {
     clearErrors(); //Submit시 오류가 뜨고, 수정하면 오류 삭제되게끔
-    if (selectedStartTime !== "") {
-      setValue("meetingStartTime", formatStartTime(selectedStartTime));
-    }
-    if (selectedEndTime !== "") {
-      setValue("meetingEndTime", formatEndTime(selectedEndTime));
-    }
+    selectedDate
+      ? setValue("meetingDate", formatDate(selectedDate))
+      : setValue("meetingDate", "");
+
+    startHour !== null && startMinute !== null
+      ? setValue("meetingStartTime", formatTime(startHour, startMinute))
+      : setValue("meetingStartTime", "");
+
+    endHour !== null && endMinute !== null
+      ? setValue("meetingEndTime", formatTime(endHour, endMinute))
+      : setValue("meetingEndTime", "");
     setValue("approval", approval);
     setValue("startAge", parseInt(minValue, 10));
     setValue("endAge", parseInt(maxValue, 10));
@@ -212,6 +256,8 @@ export default function AddMeetingsLocalBulletinBoardPage({
       ? setValue("meetingDate", formatDate(selectedDate))
       : setValue("meetingDate", "");
 
+    handleTimeCompare(startHour, startMinute, endHour, endMinute);
+
     meetingType === false
       ? (setValue("meetingType", "ONCE"), setIsDateVisible(true))
       : (setValue("meetingType", "ALWAYS"), setIsDateVisible(false));
@@ -222,8 +268,6 @@ export default function AddMeetingsLocalBulletinBoardPage({
 
     costly === false ? setIsCostlyItemOpen(false) : setIsCostlyItemOpen(true);
   }, [
-    selectedStartTime,
-    selectedEndTime,
     approval,
     minValue,
     maxValue,
@@ -232,6 +276,10 @@ export default function AddMeetingsLocalBulletinBoardPage({
     maxMember,
     selectedDate,
     meetingType,
+    startHour,
+    startMinute,
+    endHour,
+    endMinute,
   ]);
 
   const formatDate = (date: Date): string => {
@@ -349,17 +397,27 @@ export default function AddMeetingsLocalBulletinBoardPage({
 
         {/* 날짜 및 시간 선택 */}
         {isDateVisible && (
-          <div className="block w-full border text-black rounded-md p-2 mb-4 mt-[20px]">
+          <div className="flex flex-col w-full border text-black rounded-md p-2 mb-4 mt-[20px] items-center justify-center">
             <DoubleDateTimeSelector
               selectedDate={selectedDate}
               onDateChange={setSelectedDate}
-              selectedStartTime={selectedStartTime}
-              selectedEndTime={selectedEndTime}
-              onStartTimeChange={setSelectedStartTime}
-              onEndTimeChange={setSelectedEndTime}
               register={register}
               errors={errors}
+              setValue={setValue}
+              startHour={startHour}
+              startMinute={startMinute}
+              setStartHour={setStartHour}
+              setStartMinute={setStartMinute}
+              endHour={endHour}
+              endMinute={endMinute}
+              setEndHour={setEndHour}
+              setEndMinute={setEndMinute}
             />
+            {timeError && (
+              <p className="text-red-500 block mt-[10px] text-sm">
+                {timeError}
+              </p>
+            )}
           </div>
         )}
 
@@ -424,7 +482,6 @@ export default function AddMeetingsLocalBulletinBoardPage({
             <RangeSlider onRangeChange={onRangeChange} />
           </div>
         </div>
-        {/* 나이대 */}
 
         <hr className="w-full bg-[#EEEEEE] mt-[40px] mb-[30px]" />
 
@@ -506,7 +563,7 @@ export default function AddMeetingsLocalBulletinBoardPage({
         />
 
         {/* 파일선택 */}
-        <div>
+        {/* <div>
           <div className="relative w-max mt-2">
             <input
               type="file"
@@ -523,10 +580,10 @@ export default function AddMeetingsLocalBulletinBoardPage({
             {watchImages
               ? `10개 중 ${watchImages.length}개 업로드됨`
               : "10개 중 0개 업로드"}
-          </p>
+          </p> */}
 
           {/* 이미지 미리보기 섹션 */}
-          <div className="flex flex-wrap gap-4 mt-4">
+          {/* <div className="flex flex-wrap gap-4 mt-4">
             {imagePreviews.map((src, index) => (
               <div
                 key={index}
@@ -541,7 +598,46 @@ export default function AddMeetingsLocalBulletinBoardPage({
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
+
+         {/* 파일선택 */}
+         <div>
+            <div className="relative w-max mt-2">
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                onChange={handleFileChange}
+              />
+              <div className="px-4 py-2 bg-[#E62A2F] text-white rounded-md text-center cursor-pointer">
+                {customFileLabel}
+              </div>
+            </div>
+            <p className="mt-[10px]">
+              {watchImages
+                ? `10개 중 ${photoList.length}개 업로드됨`
+                : "10개 중 0개 업로드"}
+            </p>
+
+            {/* 이미지 미리보기 섹션 */}
+            <div className="flex flex-wrap gap-4 mt-4">
+              {imagePreviews &&
+                imagePreviews.map((src, index) => (
+                  <div
+                    key={index}
+                    className="w-24 h-24 border border-gray-300 rounded-md overflow-hidden"
+                    onClick={() => handleImageRemove(index)}
+                  >
+                    <img
+                      src={src}
+                      alt={`미리보기 ${index + 1}`}
+                      className="object-cover w-full h-full"
+                    />
+                  </div>
+                ))}
+            </div>
+          </div>
 
         {/* 안내사항 */}
         <label className="block mt-[40px] text-xs text-[#808080] mb-[10px]">

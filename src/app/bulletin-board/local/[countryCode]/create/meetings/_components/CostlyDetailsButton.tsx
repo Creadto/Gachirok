@@ -1,5 +1,5 @@
 interface CostlyDetailsButtonProps {
-    value: boolean,
+    value: boolean | undefined,
     title: string,
 
     onClick:() => void;
