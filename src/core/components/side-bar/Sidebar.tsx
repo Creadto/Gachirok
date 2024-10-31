@@ -132,7 +132,7 @@ const Sidebar = () => {
             {/* News */}
             <SidebarItem
               isActive={activeItems.universalNews}
-              onClick={() => router.push("/news")}
+              onClick={() => router.push("/news/universal")}
               activeIcon={<ActiveNewsIcon />}
               inactiveIcon={<NewsIcon />}
               label="News"
@@ -141,7 +141,7 @@ const Sidebar = () => {
             {/* Announcement */}
             <SidebarItem
               isActive={activeItems.universalAnnouncement}
-              onClick={() => router.push("/announcement")}
+              onClick={() => router.push("/announcement/universal/section/1?page=1&limit=8&sort=newest")}
               activeIcon={<ActiveAnnouncementIcon />}
               inactiveIcon={<AnnouncementIcon />}
               label="Announcement"
@@ -190,7 +190,7 @@ const Sidebar = () => {
             {/* Announcement */}
             <SidebarItem
               isActive={activeItems.localAnnouncement}
-              onClick={() => router.push(`/announcement/local/${country}`)}
+              onClick={() => router.push(`/announcement/local/${country}/section/1?page=1&limit=8&sort=newest`)}
               activeIcon={<ActiveAnnouncementIcon />}
               inactiveIcon={<AnnouncementIcon />}
               label="Announcement"

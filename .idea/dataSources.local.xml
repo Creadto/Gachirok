@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal" created-in="WS-242.21829.149">
+    <data-source name="@creadto-dev.clkqei0iinqe.ap-northeast-2.rds.amazonaws.com" uuid="e1766535-73ea-4777-994a-a10e0354464e">
+      <database-info product="MariaDB" version="10.6.16-MariaDB" jdbc-version="4.2" driver-name="MariaDB Connector/J" driver-version="3.3.3" dbms="MARIADB" exact-version="10.6.16" exact-driver-version="3.3">
+        <extra-name-characters>#@</extra-name-characters>
+        <identifier-quote-string>`</identifier-quote-string>
+      </database-info>
+      <case-sensitivity plain-identifiers="exact" quoted-identifiers="exact" />
+      <secret-storage>master_key</secret-storage>
+      <user-name>creadto</user-name>
+      <schema-mapping>
+        <introspection-scope>
+          <node kind="schema" qname="creadto_dev" />
+        </introspection-scope>
+      </schema-mapping>
+      <ssh-properties>
+        <enabled>true</enabled>
+        <ssh-config-id>414637e3-71a9-47b9-9d71-235a7a16d857</ssh-config-id>
+      </ssh-properties>
+    </data-source>
+  </component>
+</project>

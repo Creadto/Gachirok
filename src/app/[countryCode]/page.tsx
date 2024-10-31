@@ -24,7 +24,6 @@ export default function Page({params}: PageProps) {
   //URL의 params을 country store에 저장
   useEffect(() => {
     setCountry(countryCode)
-    console.log("country in store", country)
   }, []) //mount될 때 실행
 
   return(<>

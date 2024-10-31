@@ -8,6 +8,13 @@ import localFont from "next/font/local";
 import { AuthProvider } from "./auth/provider";
 import "./globals.css";
 import { Footer } from "@/core/components/footer/Footer";
+import KakaoScript from "@/core/utils/KakaoScript";
+
+declare global{
+    interface Window {
+        Kakao:any;
+    }
+}
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -28,25 +35,29 @@ export default function RootLayout({
   children: React.ReactNode;
   modal: React.ReactNode;
 }>) {
+
+  
   return (
-    <html lang="en" className={`${pretendard.variable}`}>
-      <MSWComponent />
+      <html lang="en" className={`${pretendard.variable}`}>
+      <MSWComponent/>
       <BodyColorHandler font={pretendard} />
-      <body className={` ${pretendard.className}`}>
-        <ReactQueryProvider>
-          <AuthProvider>
-            <Topbar />
-            <div className="flex">
-              <Sidebar />
-              <div className="flex-1 items-center pt-[80px]">
-                {children}
-                {modal}
-              </div>
+      <body className={` ${pretendard.className}` }>
+      <ReactQueryProvider>
+        <AuthProvider>
+          <Topbar />
+          <div className="flex">
+            <Sidebar />
+            <div className="flex-1 pt-[80px] flex justify-center">
+              {children}
+              {modal}
             </div>
-            <Footer />
-          </AuthProvider>
-        </ReactQueryProvider>
+          </div>
+          <Footer />
+
+        </AuthProvider>
+      </ReactQueryProvider>
       </body>
-    </html>
+      <KakaoScript/>
+      </html>
   );
 }

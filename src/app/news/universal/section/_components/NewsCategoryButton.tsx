@@ -24,14 +24,14 @@ export default function NewsCategoryButton(params : NewsCategoryButtonProps) {
     const currentCategory = params.currentSection;
 
     const onClickHandler = () => {
-        router.push(`/news/universal/section/${categoryId}`);
+        router.push(`/news/universal/section/${categoryId}?page=1&limit=8&sort=newest`);
     }
 
     return (
-        <div className="p-1">
+        <div>
             {category === currentCategory ? (
                 <button
-                    className="rounded-2xl border-2 p-1 bg-gray-200"
+                    className="px-[12px] py-[9px] bg-[#000000] text-[13px] text-[#fff] rounded-[50px]"
                     onClick={onClickHandler}
                     value={category}
                 >
@@ -39,7 +39,7 @@ export default function NewsCategoryButton(params : NewsCategoryButtonProps) {
                 </button>
             ) : (
                 <button
-                    className="rounded-2xl border-2 p-1"
+                    className="px-[12px] py-[9px] bg-[#fff] text-[13px] text-[#000000] rounded-[50px]"
                     onClick={onClickHandler}
                     value={category}
                 >

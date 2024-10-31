@@ -1,10 +1,10 @@
 "use client";
 
-import LocalNews from "@/app/news/local/[country-code]/_components/LocalNews";
 import axios from "axios";
 import {useEffect, useState} from "react";
 import {categoryToNumber} from "@/app/news/utils/Category";
 import {useParams} from "next/navigation";
+import SimpleNews from "@/app/news/local/[country-code]/_components/SimpleNews";
 
 
 interface NewsItem{
@@ -13,6 +13,7 @@ interface NewsItem{
     category: string;
     date: string;
     id:number;
+    imageUrl: string
 }
 /**
  *
@@ -23,8 +24,12 @@ export default function SectionNews({section}:{section:string}){
 
     const [sectionNews, setSectionNews] = useState<NewsItem[]>([]);
     const sectionId = categoryToNumber[section];
+
     const params = useParams();
-    const countryCode = params['country-code'];
+    let countryCode:undefined | string | string[];
+    if(params){
+        countryCode = params['country-code'];
+    }
 
     useEffect(()=>{
         const fetchNews = async()=>{
@@ -39,20 +44,16 @@ export default function SectionNews({section}:{section:string}){
         fetchNews();
     },[])
 
-    return(
-        <div className="text-left">
-            {sectionNews.map((newsItem) => (
-                <div key={newsItem.id}>
-                    <LocalNews
-                        key={newsItem.title}
-                        title={newsItem.title}
-                        description={newsItem.description}
-                        date={newsItem.date}
-                        id={newsItem.id}
-                    />
-                    <hr/>
-                </div>
-            ))}
+    return (
+        <div>
+            <div className="text-left grid grid-cols-2 gap-x-4">
+                {sectionNews.map((newsItem, index) => (
+                    <div key={newsItem.id}>
+                        <SimpleNews news={newsItem}/>
+                        {index === 4 || index === 5 ? null : <hr/>}
+                    </div>
+                ))}
+            </div>
         </div>
     );
 }

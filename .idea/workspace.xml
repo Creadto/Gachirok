@@ -5,8 +5,195 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="75fb994d-e176-41ef-bc06-0cfd09ceb219" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.github/ISSUE_TEMPLATE/backlog.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.github/ISSUE_TEMPLATE/bug.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.github/pull_request_template.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/interests&amp;expertises/activity.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/interests&amp;expertises/activity@2.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/interests&amp;expertises/activity@3.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/interests&amp;expertises/amity.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/interests&amp;expertises/amity@2.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/interests&amp;expertises/amity@3.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/interests&amp;expertises/culture.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/interests&amp;expertises/culture@2.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/interests&amp;expertises/culture@3.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/interests&amp;expertises/food.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/interests&amp;expertises/food@2.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/interests&amp;expertises/food@3.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/interests&amp;expertises/local.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/interests&amp;expertises/local@2.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/interests&amp;expertises/local@3.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/interests&amp;expertises/self_development.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/interests&amp;expertises/self_development@2.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/interests&amp;expertises/self_development@3.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/interests&amp;expertises/volunteer.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/interests&amp;expertises/volunteer@2.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/interests&amp;expertises/volunteer@3.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/logo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/post.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/[countryCode]/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/bulletin-board/[postId]/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/bulletin-board/_components/BackButton.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/bulletin-board/_components/HateButton.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/bulletin-board/_components/LikeButton.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/bulletin-board/_components/PostList.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/bulletin-board/_components/PreviewAndSubmitButton.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/bulletin-board/_components/PreviewModalFree.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/bulletin-board/_components/PreviewModalMeetings.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/bulletin-board/_components/QuillEditor.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/bulletin-board/_components/TrendingPostList.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/bulletin-board/_data/mock_post.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/bulletin-board/_types/Posts.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/bulletin-board/local/[countryCode]/create/_components/CategorySelector.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/bulletin-board/local/[countryCode]/create/flea-market/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/bulletin-board/local/[countryCode]/create/meetings/_components/CostlyDetails.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/bulletin-board/local/[countryCode]/create/meetings/_components/CostlyDetailsButton.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/bulletin-board/local/[countryCode]/create/meetings/_components/CountryStateCitySelector.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/bulletin-board/local/[countryCode]/create/meetings/_components/RangeSlider.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/bulletin-board/local/[countryCode]/create/meetings/_components/RangeSlider.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/bulletin-board/local/[countryCode]/create/meetings/_components/TwoButtonApproval.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/bulletin-board/local/[countryCode]/create/meetings/_types/MeetingCreateRequest.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/bulletin-board/local/[countryCode]/create/meetings/_utils/appendMeetingCreateRequestFormData.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/bulletin-board/local/[countryCode]/create/meetings/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/bulletin-board/local/[countryCode]/create/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/bulletin-board/local/[countryCode]/create/real-estate/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/bulletin-board/local/[countryCode]/create/recruiting/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/bulletin-board/local/[countryCode]/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/bulletin-board/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/bulletin-board/universal/create/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/create-profile/_components/profile-setup/BackgroundImageForm.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/create-profile/_components/profile-setup/InterestAndExpertiseForm.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/create-profile/_components/profile-setup/IntroductionForm.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/create-profile/_components/profile-setup/NicknameForm.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/create-profile/_components/profile-setup/ProfileImageForm.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/create-profile/_components/profile-setup/ProfileSetup.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/create-profile/_components/profile-setup/TwoButtonForm.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/create-profile/_utils/appendProfileCreateRequestFormData.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/create-profile/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/gachiga/[meetingId]/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/gachiga/_types/MeetingFilterRequest.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/gachiga/_types/MeetingPreviewResponse.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/gachiga/_types/MeetingResponse.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/gachiga/_types/MemberPreviewResponse.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/gachiga/_types/MemberResponse.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/gachiga/local/[countryCode]/_components/CreateMeetingsButton.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/gachiga/local/[countryCode]/_components/FilterModal.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/gachiga/local/[countryCode]/_components/GachigaPost.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/gachiga/local/[countryCode]/_components/MyGachigaPost.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/gachiga/local/[countryCode]/_components/PageNavigation.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/gachiga/local/[countryCode]/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/gachiga/local/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/profile/_types/ProfileCreateRequest.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/profile/_types/ProfileResponse.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/profile/_types/ProfileUpdateRequest.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/profile/_types/ProfileVisitResponse.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/profile/_types/PurchaseItemResponse.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/profile/_types/PurchaseProfileResponse.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/profile/update/_components/CountryStateCityUpdater.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/profile/update/_components/ExpertisesSelectorFromData.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/profile/update/_components/InterestsSelectorFromData.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/profile/update/_utils/appendProfileUpdateRequestFormData.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/CountrySelector.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/DoubleDateTimeSelector.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/DropdownSelector.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/ExpertisesSelector.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/FilterSelector.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/InterestsSelector.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/ProfileCreateModal.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/SignOutModal.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/SingleDateSelector.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/TimePicker.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/icons/ArrowDownIcon.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/icons/ArrowRightIcon.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/icons/ArrowUpIcon.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/icons/CloseIcon.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/icons/CoinIcon.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/icons/CountryIcons.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/icons/EmptyStarIcon.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/icons/FilledStarIcon.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/icons/GachigaIconPost.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/icons/LocationIcon.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/icons/ProfileDropdownIcons.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/icons/ResidentIcon.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/icons/side-bar/AnnouncementIcon.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/icons/side-bar/BulletinBoardIcon.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/icons/side-bar/FleaMarketIcon.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/icons/side-bar/GachigaIcon.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/icons/side-bar/HomeIcon.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/icons/side-bar/NewsIcon.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/icons/side-bar/RealEstateIcon.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/icons/side-bar/RecruitIcon.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/icons/side-bar/ShopIcon.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/icons/top-bar/ChatIcon.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/icons/top-bar/EditIcon.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/icons/top-bar/LanguageIcon.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/icons/top-bar/NotificationIcon.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/icons/top-bar/SearchIcon.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/side-bar/SidebarItem.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/side-bar/asd.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/top-bar/CreatePostButton.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/top-bar/CreatePostModal.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/top-bar/ProfileDropdown.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/top-bar/ProfileIcon.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/components/top-bar/Topbar.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/hooks/useGetMeetings.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/hooks/useGetProfileResponse.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/hooks/usePostMeetings.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/hooks/usePostProfileCreateRequest.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/hooks/usePostProfileResponse.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/hooks/usePostUserCreateRequest.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/hooks/usePutProfileUpdateRequest.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/store/button-store.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/types/DataForUI.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/types/InterestsAndExpertisesOptions.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/types/Quill.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/types/type.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/next.config.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/next.config.mjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/@modal/(.)sign-in/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/@modal/(.)signin/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/@modal/default.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/@modal/default.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/auth/provider.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/auth/provider.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/globals.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/globals.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/profile/_utils/useGetProfile.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/profile/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/profile/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/profile/update/_components/RoutingButtonForServer.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/profile/update/_components/UpdateProfileForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/profile/update/_components/UpdateProfileForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/profile/update/_components/UpdateProfileImageForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/profile/update/_components/UpdateProfileImageForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/profile/update/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/profile/update/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/sign-in/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/signin/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/sign-up/_components/Agreement.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/sign-up/_components/Agreement.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/sign-up/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/sign-up/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/components/CustomAlert.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/components/CustomAlert.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/components/LoginModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/components/LoginModal.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/components/ProfileIcon.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/components/Topbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/components/Topbar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/components/side-bar/CountrySelector.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/components/side-bar/CountrySelector.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/components/side-bar/Sidebar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/components/side-bar/Sidebar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/data/CityList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/data/CityList.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/data/CountryList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/data/CountryList.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/data/StateList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/data/StateList.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/hooks/useGetUserResponse.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/hooks/useGetUserResponse.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/mapper/profile-mapper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/mapper/profile-mapper.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/mapper/user-mapper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/mapper/user-mapper.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/store/country-store.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/store/country-store.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/store/profile-store.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/store/profile-store.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/store/user-store.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/store/user-store.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/types/Profile.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/types/ProfileResponse.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/types/ProfileUI.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/profile/_types/ProfileUI.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/types/ProfileUpdateRequest.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/types/PurchaseItemResponse.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/types/PurchaseProfileResponse.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/types/User.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/types/UserResponse.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/types/UserResponse.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/types/auth.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/types/auth.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/utils/auth.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/utils/auth.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/utils/handleCountryStateCityModify.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/utils/handleCountryStateCityModify.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tailwind.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tailwind.config.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,49 +208,46 @@
       </list>
     </option>
   </component>
-  <component name="Git.Merge.Settings">
-    <option name="BRANCH" value="origin/feature/announcement" />
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;mindongmindong&quot;
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "mindongmindong"
   }
-}</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/Creadto/Gachirok.git&quot;,
-    &quot;accountId&quot;: &quot;9ffb4b54-ddf4-497a-a918-d1464f5be26b&quot;
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Creadto/Gachirok.git",
+    "accountId": "9ffb4b54-ddf4-497a-a918-d1464f5be26b"
   }
-}</component>
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
 }</component>
   <component name="ProjectId" id="2mH2Q9u62g96bsshyy9Exnv9kTV" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+  <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="1" id="Add" />
   </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/donghyunmin/WebstormProjects/Gachirok/public/images&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/Users/donghyunmin/WebstormProjects/Gachirok/node_modules/typescript/lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "feature/news 병합 중",
+    "last_opened_file_path": "/Users/donghyunmin/WebstormProjects/Gachirok/public/images",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "ts.external.directory.path": "/Users/donghyunmin/WebstormProjects/Gachirok/node_modules/typescript/lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/public/images" />

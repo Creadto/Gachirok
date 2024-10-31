@@ -10,6 +10,7 @@
     "mock": "npx tsx watch ./src/mocks/http.ts"
   },
   "dependencies": {
+    "@tailwindcss/line-clamp": "^0.4.4",
     "@tanstack/react-query": "^5.56.2",
     "@tanstack/react-query-devtools": "^5.56.2",
     "axios": "^1.7.7",
@@ -37,14 +38,15 @@
     "react-spinners": "^0.14.1",
     "react-tailwindcss-datepicker": "^1.7.2",
     "react-time-picker": "^7.0.0",
-    "zustand": "^5.0.0-rc.2"
+    "zustand": "^5.0.0-rc.2",
+    "zustand-persist": "^0.4.0"
   },
   "devDependencies": {
     "@mswjs/http-middleware": "^0.10.1",
-    "@types/cookie": "^0.6.0",
     "@types/cors": "^2.8.17",
     "@types/dompurify": "^3.0.5",
     "@types/express": "^5.0.0",
+    "@types/cookie": "^0.6.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
