@@ -3,7 +3,7 @@ import { DeleteIcon } from "@/core/components/icons/DeleteIcon";
 import { HistoryIcon } from "@/core/components/icons/HistoryIcon";
 import { EditIcon } from "@/core/components/icons/top-bar/EditIcon";
 import { MeetingResponse } from "../../_types/MeetingResponse";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DestroyModal } from "./DestroyModal";
 import { MemberManagementModal } from "./MemberManagementModal";
 import { MeetingApprovalModal } from "./MeetingApprovalModal";
@@ -43,9 +43,18 @@ export const HostMoreButton = ({
   const [isMeetingApprovalModalOpen, setIsMeetingApprovalModalOpen] =
     useState(false);
 
+    useEffect(() => {
+      // 초기 렌더링에서 상태를 클리어합니다.
+      setIsLeaveModalOpen(false);
+      setIsDestroyModalOpen(false);
+      setIsMemberManageModalOpen(false);
+      setIsMeetingApprovalModalOpen(false);
+    }, []);
+    
+
   return (
     <>
-      <div className="w-[200px] absolute top-[35px] right-0 border bg-white border-[#eeeeee] rounded-lg flex flex-col z-10">
+      <div className="w-[200px] border bg-white border-[#eeeeee] rounded-lg flex flex-col z-10">
         {/* 참여하기 / 참가취소 */}
         <button
           className="flex mt-[2px] p-3 gap-x-[8px] items-center shadow-sm"
@@ -60,6 +69,7 @@ export const HostMoreButton = ({
 
         {/* 모임 신청 내역 버튼 */}
         {meetingData.approval ? (
+          <div>
           <button
             className="flex mb-[2px] p-3 gap-x-[8px] items-center shadow-sm"
             onClick={(e) => {
@@ -70,6 +80,7 @@ export const HostMoreButton = ({
             <HistoryIcon />
             <span className="text-sm">모임 신청 내역</span>
           </button>
+          </div>
         ) : (
           <></>
         )}

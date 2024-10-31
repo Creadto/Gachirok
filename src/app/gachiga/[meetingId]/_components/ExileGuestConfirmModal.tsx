@@ -53,7 +53,7 @@ export const ExileGuestConfirmModal = ({
       }}
     >
       <div
-        className="bg-white rounded-[15px] shadow-lg w-[295px] h-[251px] relative cursor-default px-[15px] pt-[30px] pb-[20px] scrollable-container overflow-y-auto"
+        className="bg-white rounded-[15px] shadow-lg w-[295px] relative cursor-default px-[15px] pt-[30px] pb-[20px] scrollable-container overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex  items-center justify-center flex-col">

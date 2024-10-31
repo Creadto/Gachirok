@@ -1,15 +1,14 @@
 import { MeetingPreviewResponse } from "@/app/gachiga/_types/MeetingPreviewResponse";
+import EmptyStarIcon from "@/core/components/icons/EmptyStarIcon";
+import FilledStarIcon from "@/core/components/icons/FilledStarIcon";
 import { LocationIcon } from "@/core/components/icons/LocationIcon";
+import { LoadingSpinner } from "@/core/components/LoadingSpinner";
+import { useGetMeetings } from "@/core/hooks/useGetMeetings";
+import { usePostMeetingsBookmark } from "@/core/hooks/usePostMeetings";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import PageNavigation from "./PageNavigation";
-import { useRouter } from "next/navigation";
-import { useGetMeetings } from "@/core/hooks/useGetMeetings";
-import FilledStarIcon from "@/core/components/icons/FilledStarIcon";
-import EmptyStarIcon from "@/core/components/icons/EmptyStarIcon";
-import { usePostMeetingsBookmark } from "@/core/hooks/usePostMeetings";
-import { CoinIcon } from "@/core/components/icons/CoinIcon";
-import { LoadingSpinner } from "@/core/components/LoadingSpinner";
 
 interface GachigaPostProps {
   countryCode: string;
@@ -116,7 +115,7 @@ const GachigaPost = ({
   return (
     <>
       <p className="font-bold mt-[20px]">{totalElements}개 모임</p>
-      <div className="grid grid-cols-5 gap-x-5 mt-[15px] flex-wrap gap-y-5">
+      <div className="grid grid-cols-5 gap-x-5 mt-[15px] flex-wrap gap-y-5 z-10">
         {meetings.map((meeting, index) => (
           <div
             className="bg-white shadow-xl rounded-lg w-auto h-[308px] relative"

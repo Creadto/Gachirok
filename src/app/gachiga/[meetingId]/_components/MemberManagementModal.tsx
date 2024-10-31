@@ -16,7 +16,6 @@ interface MemberManagementModalProps {
   question: string;
 }
 
-
 /**
  * @Description 해당 모임의 멤버 관리 모달창
  * @author 김영서
@@ -26,7 +25,7 @@ export const MemberManagementModal = ({
   accessToken,
   meetingId,
   approval,
-  question
+  question,
 }: MemberManagementModalProps) => {
   //검색 결과
   const [searchUser, setSearchUser] = useState<string>("");
@@ -67,17 +66,12 @@ export const MemberManagementModal = ({
     );
   });
 
-  if(isGuestDataError) {
-    return(
-      <div>
-        {guestError.message}가 발생하였습니다.
-      </div>
-    )
+  if (isGuestDataError) {
+    return <div>{guestError.message}가 발생하였습니다.</div>;
   }
 
-
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 cursor-default">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 cursor-default" onClick={(e) => e.stopPropagation()}>
       <div
         className="bg-white rounded-[15px] shadow-lg w-[550px] h-[657px] relative cursor-default px-[15px] scrollable-container overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
@@ -101,17 +95,16 @@ export const MemberManagementModal = ({
           </button>
         </div>
 
-{/* 검색창 */}
+        {/* 검색창 */}
         <div className=" flex w-full items-center justify-center gap-x-[5px] relative mt-[10px] ">
-              <SearchIcon />
-              <input
-                type="text"
-                placeholder="멤버명 검색 (공백 없이 입력)"
-                onChange={(e) => setSearchUser(e.target.value)}
-                className="w-full  flex border border-[#eeeeee] rounded-[15px] bg-[#f6f6f6]  py-[8px] pl-[39px] pr-[10px] gap-x-[2px] text-[13px] focus:outline-none focus:ring-2 focus:ring-gray-300 "
-              />
-            </div>
-
+          <SearchIcon />
+          <input
+            type="text"
+            placeholder="멤버명 검색 (공백 없이 입력)"
+            onChange={(e) => setSearchUser(e.target.value)}
+            className="w-full  flex border border-[#eeeeee] rounded-[15px] bg-[#f6f6f6]  py-[8px] pl-[39px] pr-[10px] gap-x-[2px] text-[13px] focus:outline-none focus:ring-2 focus:ring-gray-300 "
+          />
+        </div>
 
         {isGuestDataLoading && (
           <div className="flex items-center justify-center mt-[50%]">
@@ -128,8 +121,7 @@ export const MemberManagementModal = ({
           </div>
         ) : (
           <>
-
-{/* 멤버 목록 */}
+            {/* 멤버 목록 */}
             {filteredMembers?.map((member: MemberResponse) => {
               return (
                 <div
@@ -177,7 +169,7 @@ export const MemberManagementModal = ({
       </div>
       {isProfileDetailOpen && selectedMember && (
         <ProfileDetailModal
-        setIsMemberManageModalOpen={setIsMemberManageModalOpen}
+          setIsMemberManageModalOpen={setIsMemberManageModalOpen}
           selectedMember={selectedMember}
           setIsProfileDetailOpen={setIsProfileDetailOpen}
           accessToken={accessToken}

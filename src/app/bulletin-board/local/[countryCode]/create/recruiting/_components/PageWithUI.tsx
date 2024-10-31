@@ -6,9 +6,9 @@ import { countryStore } from "@/core/store/country-store";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import "react-quill/dist/quill.snow.css";
-import { CategorySelector } from "../_components/CategorySelector";
-import RecruitJob from "./_components/RecruitJob";
-import RecruitPeople from "./_components/RecruitPeople";
+import { CategorySelector } from "../../_components/CategorySelector";
+import RecruitJob from "./RecruitJob";
+import RecruitPeople from "./RecruitPeople";
 
 interface AddRecruitingLocalBulletinBoardPageProps {
   params: {

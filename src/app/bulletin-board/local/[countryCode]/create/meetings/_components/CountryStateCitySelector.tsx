@@ -108,9 +108,6 @@ const CountryStateCitySelector = ({
       ? setIsCityDropdownVisible(false)
       : setIsCityDropdownVisible(true);
 
-    console.log("residenceCountryCode", selectedCountry);
-    console.log("residenceStateCode", selectedState);
-    console.log("residenceCityCode", selectedCity);
     setValue(registerCountryCode, selectedCountry);
     setValue(registerStateCode, selectedState);
     setValue(registerCityCode, selectedCity);

@@ -23,7 +23,8 @@ const nextConfig = {
       {
         // source에서 쿼리 파라미터를 유지한 채로 destination으로 전달
         source: "/api/profiles/check-nickname",
-        destination:"https://dev.gachiga.creadto.com/api/v1/profiles/check-nickname", // 쿼리 파라미터는 그대로 전달됨
+        destination:
+          "https://dev.gachiga.creadto.com/api/v1/profiles/check-nickname", // 쿼리 파라미터는 그대로 전달됨
       },
       {
         source: "/api/profiles2/:userId",
@@ -50,6 +51,11 @@ const nextConfig = {
         source: "/api/meetings/:meetingId",
         destination:
           "https://dev.gachiga.creadto.com/api/v1/meetings/:meetingId",
+      },
+      {
+        source: "/api/meetings2/:meetingId",
+        destination:
+          "https://dev.gachiga.creadto.com/api/v2/meetings/:meetingId",
       },
       {
         source: "/api/meetings/host",
@@ -106,6 +112,26 @@ const nextConfig = {
         source: "/api/meetings/:meetingId/pre-guests/:guestId/reject",
         destination:
           "https://dev.gachiga.creadto.com/api/v1/meetings/:meetingId/pre-guests/:guestId/reject",
+      },
+
+      // POSTS
+      {
+        source: "/api/posts",
+        destination:
+          "https://dev.gachiga.creadto.com/api/v1/posts",
+      },
+
+      // ETC / Reports
+      {
+        source: "/api/reports",
+        destination:
+          "https://dev.gachiga.creadto.com/api/v1/reports",
+      },
+      //S3
+      {
+        source: "/api/v1/files/presigned-url",
+        destination:
+          "https://dev.gachiga.creadto.com/api/v1/files/presigned-url",
       },
     ];
   },

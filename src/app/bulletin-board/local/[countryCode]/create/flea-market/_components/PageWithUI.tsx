@@ -6,27 +6,26 @@ import { countryStore } from "@/core/store/country-store";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import "react-quill/dist/quill.snow.css";
-import { CategorySelector } from "../_components/CategorySelector";
-import RecruitJob from "./_components/RecruitJob";
-import RecruitPeople from "./_components/RecruitPeople";
+import { CategorySelector } from "../../_components/CategorySelector";
+import BuyFleaMarket from "./BuyFleaMarket";
+import SellFleaMarket from "./SellFleaMarket";
 
-interface AddRecruitingLocalBulletinBoardPageProps {
+interface AddFleaMarketLocalBulletinBoardPageProps {
   params: {
     countryCode: string;
   };
 }
 
 /**
- * @Description Local의 Bulletin Board에 구인구직을 작성하는 Page
+ * @Description Local의 Bulletin Board에 벼룩시장을 작성하는 Page
  * @author 김영서
  **/
-export default function AddRecruitingLocalBulletinBoardPage({
+export default function AddFleaMarketLocalBulletinBoardPage({
   params,
-}: AddRecruitingLocalBulletinBoardPageProps) {
+}: AddFleaMarketLocalBulletinBoardPageProps) {
   const { country, setCountry } = countryStore();
   const { countryCode } = params;
   const router = useRouter();
-
 
   //URL의 param이 변화될때마다 country store update
   useEffect(() => {
@@ -39,11 +38,8 @@ export default function AddRecruitingLocalBulletinBoardPage({
     // 여기에서 데이터를 서버로 전송하거나 다른 작업을 수행합니다.
   };
 
-  //소 카테고리
-  const [recruitJob, setRecruitJob] = useState(false);
-
-
-
+  // 판매/구매 소 카테고리
+  const [buy, setBuy] = useState(false);
 
 
   return (
@@ -84,27 +80,27 @@ export default function AddRecruitingLocalBulletinBoardPage({
         }
       />
 
-      {/* 구인/구직 */}
+      {/* 방있어요/방구해요 */}
       <TwoButtonForm
         title="소 카테고리"
         options={[
-          { label: "구인", value: false },
-          { label: "구직", value: true },
+          { label: "판매", value: false },
+          { label: "구매", value: true },
         ]}
-        activeValue={recruitJob}
-        onChange={setRecruitJob}
+        activeValue={buy}
+        onChange={setBuy}
       />
 
       <hr className="w-full bg-[#EEEEEE] mt-[40px] mb-[30px]" />
 
-      {recruitJob ? <RecruitJob /> : <RecruitPeople />}
+      {buy === true ? <BuyFleaMarket /> : <SellFleaMarket />}
 
       {/* 미리보기 모달창 */}
       {/* <PreviewModal
         isOpen={isPreviewModalOpen}
         onClose={handleModal}
         formData={{
-          interests: selectedJobCategory,
+          interests: selectedEstateType,
           title: watch("title"),
           introduction,
           images: watchImages,

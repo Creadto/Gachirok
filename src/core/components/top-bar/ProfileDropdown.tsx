@@ -18,7 +18,7 @@ import {
   ProfileVersionIcon,
 } from "../icons/ProfileDropdownIcons";
 import { signOut } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SignOutModal from "../SignOutModal";
 
 interface ProfileDropdownProps {
@@ -39,15 +39,18 @@ export const ProfileDropdown = ({
   //SignOut 눌렀을 때 등장하는 모달 여부
   const [isSignOutOpen, setIsSignOutOpen] = useState(false);
 
+    
+
   return (
     <>
-      <div className="absolute w-[320px] h-[681px] top-[50px] right-0 bg-white rounded-[15px] border border-[#EEEEEE] z-30">
+      <div className="absolute w-[320px] h-[681px] top-[50px] right-0 bg-white rounded-[15px] border border-[#EEEEEE]">
         {/* 프로필 아이콘 버튼 */}
         <button
           onClick={() => {
             router.push("/profile");
             closeModal();
           }}
+          onMouseDown={(e) => e.stopPropagation()}
         >
           <div className="flex flew-row h-[61px] mt-[20px] mx-[20px] space-x-[67px]">
             {/* 프로필 사진 */}
@@ -163,8 +166,7 @@ export const ProfileDropdown = ({
           <span className="text-[15px]">로그아웃</span>
         </button>
       </div>
-
-      {isSignOutOpen ? (
+      {isSignOutOpen && (
         <SignOutModal
           onClickClose={() => setIsSignOutOpen(false)}
           onClickSignOut={() =>
@@ -173,8 +175,6 @@ export const ProfileDropdown = ({
             })
           }
         />
-      ) : (
-        <></>
       )}
     </>
   );

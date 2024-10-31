@@ -4,22 +4,24 @@ import { BackButton } from "@/app/bulletin-board/_components/BackButton";
 import { QuillEditor } from "@/app/bulletin-board/_components/QuillEditor";
 import { RangeSliderCustom } from "@/app/bulletin-board/local/[countryCode]/create/meetings/_components/RangeSlider";
 import TwoButtonApproval from "@/app/bulletin-board/local/[countryCode]/create/meetings/_components/TwoButtonApproval";
+import TwoButtonForm from "@/app/create-profile/_components/profile-setup/TwoButtonForm";
 import { LoadingSpinner } from "@/core/components/LoadingSpinner";
 import { useGetMeetingsId } from "@/core/hooks/useGetMeetings";
 import { sexTypes } from "@/core/types/DataForUI";
+import { HandleMediaUpload } from "@/core/utils/handleMediaUpload";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import "react-quill/dist/quill.snow.css";
 import { MeetingResponse } from "../../_types/MeetingResponse";
 import DisabledTwoButtonForm from "./_components/DisabledTwoButtonForm";
+import EditCostlyDetails from "./_components/EditCostlyDetails";
 import EditCountryStateCitySelector from "./_components/EditCountryStateCitySelector";
 import EditDoubleDateTimeSelector from "./_components/EditDoubleDateTimeSelector";
 import EditInterestsSelector from "./_components/EditInterestSelector";
-import TwoButtonForm from "@/app/create-profile/_components/profile-setup/TwoButtonForm";
-import EditCostlyDetails from "./_components/EditCostlyDetails";
+import { usePutMeetingEdit } from "@/core/hooks/usePutMeetings";
 
 interface MeetingEditPageProps {
   params: {
@@ -106,12 +108,10 @@ export const MeetingEditPage = ({ params }: MeetingEditPageProps) => {
     meetingData?.introduction.toString()
   );
 
-  //파일
-  const [imagePreviews, setImagePreviews] = useState<string[]>(() => {
+  const [photoURL, setPhotoURL] = useState<string[]>(() => {
     // Initialize state with existing photo URLs from meetingData
     return meetingData?.photoUrls || [];
-  }); 
-  const [photoList, setPhotoList] = useState<File[]>([]);
+  });
 
   //필요한 비용
   const [costly, setCostly] = useState(meetingData?.costly);
@@ -132,20 +132,6 @@ export const MeetingEditPage = ({ params }: MeetingEditPageProps) => {
     const day = date.getDate();
     return `${year}년 ${month}월 ${day}일`; //API로 보내는 형식
   };
-
-  //   async function urlToFile(photoUrl: string, fileName: string, mimeType: string = "image/jpeg"): Promise<File> {
-  //     const response = await fetch(photoUrl);
-  //     const blob = await response.blob();
-  //     const file = new File([blob], fileName, { type: mimeType });
-  //     return file;
-  //   }
-
-  //   if(meetingData?.photoUrls) {
-  //     const photoUrl = meetingData?.photoUrls[0]
-  // urlToFile(photoUrl, "photo.jpg").then((file) => {
-  //   console.log(file); // File 객체로 변환된 결과
-  // });
-  //   }
 
   const handleTimeCompare = (
     startHour: number | null,
@@ -185,78 +171,39 @@ export const MeetingEditPage = ({ params }: MeetingEditPageProps) => {
     setValue("question", value);
   };
 
-  const watchImages = watch("photos"); // 최신 photos 값을 실시간으로 감지
+  const watchImages = watch("photos"); // 최신 photos 값을 실시간으로 감
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files; // Get the FileList from the input
+    const files = event.target.files;
     if (files) {
-      const newFiles = Array.from(files); // Convert FileList to array
-  
-      // Update photoList state synchronously
-      setPhotoList((prev) => {
-        const updatedPhotoList = [...prev, ...newFiles];
-        return updatedPhotoList;
+      const newFiles = Array.from(files);
+
+      // Create a FileReader for each file
+      newFiles.forEach((file) => {
+        const reader = new FileReader();
+
+        reader.onloadend = () => {
+          setPhotoURL((prev) => [...prev, reader.result as string]); // Store data URL
+        };
+
+        reader.readAsDataURL(file); // Read the file as a data URL
       });
-  
-      // Create URLs for previews
-      const newImageUrls = newFiles.map((file) => URL.createObjectURL(file));
-      setImagePreviews((prev) => [...prev, ...newImageUrls]); // Update previews
     }
   };
-  
+
   const handleImageRemove = (index: number) => {
     // Update photoList state by removing the selected file
-    setPhotoList((prevPhotoList) => {
+    setPhotoURL((prevPhotoList) => {
       // Use the same index to remove from photoList
       const updatedPhotoList = prevPhotoList.filter((_, i) => i !== index);
       return updatedPhotoList;
     });
-  
-    // Update image previews by removing the corresponding image preview URL
-    setImagePreviews((prevPreviews) => {
-      const updatedPreviews = prevPreviews.filter((_, i) => i !== index);
-      return updatedPreviews;
-    });
   };
-  
-  // Sync the updated photoList with the react-hook-form "photos" field
-  useEffect(() => {
-    setValue("photos", photoList);
-    console.log("photoList", photoList)
-    console.log("previews", imagePreviews)
-  }, [photoList, setValue, imagePreviews]);
-
-  useEffect(() => {
-    return () => {
-      imagePreviews.forEach((url) => URL.revokeObjectURL(url));
-    };
-  }, [imagePreviews]); // Only runs on unmount
 
   const customFileLabel =
     watchImages && watchImages.length > 0
-      ? `${photoList.length}개의 파일 선택됨`
+      ? `${photoURL.length}개의 파일 선택됨`
       : "파일 선택";
-
-
-
-  // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const files = event.target.files;
-  //   if (files) {
-  //     // Convert the current FileList to an array for manipulation
-  //     const currentFiles = Array.from(watchImages || []);
-  //     const newFiles = Array.from(files);
-
-  //     // Update the FileList in react-hook-form
-  //     const dataTransfer = new DataTransfer();
-  //     currentFiles.forEach((file) => dataTransfer.items.add(file));
-  //     newFiles.forEach((file) => dataTransfer.items.add(file));
-  //     setValue("photos", dataTransfer.files);
-
-  //     // Create image previews for newly selected files
-  //     const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
-  //     setImagePreviews((prev) => [...prev, ...newPreviews]);
-  //   }
-  // };
 
   useEffect(() => {
     if (meetingData?.location) {
@@ -318,11 +265,15 @@ export const MeetingEditPage = ({ params }: MeetingEditPageProps) => {
       setIsQuestionVisible(true); // approval이 true일 때 질문 표시
     }
     setValue("approval", approval); // approval 값을 설정\
-    setValue("introduction", content)
+    setValue("introduction", content);
 
     setValue("costly", costly);
 
+    setValue("hostType", meetingData?.hostType);
+
     costly ? setIsCostlyItemOpen(true) : setIsCostlyItemOpen(false);
+    setValue("photoUrls", photoURL);
+    setValue("countryFlagEmoji", meetingData?.countryFlagEmoji);
   }, [
     meetingData?.location,
     setValue,
@@ -341,31 +292,36 @@ export const MeetingEditPage = ({ params }: MeetingEditPageProps) => {
     content,
     meetingData?.information,
     costly,
+    meetingData?.hostType,
+    photoURL,
+    meetingData?.countryFlagEmoji,
   ]);
 
-  // useEffect(() => {
-  //   if (watchImages && watchImages.length > 0) {
-  //     const imageFiles = Array.from(watchImages); // 파일 배열로 변환
-  //     const imageUrls = imageFiles.map((file) => URL.createObjectURL(file)); // 각 파일에 대한 URL 생성
+  const onValid = async (data: any) => {
 
-  //     // 기존의 imagePreviews와 새로 선택된 이미지 URL을 합침
-  //     setImagePreviews((prev) => [...prev, ...imageUrls]);
-
-  //     // 메모리 누수 방지 위해 URL 해제
-  //     return () => {
-  //       imageUrls.forEach((url) => URL.revokeObjectURL(url));
-  //     };
-  //   }
-  // }, [watchImages]);
-
-  const onValid = (data: any) => {
-    const formData = new FormData();
-    console.log("Form is valid", data);
-    if (data.photos && data.photos.length > 0) {
-      for (let i = 0; i < data.photos.length; i++) {
-        formData.append("photos", data.photos[i]); // 여러 파일 추가
+    try {
+      data.photoUrls = await HandleMediaUpload({
+        photoURL,
+        accessToken: session?.accessToken,
+        targetPrefix: "MEETING",
+      });
+      const response = await usePutMeetingEdit(session?.accessToken, meetingId, data)
+      if (response) {
+        alert("모임이 성공적으로 수정되었습니다.")
+        window.location.replace(`/gachiga/${meetingId}`);
+        // router.push(`/gachiga/${meetingId}`)
       }
-    }
+
+    } catch (err) {
+      console.error("Error:", err);
+      alert("미팅을 생성하는데 오류가 발생하였습니다.");
+    } 
+
+    data.photoUrls = await HandleMediaUpload({
+      photoURL,
+      accessToken: session?.accessToken,
+      targetPrefix: "MEETING",
+    });
   };
 
   if (isMeetingLoading) {
@@ -650,16 +606,12 @@ export const MeetingEditPage = ({ params }: MeetingEditPageProps) => {
                 {customFileLabel}
               </div>
             </div>
-            <p className="mt-[10px]">
-              {watchImages
-                ? `10개 중 ${imagePreviews.length}개 업로드됨`
-                : "10개 중 0개 업로드"}
-            </p>
+            <p className="mt-[10px]">10개 중 {photoURL.length}개 업로드됨</p>
 
             {/* 이미지 미리보기 섹션 */}
             <div className="flex flex-wrap gap-4 mt-4">
-              {imagePreviews &&
-                imagePreviews.map((src, index) => (
+              {photoURL &&
+                photoURL.map((src, index) => (
                   <div
                     key={index}
                     className="w-24 h-24 border border-gray-300 rounded-md overflow-hidden"

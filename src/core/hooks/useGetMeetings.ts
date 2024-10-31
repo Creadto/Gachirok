@@ -1,4 +1,3 @@
-import { MeetingResponse } from "@/app/gachiga/_types/MeetingResponse";
 import axios from "axios";
 
 
@@ -26,7 +25,7 @@ export async function useGetMyMeetings(accessToken: string) {
 }
 
 export async function useGetFilteredMeetings(accessToken: string, url: string, page: number, size: number){
-  const response = await axios.get(`/api/meetings/?${url}&page=${page}&size=${size}`, {
+  const response = await axios.get(`/api/meetings2/?${url}&page=${page}&size=${size}`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },

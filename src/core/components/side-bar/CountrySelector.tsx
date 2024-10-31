@@ -44,7 +44,7 @@ const CountrySelector = () => {
   return (
     <>
       <button
-        className="inline-flex justify-between items-center w-full  text-sm font-medium text-black  focus:outline-none "
+        className="inline-flex justify-between items-center text-sm font-medium text-black  focus:outline-none "
         onClick={handleCountryDropdown}
       >
         {countryName}
@@ -66,8 +66,8 @@ const CountrySelector = () => {
 
       {/* 국가 선택 Dropdown */}
       {isOpen && (
-        <div className="absolute -left-2 mt-2 w-[400px] rounded-md h-[380px] bg-white focus:outline-none z-50">
-          <div className="relative z-10 w-full bg-white border h-[380px] border-gray-300 rounded-md overflow-y-auto">
+        <div className=" -left-2 mt-2 rounded-md h-[380px] w-[250px] bg-white focus:outline-none z-50">
+          <div className="relative z-10  bg-white border h-[380px] border-gray-300 rounded-md overflow-y-auto scrollable-container">
 
             {/* 국가설정 HEADER */}
             <div className="w-full h-[30px] flex items-start justify-start pl-[15px] mt-[13px] shadow-sm font-bold">
@@ -82,7 +82,7 @@ const CountrySelector = () => {
             </button>
 
             {/* 검색기능 */}
-            <div className="w-[340px] ml-[15px] mr-[15px] flex h-[40px] mt-[10px] bg-[#F6F6F6] relative border rounded-[5px]">
+            <div className="w-[90%] justify-center items-center m-auto  flex h-[40px] mt-[10px] bg-[#F6F6F6] relative border rounded-[5px]">
               <div className="absolute top-[20px] left-[5px]">
                 <SearchIcon />
               </div>
@@ -95,7 +95,7 @@ const CountrySelector = () => {
               />
             </div>
 
-            <hr className="w-[350px] h-[1px] my-[10px] mx-auto flex items-center justify-center" />
+            <hr className="w-full h-[1px] my-[10px] mx-auto flex items-center justify-center" />
 
             {filteredCountries.map((country) => (
               <button

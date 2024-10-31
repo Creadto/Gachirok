@@ -6,9 +6,10 @@ import TwoButtonForm from "@/app/create-profile/_components/profile-setup/TwoBut
 import CustomAlert from "@/core/components/CustomAlert";
 import DoubleDateTimeSelector from "@/core/components/DoubleDateTimeSelector";
 import InterestSelector from "@/core/components/InterestsSelector";
+import { useGetProfileResponse } from "@/core/hooks/useGetProfileResponse";
 import { countryStore } from "@/core/store/country-store";
 import { sexTypes } from "@/core/types/DataForUI";
-import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -17,9 +18,11 @@ import "react-quill/dist/quill.snow.css";
 import { CategorySelector } from "../_components/CategorySelector";
 import CostlyDetails from "./_components/CostlyDetails";
 import CountryStateCitySelector from "./_components/CountryStateCitySelector";
+import { HostTypeButton } from "./_components/HostTypeButton";
 import { RangeSlider } from "./_components/RangeSlider";
 import TwoButtonApproval from "./_components/TwoButtonApproval";
-import appendMeetingCreateRequestFromData from "./_utils/appendMeetingCreateRequestFormData";
+import axios from "axios";
+import { HandleMediaUpload } from "@/core/utils/handleMediaUpload";
 
 interface AddFleaMarketLocalBulletinBoardPageProps {
   params: {
@@ -41,10 +44,21 @@ export default function AddMeetingsLocalBulletinBoardPage({
   const { data: session } = useSession();
   const accessToken = session?.accessToken;
 
+  const {
+    data: userData,
+    isLoading: isUserLoading,
+    isError: isUserError,
+    error: userError,
+  } = useQuery({
+    queryKey: ["user"],
+    queryFn: () => useGetProfileResponse(session?.accessToken), //meeting을 가져오는 react query가 실행된 후에 실시
+    enabled: !!session?.accessToken,
+    retry: 2,
+  });
+
   //URL의 param이 변화될때마다 country store update
   useEffect(() => {
     setCountry(countryCode);
-    console.log("country", countryCode);
   }, [params]);
 
   const {
@@ -63,25 +77,26 @@ export default function AddMeetingsLocalBulletinBoardPage({
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
 
-  const onValid = async (updatedData: any) => {
+  const onValid = async (data: any) => {
+    console.log("new data", data);
     setLoading(true);
     try {
       if (!accessToken) {
         throw new Error("Access token is missing");
       }
-      const formData = appendMeetingCreateRequestFromData(updatedData);
-      if (formData !== null) {
-        const response = await axios.post("/api/meetings", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-
-        if (response) {
-          setAlertMessage("미팅이 성공적으로 개설되었습니다!");
-          setShowAlert(true);
-        }
+      data.photoUrls = await HandleMediaUpload({
+        photoURL,
+        accessToken: session?.accessToken,
+        targetPrefix: "MEETING",
+      });
+      const response = await axios.post("/api/meetings2", data, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (response) {
+        setAlertMessage("미팅이 성공적으로 개설되었습니다!");
+        setShowAlert(true);
       }
     } catch (err) {
       console.error("Error:", err);
@@ -137,53 +152,56 @@ export default function AddMeetingsLocalBulletinBoardPage({
   const [content, setContent] = useState("");
 
   //이미지 thumbnail
-  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-  const [photoList, setPhotoList] = useState<File[]>([])
+  const [photoURL, setPhotoURL] = useState<string[]>([]);
 
-  const watchImages = watch("photos");
+  const watchImages = watch("photos"); // 최신 photos 값을 실시간으로 감
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files; // Get the FileList from the input
+    const files = event.target.files;
     if (files) {
-      const newFiles = Array.from(files); // Convert FileList to array
-      setPhotoList((prev) => [...prev, ...newFiles]); // Append new files to existing
+      const newFiles = Array.from(files);
 
-      // Create URLs for previews
-      const newImageUrls = newFiles.map((file) => URL.createObjectURL(file));
-      setImagePreviews((prev) => [...prev, ...newImageUrls]); // Update previews
+      // Create a FileReader for each file
+      newFiles.forEach((file) => {
+        const reader = new FileReader();
 
-      // Update the photos field in react-hook-form
-      setValue("photos", [...photoList, ...newFiles]); // Update the form state
+        reader.onloadend = () => {
+          setPhotoURL((prev) => [...prev, reader.result as string]); // Store data URL
+        };
+
+        reader.readAsDataURL(file); // Read the file as a data URL
+      });
     }
   };
 
-  // Cleanup object URLs on unmount
-  useEffect(() => {
-    return () => {
-      imagePreviews.forEach((url) => URL.revokeObjectURL(url));
-    };
-  }, [imagePreviews]);
+  const handleImageRemove = (index: number) => {
+    // Update photoList state by removing the selected file
+    setPhotoURL((prevPhotoList) => {
+      // Use the same index to remove from photoList
+      const updatedPhotoList = prevPhotoList.filter((_, i) => i !== index);
+      return updatedPhotoList;
+    });
+  };
 
+  // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const files = event.target.files; // Get the FileList from the input
+  //   if (files) {
+  //     const newFiles = Array.from(files); // Convert FileList to array
+  //     setPhotoList((prev) => [...prev, ...newFiles]); // Append new files to existing
+
+  //     // Create URLs for previews
+  //     const newImageUrls = newFiles.map((file) => URL.createObjectURL(file));
+  //     setImagePreviews((prev) => [...prev, ...newImageUrls]); // Update previews
+
+  //     // Update the photos field in react-hook-form
+  //     setValue("photos", [...photoList, ...newFiles]); // Update the form state
+  //   }
+  // };
 
   const customFileLabel =
     watchImages && watchImages.length > 0
       ? `${watchImages.length}개의 파일 선택됨`
       : "파일 선택";
-
-      const handleImageRemove = (index: number) => {
-        const updatedImages = Array.from(watchImages || []).filter(
-          (_, i) => i !== index
-        );
-    
-        // Update FileList in react-hook-form
-        const dataTransfer = new DataTransfer();
-        updatedImages.forEach((file) => dataTransfer.items.add(file as File));
-        setValue("photos", dataTransfer.files);
-    
-        // Update image previews
-        const updatedPreviews = imagePreviews.filter((_, i) => i !== index);
-        setImagePreviews(updatedPreviews);
-      };
 
   // 미리보기
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
@@ -194,10 +212,6 @@ export default function AddMeetingsLocalBulletinBoardPage({
   // 필요한 비용 - 있음 경우
   const [isCostlyItemOpen, setIsCostlyItemOpen] = useState(false);
 
-  //미리보기 Modal 열림 여부
-  const handleModal = () => {
-    setIsPreviewModalOpen(!isPreviewModalOpen);
-  };
   const formatTime = (hours: number | null, minutes: number | null) => {
     return `${hours}시 ${minutes}분`;
   };
@@ -247,10 +261,7 @@ export default function AddMeetingsLocalBulletinBoardPage({
     setValue("costly", costly);
     //register했지만, number타입으로 전송해야하기 때문에 setValue적용
     setValue("maxMember", maxMember);
-    setValue("hostType", "normal_host");
-    setValue("countryFlagEmoji", "🇰🇷");
-    setValue("coin", 5);
-    setValue("packageItem", "day_all");
+    setValue("countryFlagEmoji", "");
 
     selectedDate
       ? setValue("meetingDate", formatDate(selectedDate))
@@ -263,10 +274,13 @@ export default function AddMeetingsLocalBulletinBoardPage({
       : (setValue("meetingType", "ALWAYS"), setIsDateVisible(false));
 
     approval === false
-      ? setIsQuestionVisible(false)
+      ? (setIsQuestionVisible(false), setValue("question", ""))
       : setIsQuestionVisible(true);
 
     costly === false ? setIsCostlyItemOpen(false) : setIsCostlyItemOpen(true);
+    setValue("photoUrls", photoURL);
+
+    console.log("introduction", content)
   }, [
     approval,
     minValue,
@@ -280,6 +294,8 @@ export default function AddMeetingsLocalBulletinBoardPage({
     startMinute,
     endHour,
     endMinute,
+    photoURL,
+    content
   ]);
 
   const formatDate = (date: Date): string => {
@@ -309,11 +325,11 @@ export default function AddMeetingsLocalBulletinBoardPage({
         <div className="bg-[#DDDDDD] px-[7px] py-[3px] rounded-[4px] text-[#808080]">
           Local
         </div>
-        <div className="flex items-end justify-end flex-1">
+        {/* <div className="flex items-end justify-end flex-1">
           <button className="px-[12px] py-[10px] border border-[#EEEEEE] rounded-lg">
             미리보기
           </button>
-        </div>
+        </div> */}
       </div>
 
       {/* 카테고리-자유게시판, 소모임, 부동산, 벼룩시장, 구인구직*/}
@@ -563,81 +579,40 @@ export default function AddMeetingsLocalBulletinBoardPage({
         />
 
         {/* 파일선택 */}
-        {/* <div>
+        <div>
           <div className="relative w-max mt-2">
             <input
+            id="file-input"
               type="file"
               accept="image/*"
-              {...register("photos")}
               multiple
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              onChange={handleFileChange}
             />
             <div className="px-4 py-2 bg-[#E62A2F] text-white rounded-md text-center cursor-pointer">
               {customFileLabel}
             </div>
           </div>
-          <p className="mt-[10px]">
-            {watchImages
-              ? `10개 중 ${watchImages.length}개 업로드됨`
-              : "10개 중 0개 업로드"}
-          </p> */}
+          <p className="mt-[10px]">10개 중 {photoURL.length}개 업로드됨</p>
 
           {/* 이미지 미리보기 섹션 */}
-          {/* <div className="flex flex-wrap gap-4 mt-4">
-            {imagePreviews.map((src, index) => (
-              <div
-                key={index}
-                className="w-24 h-24 border border-gray-300 rounded-md overflow-hidden"
-                onClick={() => handleImageRemove(index)}
-              >
-                <img
-                  src={src}
-                  alt={`미리보기 ${index + 1}`}
-                  className="object-cover w-full h-full"
-                />
-              </div>
-            ))}
+          <div className="flex flex-wrap gap-4 mt-4">
+            {photoURL &&
+              photoURL.map((src, index) => (
+                <div
+                  key={index}
+                  className="w-24 h-24 border border-gray-300 rounded-md overflow-hidden"
+                  onClick={() => handleImageRemove(index)}
+                >
+                  <img
+                    src={src}
+                    alt={`미리보기 ${index + 1}`}
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+              ))}
           </div>
-        </div> */}
-
-         {/* 파일선택 */}
-         <div>
-            <div className="relative w-max mt-2">
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                onChange={handleFileChange}
-              />
-              <div className="px-4 py-2 bg-[#E62A2F] text-white rounded-md text-center cursor-pointer">
-                {customFileLabel}
-              </div>
-            </div>
-            <p className="mt-[10px]">
-              {watchImages
-                ? `10개 중 ${photoList.length}개 업로드됨`
-                : "10개 중 0개 업로드"}
-            </p>
-
-            {/* 이미지 미리보기 섹션 */}
-            <div className="flex flex-wrap gap-4 mt-4">
-              {imagePreviews &&
-                imagePreviews.map((src, index) => (
-                  <div
-                    key={index}
-                    className="w-24 h-24 border border-gray-300 rounded-md overflow-hidden"
-                    onClick={() => handleImageRemove(index)}
-                  >
-                    <img
-                      src={src}
-                      alt={`미리보기 ${index + 1}`}
-                      className="object-cover w-full h-full"
-                    />
-                  </div>
-                ))}
-            </div>
-          </div>
+        </div>
 
         {/* 안내사항 */}
         <label className="block mt-[40px] text-xs text-[#808080] mb-[10px]">
@@ -670,6 +645,20 @@ export default function AddMeetingsLocalBulletinBoardPage({
           setValue={setValue}
           isCostlyItemOpen={isCostlyItemOpen}
         />
+
+        <div className="mb-4">
+          <label className="block mt-[40px] text-xs text-[#808080] mb-[5px]">
+            노출 방법
+          </label>
+          <span className="text-sm">
+            호스팅 방식에 따라 모임의 참석률과 신청률이 달라집니다.
+          </span>
+          {isUserLoading ? (
+            <div>회원 정보 로딩 중...</div>
+          ) : (
+            <HostTypeButton userData={userData?.data} setValue={setValue} />
+          )}
+        </div>
 
         {/* 작성완료 */}
         <div className="flex items-center justify-center mt-[80px] mb-[150px]">

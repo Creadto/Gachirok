@@ -1,9 +1,9 @@
 // "use client";
+
 // import { BackButton } from "@/app/bulletin-board/_components/BackButton";
 // import { QuillEditor } from "@/app/bulletin-board/_components/QuillEditor";
 // import { RangeSliderCustom } from "@/app/bulletin-board/local/[countryCode]/create/meetings/_components/RangeSlider";
 // import TwoButtonApproval from "@/app/bulletin-board/local/[countryCode]/create/meetings/_components/TwoButtonApproval";
-// import TwoButtonForm from "@/app/create-profile/_components/profile-setup/TwoButtonForm";
 // import { LoadingSpinner } from "@/core/components/LoadingSpinner";
 // import { useGetMeetingsId } from "@/core/hooks/useGetMeetings";
 // import { sexTypes } from "@/core/types/DataForUI";
@@ -11,13 +11,15 @@
 // import { useSession } from "next-auth/react";
 // import { useRouter } from "next/navigation";
 // import { useEffect, useState } from "react";
-// import { useForm } from "react-hook-form";
+// import { useForm, useWatch } from "react-hook-form";
 // import "react-quill/dist/quill.snow.css";
-// import EditInterestsSelector from "./EditInterestSelector";
-// import EditCountryStateCitySelector from "./EditCountryStateCitySelector";
-// import EditDoubleDateTimeSelector from "./EditDoubleDateTimeSelector";
-// import { MeetingResponse } from "@/app/gachiga/_types/MeetingResponse";
-// import EditCostlyDetails from "./EditCostlyDetails";
+// import { MeetingResponse } from "../../_types/MeetingResponse";
+// import DisabledTwoButtonForm from "./_components/DisabledTwoButtonForm";
+// import EditCountryStateCitySelector from "./_components/EditCountryStateCitySelector";
+// import EditDoubleDateTimeSelector from "./_components/EditDoubleDateTimeSelector";
+// import EditInterestsSelector from "./_components/EditInterestSelector";
+// import TwoButtonForm from "@/app/create-profile/_components/profile-setup/TwoButtonForm";
+// import EditCostlyDetails from "./_components/EditCostlyDetails";
 
 // interface MeetingEditPageProps {
 //   params: {
@@ -25,10 +27,6 @@
 //   };
 // }
 
-// /**
-//  * @Description 모임 수정 페이지
-//  * @author 김영서
-//  **/
 // export const MeetingEditPage = ({ params }: MeetingEditPageProps) => {
 //   const { data: session } = useSession();
 //   const { meetingId } = params;
@@ -52,69 +50,41 @@
 //     watch,
 //     setValue,
 //     trigger,
+//     control,
 //     formState: { errors },
 //   } = useForm();
 
-//   const onValid = (updatedData: any) => {
-//     if (meetingData) {
-//       console.log("Form is valid", updatedData);
-//     } else {
-//       console.log("Meeting data is undefined");
-//     }
-//   };
+//   // 모임 종류
+//   const meetingType = meetingData?.meetingType === "ALWAYS" ? true : false;
 
-//   const ChangeDateFormat = (
-//     originalDate: string | null | undefined
-//   ): Date | null => {
-//     if (originalDate) {
-//       const formattedDateString = originalDate.replace(
-//         /(\d{4})\.(\d{2})\.(\d{2})\(.+\)/,
-//         "$1-$2-$3"
-//       );
-
-//       // Date 객체 생성
-//       const date = new Date(formattedDateString);
-
-//       // 유효한 날짜인지 확인
-//       if (!isNaN(date.getTime())) {
-//         return date; // 유효한 날짜 반환
-//       } else {
-//         console.error("Invalid date format:", originalDate);
-//         return null; // 유효하지 않은 날짜인 경우 null 반환
-//       }
-//     }
-
-//     return null; // originalDate가 null 또는 undefined인 경우
-//   };
-
-//   const [loading, setLoading] = useState(false);
-
-//   //모임 종류
-//   const [meetingType, setMeetingType] = useState(
-//     meetingData?.meetingType === "ALWAYS" ? true : false
-//   );
-
-//   const [selectedStartTime, setSelectedStartTime] = useState(
-//     meetingData?.meetingStartTime
-//   );
-//   const [selectedEndTime, setSelectedEndTime] = useState(
-//     meetingData?.meetingEndTime
-//   );
-//   const [originalDate, setOriginalDate] = useState(meetingData?.meetingDate);
-//   const [selectedDate, setSelectedDate] = useState<Date | null>(
-//     ChangeDateFormat(originalDate)
-//   );
 //   //하루만 일 경우에는 날짜 및 시간 선택 가능하게끔
 //   const [isDateVisible, setIsDateVisible] = useState(true);
 
-//   //모임 종류
-//   const [sexType, setSexType] = useState<string | undefined>(
-//     meetingData?.sexType
-//   );
+//   //날짜 및 시간
+//   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+//   // const [selectedStartTime, setSelectedStartTime] = useState<string>("");
+//   // const [selectedEndTime, setSelectedEndTime] = useState<string>("");
 
-//   //모집 인원 수
-//   const [maxMember, setMaxMember] = useState<number | undefined>(
-//     meetingData?.maxMember
+//   //시작시간
+//   const [startHour, setStartHour] = useState<number | null>(null);
+//   const [startMinute, setStartMinute] = useState<number | null>(null);
+
+//   //종료시간
+//   const [endHour, setEndHour] = useState<number | null>(null);
+//   const [endMinute, setEndMinute] = useState<number | null>(null);
+
+//   //시간 비교 오류
+//   const [timeError, setTimeError] = useState<string | null>(null);
+
+//   //모임 종류
+//   const [sexType, setSexType] = useState<string>(
+//     meetingData?.sexType ?? "anyone"
+//   );
+//   const originalSexType = meetingData?.sexType;
+
+//   //모집 멤버 수
+//   const [maxMember, setMaxMember] = useState<number>(
+//     meetingData?.maxMember as number
 //   );
 
 //   //최소, 최대 연령
@@ -133,88 +103,34 @@
 
 //   //본문 내용
 //   const [content, setContent] = useState<string | undefined>(
-//     meetingData?.introduction
+//     meetingData?.introduction.toString()
 //   );
 
 //   //파일
 //   const [imagePreviews, setImagePreviews] = useState<string[]>(() => {
+
+//     return meetingData?.photoUrls || [];
+//   }); 
+//   const [photoList, setPhotoList] = useState<File[]>([]);
+
+//   const [photoURL, setPhotoURL] = useState<string[]>(() => {
 //     // Initialize state with existing photo URLs from meetingData
 //     return meetingData?.photoUrls || [];
-//   });
+//   }); 
 
-//   //비용 발생
-//   const [costly, setCostly] = useState<boolean | undefined>(
-//     meetingData?.costly
-//   );
-//   const [isCostlyItemOpen, setIsCostlyItemOpen] = useState(
-//     meetingData?.content ||
-//       meetingData?.hostTip ||
-//       meetingData?.rental ||
-//       meetingData?.material ||
-//       meetingData?.snack ||
-//       meetingData?.admission ||
-//       meetingData?.entry ||
-//       meetingData?.customCostDescription
-//       ? true
-//       : false
-//   );
+//   //필요한 비용
+//   const [costly, setCostly] = useState(meetingData?.costly);
 
-//   const watchImages: FileList | undefined = watch("photos");
-//   const customFileLabel =
-//     watchImages && watchImages.length > 0
-//       ? `${imagePreviews.length}개의 파일 선택됨`
-//       : "파일 선택";
+//   // 필요한 비용 - 있음 경우
+//   const [isCostlyItemOpen, setIsCostlyItemOpen] = useState(meetingData?.costly);
 
-//   const handleImageRemove = (index: number) => {
-//     const updatedImages = Array.from(watchImages || []).filter(
-//       (_, i) => i !== index
-//     );
-
-//     // Update FileList in react-hook-form
-//     const dataTransfer = new DataTransfer();
-//     updatedImages.forEach((file) => dataTransfer.items.add(file));
-//     setValue("photos", dataTransfer.files);
-
-//     // Update image previews
-//     const updatedPreviews = imagePreviews.filter((_, i) => i !== index);
-//     setImagePreviews(updatedPreviews);
+//   //위치 정보 변경 시 form data에 넣기
+//   const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     const value = e.target.value;
+//     setValue("location", value); // react-hook-form 상태 업데이트
 //   };
 
-//   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-//     const files = event.target.files;
-//     if (files) {
-//       // Convert the current FileList to an array for manipulation
-//       const currentFiles = Array.from(watchImages || []);
-//       const newFiles = Array.from(files);
-
-//       // Update the FileList in react-hook-form
-//       const dataTransfer = new DataTransfer();
-//       currentFiles.forEach((file) => dataTransfer.items.add(file));
-//       newFiles.forEach((file) => dataTransfer.items.add(file));
-//       setValue("photos", dataTransfer.files);
-
-//       // Create image previews for newly selected files
-//       const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
-//       setImagePreviews((prev) => [...prev, ...newPreviews]);
-//     }
-//   };
-//   const formatStartTime = (time: string): string | undefined => {
-//     if (time) {
-//       let [hours, minutes] = time.split(":");
-//       hours = parseInt(hours, 10).toString(); // 앞의 '0' 제거
-//       minutes = parseInt(minutes, 10).toString();
-//       return `${hours}시 ${minutes}분`;
-//     }
-//   };
-//   const formatEndTime = (time: string): string | undefined => {
-//     if (time) {
-//       let [hours, minutes] = time.split(":");
-//       hours = parseInt(hours, 10).toString(); // 앞의 '0' 제거
-//       minutes = parseInt(minutes, 10).toString();
-//       return `${hours}시 ${minutes}분`;
-//     }
-//   };
-
+//   //API의 형식에 맞게 meetingDate 수정
 //   const formatDate = (date: Date): string => {
 //     const year = date.getFullYear();
 //     const month = date.getMonth() + 1; // 월은 0부터 시작하므로 +1
@@ -222,31 +138,127 @@
 //     return `${year}년 ${month}월 ${day}일`; //API로 보내는 형식
 //   };
 
-//   useEffect(() => {
-//     if (selectedStartTime !== "") {
-//       setValue(
-//         "meetingStartTime",
-//         formatStartTime(selectedStartTime as string)
-//       );
-//     }
-//     if (selectedEndTime !== "") {
-//       setValue("meetingEndTime", formatEndTime(selectedEndTime as string));
-//     }
+//   const handleTimeCompare = (
+//     startHour: number | null,
+//     startMinute: number | null,
+//     endHour: number | null,
+//     endMinute: number | null
+//   ) => {
+//     // 모든 값이 유효한지 확인
+//     if (
+//       startHour !== null &&
+//       startMinute !== null &&
+//       endHour !== null &&
+//       endMinute !== null
+//     ) {
+//       const startTime = new Date().setHours(startHour, startMinute);
+//       const endTime = new Date().setHours(endHour, endMinute);
 
-//     if (meetingData && !watch("location")) {
+//       if (endTime <= startTime) {
+//         setTimeError("종료 시간은 시작 시간보다 늦어야 합니다.");
+//       } else {
+//         setTimeError(null); // 정상적일 경우 에러를 null로 설정
+//       }
+//     }
+//   };
+
+//   const formatTime = (hours: number | null, minutes: number | null) => {
+//     return `${hours}시 ${minutes}분`;
+//   };
+
+//   const onRangeChange = (min: string, max: string) => {
+//     setStartAge(min);
+//     setEndAge(max);
+//   };
+
+//   const handleQuestionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     const value = e.target.value;
+//     setValue("question", value);
+//   };
+
+//   const watchImages = watch("photos"); // 최신 photos 값을 실시간으로 감지
+
+//   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+//     const files = event.target.files; // Get the FileList from the input
+//     if (files) {
+//       const newFiles = Array.from(files); // Convert FileList to array
+  
+//       // Update photoList state synchronously
+//       setPhotoList((prev) => {
+//         const updatedPhotoList = [...prev, ...newFiles];
+//         return updatedPhotoList;
+//       });
+  
+//       // Create URLs for previews
+//       const newImageUrls = newFiles.map((file) => URL.createObjectURL(file));
+//       setImagePreviews((prev) => [...prev, ...newImageUrls]); // Update previews
+//     }
+//   };
+  
+//   const handleImageRemove = (index: number) => {
+//     // Update photoList state by removing the selected file
+//     setPhotoList((prevPhotoList) => {
+//       // Use the same index to remove from photoList
+//       const updatedPhotoList = prevPhotoList.filter((_, i) => i !== index);
+//       return updatedPhotoList;
+//     });
+  
+//     // Update image previews by removing the corresponding image preview URL
+//     setImagePreviews((prevPreviews) => {
+//       const updatedPreviews = prevPreviews.filter((_, i) => i !== index);
+//       return updatedPreviews;
+//     });
+//   };
+  
+//   // Sync the updated photoList with the react-hook-form "photos" field
+//   useEffect(() => {
+//     setValue("photos", photoList);
+//     console.log("photoList", photoList)
+//     console.log("previews", imagePreviews)
+//   }, [photoList, setValue, imagePreviews]);
+
+//   useEffect(() => {
+//     return () => {
+//       imagePreviews.forEach((url) => URL.revokeObjectURL(url));
+//     };
+//   }, [imagePreviews]); // Only runs on unmount
+
+//   const customFileLabel =
+//     watchImages && watchImages.length > 0
+//       ? `${photoList.length}개의 파일 선택됨`
+//       : "파일 선택";
+
+
+//   useEffect(() => {
+//     if (meetingData?.location) {
 //       setValue("location", meetingData.location);
 //     }
 
-//     if (meetingData && !watch("question")) {
-//       setValue("question", meetingData.question);
+//     if (meetingData?.sexType) {
+//       setValue("sexType", sexType);
 //     }
-
-//     if (meetingData && !watch("title")) {
-//       setValue("title", meetingData.title);
+//     if (meetingData?.maxMember) {
+//       setValue("maxMember", meetingData.maxMember);
 //     }
-
-//     if (meetingData && !watch("information")) {
-//       setValue("information", meetingData.information);
+//     if (meetingData?.startAge) {
+//       setValue("startAge", startAge?.toString());
+//     }
+//     if (meetingData?.endAge) {
+//       setValue("endAge", endAge?.toString());
+//     }
+//     if (meetingData?.question) {
+//       setValue("question", meetingData.question, { shouldValidate: true });
+//     }
+//     if (meetingData?.title) {
+//       setValue("title", meetingData.title, { shouldValidate: true });
+//     }
+//     if (meetingData?.content) {
+//       setValue("introduction", content, { shouldValidate: true });
+//     }
+//     if (meetingData?.information) {
+//       setValue("information", meetingData.information, {
+//         shouldValidate: true,
+//       });
 //     }
 
 //     meetingType === false
@@ -257,70 +269,74 @@
 //       ? setValue("meetingDate", formatDate(selectedDate))
 //       : setValue("meetingDate", "");
 
-//     setValue("sexType", sexType);
+//     startHour !== null && startMinute !== null
+//       ? setValue("meetingStartTime", formatTime(startHour, startMinute))
+//       : setValue("meetingStartTime", "");
+
+//     endHour !== null && endMinute !== null
+//       ? setValue("meetingEndTime", formatTime(endHour, endMinute))
+//       : setValue("meetingEndTime", "");
+
+//     handleTimeCompare(startHour, startMinute, endHour, endMinute);
 
 //     setValue("startAge", parseInt(startAge ?? "", 10));
 //     setValue("endAge", parseInt(endAge ?? "", 10));
 
-//     approval === false
-//       ? setIsQuestionVisible(false)
-//       : setIsQuestionVisible(true);
+//     if (approval === false) {
+//       setIsQuestionVisible(false);
+//       setValue("question", "", { shouldValidate: true }); // approval이 false일 때 질문을 초기화
+//     } else {
+//       setIsQuestionVisible(true); // approval이 true일 때 질문 표시
+//     }
+//     setValue("approval", approval); // approval 값을 설정\
+//     setValue("introduction", content)
 
-//     costly === false ? setIsCostlyItemOpen(false) : setIsCostlyItemOpen(true);
-
-//     setValue("approval", approval);
 //     setValue("costly", costly);
-//     //register했지만, number타입으로 전송해야하기 때문에 setValue적용
-//     setValue("maxMember", maxMember);
-//     setValue("hostType", "normal_host");
-//     setValue("countryFlagEmoji", "🇰🇷");
-//     setValue("coin", 5);
-//     setValue("packageItem", "day_all");
-//     console.log("meetingData", meetingData);
-//     console.log("meetingType", meetingType);
-//     console.log("sexType", sexType);
-//     console.log("startAge", startAge);
-//     console.log("endAge", endAge);
-//     console.log("approval", approval);
-//     console.log("costly", costly);
-//     console.log("approval", approval);
-//     console.log("maxMember", maxMember);
+
+//     costly ? setIsCostlyItemOpen(true) : setIsCostlyItemOpen(false);
 //   }, [
-//     meetingData,
+//     meetingData?.location,
 //     setValue,
-//     watch,
 //     meetingType,
+//     isDateVisible,
+//     selectedDate,
+//     startHour,
+//     startMinute,
+//     endHour,
+//     endMinute,
 //     sexType,
+//     maxMember,
 //     startAge,
 //     endAge,
 //     approval,
+//     content,
+//     meetingData?.information,
 //     costly,
-//     approval,
-//     costly,
-//     maxMember,
 //   ]);
 
-//   const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-//     const value = e.target.value;
-//     setValue("location", value); // react-hook-form 상태 업데이트
-//   };
+//   // useEffect(() => {
+//   //   if (watchImages && watchImages.length > 0) {
+//   //     const imageFiles = Array.from(watchImages); // 파일 배열로 변환
+//   //     const imageUrls = imageFiles.map((file) => URL.createObjectURL(file)); // 각 파일에 대한 URL 생성
 
-//   const handleQuestionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-//     const value = e.target.value;
-//     console.log("Question Value", value);
-//     setValue("question", value);
-//   };
+//   //     // 기존의 imagePreviews와 새로 선택된 이미지 URL을 합침
+//   //     setImagePreviews((prev) => [...prev, ...imageUrls]);
 
-//   const onRangeChange = (min: string, max: string) => {
-//     setStartAge(min);
-//     setEndAge(max);
-//   };
+//   //     // 메모리 누수 방지 위해 URL 해제
+//   //     return () => {
+//   //       imageUrls.forEach((url) => URL.revokeObjectURL(url));
+//   //     };
+//   //   }
+//   // }, [watchImages]);
 
-//   const handleInformationChange = (
-//     e: React.ChangeEvent<HTMLTextAreaElement>
-//   ) => {
-//     const value = e.target.value;
-//     setValue("information", value); // react-hook-form 상태 업데이트
+//   const onValid = (data: any) => {
+//     const formData = new FormData();
+//     console.log("Form is valid", data);
+//     if (data.photos && data.photos.length > 0) {
+//       for (let i = 0; i < data.photos.length; i++) {
+//         formData.append("photos", data.photos[i]); // 여러 파일 추가
+//       }
+//     }
 //   };
 
 //   if (isMeetingLoading) {
@@ -340,6 +356,7 @@
 //       <div>미팅을 가져오는데 {meetingError.message}가 발생하였습니다. </div>
 //     );
 //   }
+
 //   if (meetingData) {
 //     return (
 //       <div className="max-w-4xl mx-auto bg-white mt-[50px] rounded-lg">
@@ -362,7 +379,7 @@
 //             register={register}
 //             errors={errors}
 //             setValue={setValue}
-//             interests={meetingData?.interests}
+//             interests={meetingData.interests}
 //           />
 
 //           <hr className="w-full bg-[#EEEEEE] mt-[40px] mb-[30px]" />
@@ -390,7 +407,7 @@
 //           <input
 //             type="text"
 //             {...register("location", { required: true })}
-//             className="block w-full border bg-[#F6F6F6] text-black text-[14px] h-[50px]
+//             className="block w-full border bg-[#F6F6F6] text-black text-sm h-[50px]
 //      rounded-lg p-[15px]"
 //             placeholder="위치를 입력해 주세요."
 //             onChange={handleLocationChange}
@@ -400,31 +417,39 @@
 //           )}
 
 //           {/* 하루만/언제나 */}
-//           <TwoButtonForm
-//             title="모임 종류 선택"
+//           <DisabledTwoButtonForm
+//             title="모임 종류 선택 (수정 불가)"
 //             options={[
 //               { label: "하루만", value: false },
 //               { label: "언제나", value: true },
 //             ]}
 //             activeValue={meetingType}
-//             onChange={setMeetingType}
 //           />
 
 //           {/* 날짜 및 시간 선택 */}
 //           {isDateVisible && (
-//             <div className="block w-full border text-black rounded-md p-2 mb-4 mt-[20px]">
+//             <div className="flex flex-col w-full border text-black rounded-md p-2 mb-4 mt-[20px] items-center justify-center">
 //               <EditDoubleDateTimeSelector
 //                 selectedDate={selectedDate}
 //                 onDateChange={setSelectedDate}
-//                 selectedStartTime={selectedStartTime as string}
-//                 selectedEndTime={selectedEndTime as string}
-//                 onStartTimeChange={setSelectedStartTime}
-//                 onEndTimeChange={setSelectedEndTime}
 //                 register={register}
 //                 errors={errors}
 //                 meetingData={meetingData}
 //                 setValue={setValue}
+//                 startHour={startHour}
+//                 startMinute={startMinute}
+//                 setStartHour={setStartHour}
+//                 setStartMinute={setStartMinute}
+//                 endHour={endHour}
+//                 endMinute={endMinute}
+//                 setEndHour={setEndHour}
+//                 setEndMinute={setEndMinute}
 //               />
+//               {timeError && (
+//                 <p className="text-red-500 block mt-[10px] text-sm">
+//                   {timeError}
+//                 </p>
+//               )}
 //             </div>
 //           )}
 
@@ -432,13 +457,16 @@
 
 //           <div>
 //             <label className="block mt-[40px] text-xs text-[#808080] mb-[10px]">
-//               모집 멤버
+//               모집 멤버 (누구나로만 변경 가능)
 //             </label>
 //             <div className="flex space-x-[5px]">
 //               {sexTypes.map((type) => (
 //                 <button
 //                   key={type.label}
 //                   type="button"
+//                   disabled={
+//                     !(type.value === "anyone" || type.value === originalSexType)
+//                   }
 //                   className={`w-[100px] h-[50px] text-[14px] border border-[#EEEEEE] flex items-center justify-center rounded-lg ${
 //                     sexType === type.value
 //                       ? "bg-[#E62A2F] text-white border-none"
@@ -466,13 +494,15 @@
 //               <span className="block absolute text-[14px] bottom-[14px] text-[#808080] left-[200px]">
 //                 (명) 호스트 포함
 //               </span>
-//               {errors.maxMember && (
-//                 <p className="text-red-500">
-//                   모임의 인원수 선정은 필수 항목입니다.
-//                 </p>
-//               )}
-//               {}
 //             </div>
+//             {errors.maxMember && (
+//               <p className="text-red-500">
+//                 모임의 인원수 선정은 필수 항목입니다.
+//               </p>
+//             )}
+//             {maxMember < 2 && (
+//               <p className="text-red-500">모임의 최소 인원수는 2명입니다.</p>
+//             )}
 //           </div>
 
 //           {/* 나이대 */}
@@ -566,13 +596,16 @@
 //             trigger={trigger}
 //             name="introduction"
 //             errors={errors}
-//             value={content ? content : ""}
+//             value={content as string}
 //             onChange={(value) => {
 //               setContent(value);
 //               setValue("introduction", value);
-//               trigger("introduction");
+//               // trigger("introduction");
 //             }}
 //           />
+//           {content === "" && (
+//             <p className="text-red-500">본문의 내용은 필수입니다.</p>
+//           )}
 
 //           {/* 파일선택 */}
 //           <div>
@@ -580,7 +613,6 @@
 //               <input
 //                 type="file"
 //                 accept="image/*"
-//                 {...register("photos")}
 //                 multiple
 //                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
 //                 onChange={handleFileChange}
@@ -616,22 +648,20 @@
 
 //           <hr className="w-full bg-[#EEEEEE] mt-[40px] mb-[30px]" />
 
-//           {/* 안내사항 */}
+//           {/* 제목 */}
 //           <label className="block mt-[40px] text-xs text-[#808080] mb-[10px]">
 //             안내사항
 //           </label>
-//           <textarea
+//           <input
+//             type="text"
 //             {...register("information", { required: true })}
-//             className="block w-full border bg-[#F6F6F6] text-black text-[14px] h-[150px]
+//             className="block w-full border bg-[#F6F6F6] text-black text-[14px] h-[50px]
 //      rounded-lg p-[15px]"
-//             placeholder={`안내사항을 입력하세요. \n예) 타인을 배려하는 마음을 갖고 신청해주세요`}
-//             onChange={handleInformationChange}
+//             placeholder="모임의 이름을 입력해주세요 (30자 이내)"
 //           />
 //           {errors.information && (
 //             <p className="text-red-500">안내사항 입력은 필수항목입니다.</p>
 //           )}
-
-//           <hr className="w-full bg-[#EEEEEE] mt-[40px] mb-[30px]" />
 
 //           {/* 필요한 비용 */}
 //           <TwoButtonForm
@@ -640,7 +670,7 @@
 //               { label: "없음", value: false },
 //               { label: "있음", value: true },
 //             ]}
-//             activeValue={costly || false}
+//             activeValue={costly as boolean}
 //             onChange={setCostly}
 //           />
 //           {/* 필요한 비용에 대한 세부사항 */}
@@ -648,12 +678,10 @@
 //             register={register}
 //             errors={errors}
 //             setValue={setValue}
-//             isCostlyItemOpen={isCostlyItemOpen}
+//             isCostlyItemOpen={costly as boolean}
 //             meetingData={meetingData}
-//             watch={watch}
 //           />
 
-//           {/* 작성완료 */}
 //           <div className="flex items-center justify-center mt-[80px] mb-[150px]">
 //             <input
 //               type="submit"
@@ -661,18 +689,6 @@
 //               value="수정 완료"
 //             />
 //           </div>
-
-//           {/* 미리보기 모달창 */}
-//           {/* <PreviewModalMeetings
-//         isOpen={isPreviewModalOpen}
-//         onClose={handleModal}
-//         formData={{
-//           title: watch("title"),
-//           introduction,
-//           images: watchImages,
-//           location: watch("location"),
-//         }}
-//       /> */}
 //         </form>
 //       </div>
 //     );

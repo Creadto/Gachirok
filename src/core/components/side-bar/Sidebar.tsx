@@ -75,7 +75,7 @@ const Sidebar = () => {
   if (pathname.startsWith("/sign-up") || pathname.startsWith("/create-profile")) return null;
   else {
     return (
-      <aside className="ml-[1%] w-[230px] mt-[100px] h-full  bg-white rounded-[15px] border-[#EEEEEE] border-2 sticky top-[100px] ">
+      <aside className=" ml-[1%] w-[230px] mt-[100px] h-full  bg-white rounded-[15px] border-[#EEEEEE] border-2 sticky top-[100px] ">
         {/* 국가선택 */}
         <div className="w-full  h-[72px] mt-[5px] relative shadow-sm">
           <div className="flex flex-col w-[190px] h-[37px] absolute top-[15px] left-[20px]">

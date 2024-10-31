@@ -9,6 +9,7 @@ import { NewHostConfirmModal } from "./NewHostConfirmModal";
 import { AnswerModal } from "./AnswerModal";
 import { ExileIcon } from "@/core/components/icons/ExileIcon";
 import { ExileGuestConfirmModal } from "./ExileGuestConfirmModal";
+import { ReportModal } from "@/core/components/ReportModal";
 interface ProfileDetailModalProps {
   setIsMemberManageModalOpen: (value: boolean) => void;
   selectedMember: MemberResponse;
@@ -41,6 +42,9 @@ export const ProfileDetailModal = ({
 
   //사용자 추방 모달
   const [isExileGuestModalOpen, setIsExileGuestModalOpen] = useState(false);
+
+  //신고하기 모달
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
 
   return (
     <>
@@ -107,7 +111,10 @@ export const ProfileDetailModal = ({
               </button>
             )}
 
-            <button className="flex gap-x-[8px] items-center my-[11px]">
+            <button
+              className="flex gap-x-[8px] items-center my-[11px]"
+              onClick={() => setIsReportModalOpen(true)}
+            >
               <ReportIcon />
               <span className="text-sm">신고하기</span>
             </button>
@@ -137,6 +144,13 @@ export const ProfileDetailModal = ({
           selectedMember={selectedMember}
           question={question}
         />
+      )}
+
+      {isReportModalOpen && (
+        <ReportModal setIsReportModalOpen={setIsReportModalOpen} 
+        targetId={selectedMember.userId}
+        targetType="USER"
+        accessToken = {accessToken}/>
       )}
       {isExileGuestModalOpen && (
         <ExileGuestConfirmModal

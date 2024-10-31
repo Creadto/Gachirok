@@ -55,6 +55,8 @@ const EditCostlyDetails = ({
 
     if (meetingData.customCostDescription) {
       setValue("customCostDescription", meetingData.customCostDescription);
+    } else {
+      setValue("customCostDescription", "")
     }
     if (isCostlyItemOpen === false) {
       // setValue("cost", "");
@@ -91,7 +93,6 @@ const EditCostlyDetails = ({
       ? setValue("entry", entryCost)
       : setValue("entry", false);
     
-      console.log("sex", isCostlyItemOpen)
   }, [
     contentCost,
     hostTipCost,

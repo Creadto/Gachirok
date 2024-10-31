@@ -30,7 +30,6 @@ const EditInterestsSelector = ({
     if (interests) {
       setSelectedInterests(interests);
       setValue("interests", interests, { shouldValidate: true });
-      console.log("interests", selectedInterests)
     }
   }, [interests, setValue]);
   

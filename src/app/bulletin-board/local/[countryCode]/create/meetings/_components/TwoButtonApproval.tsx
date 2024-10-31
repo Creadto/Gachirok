@@ -21,7 +21,7 @@ const TwoButtonApproval: React.FC<TwoButtonApprovalProps> = ({
 }) => {
   return (
     <div className="mb-4">
-      <label className="block text-gray-700 mb-2">모집방식</label>
+      <label className="block mt-[40px] text-xs text-[#808080] mb-[10px]">모집방식</label>
       <div className="flex space-x-4">
         {options.map((option) => (
           <button

@@ -4,12 +4,12 @@ import { useState } from "react";
 import { MeetingResponse } from "../../_types/MeetingResponse";
 import { CancelApprovalModal } from "./CancelApprovalModal";
 import { CancelModal } from "./CancelModal";
+import { ReportModal } from "@/core/components/ReportModal";
 
 interface VisitorMoreButtonProps {
   meetingData: MeetingResponse;
   accessToken: string | undefined;
 }
-
 
 /**
  * @Description 방문자 입장에서 더보기 버튼 눌렀을 때 등장하는 Dropdown
@@ -24,6 +24,8 @@ export const VisitorMoreButton = ({
   const [isCancelApprovalModalOpen, setIsCancelApprovalModalOpen] =
     useState(false);
 
+  //신고하기 모달
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   return (
     <>
       <div className="w-[200px] absolute top-[35px] right-0 border bg-white border-[#eeeeee] rounded-lg flex flex-col">
@@ -56,11 +58,16 @@ export const VisitorMoreButton = ({
         )}
 
         {/* 신고하기 버튼 */}
-        <button className="flex mb-[2px] p-3 gap-x-[8px] items-center shadow-sm">
+        <button className="flex mb-[2px] p-3 gap-x-[8px] items-center shadow-sm"
+        onClick={() => setIsReportModalOpen(true)}>
           <ReportIcon />
           <span className="text-sm">신고하기</span>
         </button>
-        {isCancelModalOpen && (
+
+
+
+      </div>
+      {isCancelModalOpen && (
           <CancelModal
             setIsCancelModalOpen={setIsCancelModalOpen}
             meetingData={meetingData}
@@ -75,7 +82,13 @@ export const VisitorMoreButton = ({
             accessToken={accessToken}
           />
         )}
-      </div>
+
+{isReportModalOpen && (
+        <ReportModal setIsReportModalOpen={setIsReportModalOpen} 
+        targetId={meetingData.meetingId}
+        targetType="MEETING"
+        accessToken = {accessToken}/>
+      )}
     </>
   );
 };

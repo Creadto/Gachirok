@@ -17,3 +17,23 @@ export const ArrowRightIcon = () => {
     </svg>
   );
 };
+
+export const ArrowRightIconLarge = () => {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M6.227 4.331 9.777 8l-3.55 3.67"
+        stroke="#000"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
