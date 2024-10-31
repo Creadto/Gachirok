@@ -23,7 +23,7 @@ const CreatePostModal = ({
 
   return (
     <div
-      className="fixed inset-0 z-60 bg-black bg-opacity-50 flex justify-center items-center" // 전체 화면을 덮는 덮개
+      className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center" // 전체 화면을 덮는 덮개
     >
       <div
         className="w-[314px] h-[293px] bg-white rounded-lg border-transparent border" // 모달 스타일

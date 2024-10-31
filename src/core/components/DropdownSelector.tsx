@@ -12,7 +12,8 @@ interface DropdownSelectorProps {
   placeholder: string; // Custom placeholder text
   label: string; // Custom label
   trigger: UseFormTrigger<any>;
-  setValue: UseFormSetValue<any>
+  setValue: UseFormSetValue<any>;
+  disabled? : boolean;
 }
 
 /**
@@ -30,7 +31,8 @@ const DropdownSelector = ({
   placeholder,
   label,
   trigger,
-  setValue
+  setValue,
+  disabled
   
 }: DropdownSelectorProps) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -58,6 +60,7 @@ const DropdownSelector = ({
         {...register(name, { required: true })}
         value={selectedValue}
         onClick={toggleDropdown}
+        disabled={disabled}
         readOnly
         className="block w-full border bg-[#F6F6F6] text-black text-[14px] h-[50px]
          rounded-lg p-[15px]"

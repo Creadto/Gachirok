@@ -5,6 +5,10 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import PageNavigation from "./PageNavigation";
+import { usePostMeetingsBookmark } from "@/core/hooks/usePostMeetings";
+import FilledStarIcon from "@/core/components/icons/FilledStarIcon";
+import EmptyStarIcon from "@/core/components/icons/EmptyStarIcon";
+import { CoinIcon } from "@/core/components/icons/CoinIcon";
 
 const MyGachigaPost = () => {
   const { data: session } = useSession();
@@ -15,10 +19,11 @@ const MyGachigaPost = () => {
  const [meetings, setMeetings] = useState<MeetingPreviewResponse[]>([]);
  //로딩여부
  const [loading, setLoading] = useState(true);
+
  //현재 페이지
  const [currentPage, setCurrentPage] = useState(1);
  //페이지당 미팅 개수
- const meetingsPerPage = 10;
+ const meetingsPerPage = 50;
  //전체 페이지 개수
  const totalPages = Math.ceil(meetings.length / meetingsPerPage);
 
@@ -30,6 +35,25 @@ const MyGachigaPost = () => {
     indexOfFirstMeeting,
     indexOfLastMeeting
   );
+
+    //즐겨찾기 버튼 눌렀을 때 API 요청보내는 함수
+    const handleBookmark = (meeting: MeetingPreviewResponse) => {
+      try {
+        if (accessToken) {
+          usePostMeetingsBookmark(accessToken, meeting.meetingId);
+          setMeetings((prevMeetings) =>
+            prevMeetings.map((m) =>
+              m.meetingId === meeting.meetingId
+                ? { ...m, bookmark: !m.bookmark }
+                : m
+            )
+          );
+        }
+      } catch (error) {
+        console.log("Error", error);
+      }
+    };
+    
 
   // 페이지 변경 핸들러
   const handlePageChange = (pageNumber: number) => {
@@ -66,52 +90,44 @@ const MyGachigaPost = () => {
   }
   return (
     <>
-      <p className="font-bold flex-1 mt-[20px]">{meetings.length}개 모임</p>
-      <div className="grid grid-cols-5 grid-rows-2 gap-4 pt-5 gap-y-5 ">
+      <p className="font-bold mt-[20px]">{meetings.length}개 모임</p>
+      <div className="grid grid-cols-5 gap-x-5 mt-[15px] flex-wrap gap-y-5">
         {currentMeetings.map((meeting, index) => (
           <div
-            className="bg-white shadow-xl rounded-lg w-20% h-[280px] relative"
+            className="bg-white shadow-xl rounded-lg w-auto h-[308px] relative"
             key={index}
           >
+            <img
+              src={meeting.meetingPhotoUrl}
+              alt="Event Image"
+              className=" rounded-md object-cover w-[300px] h-[155px]"
+            />
+            <div className="absolute top-2 left-2 bg-black text-white px-2 py-1 text-xs rounded">
+            {meeting.finished ? ("모임완료") : ("진행중")}
+            </div>
+            <div className="absolute top-0.5 right-1 p-1">
+              <button onClick={() => handleBookmark(meeting)}>
+                {meeting.bookmark ? <FilledStarIcon /> : <EmptyStarIcon />}
+              </button>
+            </div>
             <button
+              className="w-full"
               onClick={() => router.push(`/gachiga/${meeting.meetingId}`)}
             >
-              <img
-                src={meeting.meetingPhotoUrl}
-                alt="Event Image"
-                className=" rounded-md object-cover w-[256px] h-[155px]"
-              />
-              <div className="absolute top-2 left-2 bg-black text-white px-2 py-1 text-xs rounded">
-                진행중
-              </div>
-              <div className="absolute top-0.5 right-1 p-1">
-                <svg
-                  width="30"
-                  height="30"
-                  viewBox="0 0 30 30"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M15.7823 5.8403L18.5237 11.2235L24.6519 12.0868C24.8109 12.1046 24.9615 12.1675 25.0859 12.2681C25.2103 12.3687 25.3034 12.5027 25.3542 12.6544C25.405 12.8061 25.4114 12.9692 25.3726 13.1244C25.3339 13.2796 25.2515 13.4205 25.1354 13.5305L20.7005 17.7196L21.7472 23.6367C21.7704 23.7956 21.749 23.9578 21.6856 24.1053C21.6222 24.2528 21.5191 24.3798 21.3878 24.4723C21.2566 24.5648 21.1023 24.619 20.942 24.6291C20.7818 24.6391 20.6218 24.6046 20.48 24.5292L14.9986 21.74L9.51723 24.5292C9.37543 24.6046 9.21548 24.6391 9.05523 24.6291C8.89498 24.619 8.74072 24.5648 8.60945 24.4723C8.47818 24.3798 8.37504 24.2528 8.31161 24.1053C8.24819 23.9578 8.22689 23.7956 8.25008 23.6367L9.29673 17.7196L4.86192 13.5305C4.74574 13.4205 4.66342 13.2796 4.62464 13.1244C4.58587 12.9692 4.59224 12.8061 4.64304 12.6544C4.69385 12.5027 4.78694 12.3687 4.91137 12.2681C5.0358 12.1675 5.18641 12.1046 5.3454 12.0868L11.4736 11.2235L14.215 5.8403C14.2906 5.69802 14.4034 5.57902 14.5415 5.49601C14.6795 5.413 14.8375 5.36914 14.9986 5.36914C15.1597 5.36914 15.3178 5.413 15.4558 5.49601C15.5939 5.57902 15.7067 5.69802 15.7823 5.8403Z"
-                    fill="white" //비울려면 none
-                    fillOpacity="1"
-                    stroke="white"
-                    strokeWidth="1.8"
-                  />
-                </svg>
-              </div>
               <div className="p-3 ">
-                <p className="text-sm text-gray-500 pt-1 flex">9/11 16:20</p>
-                <h2 className=" font-bold mt-0.5 text-sm flex">
+                <p className="text-xs text-[#a3a3a3] pt-1 flex">
+                  {meeting.meetingDate} {meeting.meetingStartTime} <br />
+                </p>
+                <h2 className=" font-bold mt-0.5 text-sm flex text-start break-keep">
                   {meeting.title}
                 </h2>
-                <div className="flex flex-row items-center gap-1 mt-2 text-xs text-gray-400">
+                <div className="flex flex-row items-center gap-1 mt-2 text-xs text-[#808080]">
                   <LocationIcon />
                   <p>{meeting.location}</p>
                 </div>
-                <div className="flex justify-between items-center mt-2">
-                  <div className="flex flex-row items-center gap-0.5">
+              </div>
+              <div className="w-full">
+                {/* <div className="flex flex-row items-center gap-0.5">
                     <svg
                       width="20"
                       height="20"
@@ -125,9 +141,22 @@ const MyGachigaPost = () => {
                         strokeWidth="1.5"
                       />
                     </svg>
-                    <span className="text-gray-500">20</span>
+                    <div className="text-gray-500">20</div>
+                  </div> */}
+                <div className="flex items-center w-full absolute bottom-3 right-3 text-end justify-end">
+                  <div className="flex -space-x-5 hover:space-x-0.5 transition duration-1000">
+                    {meeting.members.map((member, index) => (
+                      <img
+                        key={index}
+                        src={member.profilePhotoUrl} // Assume member object has profileUrl field
+                        alt={member.userId.toString()} // Assume member object has name field
+                        className="w-8 h-8 rounded-full border-2 border-white"
+                      />
+                    ))}
                   </div>
-                  <span className="text-gray-700">6/10</span>
+                  <div className="text-[#a3a3a3] text-xs ml-3">
+                    {meeting.members.length} / {meeting.maxMember}
+                  </div>
                 </div>
               </div>
             </button>
@@ -135,10 +164,11 @@ const MyGachigaPost = () => {
         ))}
       </div>
 
+      {/* 하단 페이지 이동 네비게이션 */}
       <PageNavigation
-        currentPage={currentPage}
+        page={currentPage}
         totalPages={totalPages}
-        handlePageChange={handlePageChange}
+        setPage={handlePageChange}
       />
     </>
   );

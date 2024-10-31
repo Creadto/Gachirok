@@ -32,7 +32,7 @@ export interface MeetingCreateRequest {
     customCostDescription: string;
 
     interests: string[];
-    photos: File[] | null; //MultipartFile
+    photos: string[]
 
     coin: number;
     packageItem: string;

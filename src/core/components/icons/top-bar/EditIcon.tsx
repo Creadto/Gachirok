@@ -1,9 +1,11 @@
+interface EditIconProps {
+  className?: string;
+}
 
-
-export const EditIcon = () => {
+export const EditIcon = ({ className }: EditIconProps) => {
   return (
     <svg
-      className="w-[30px] h-[30px]"
+      className={className ? className : "w-[30px] h-[30px]"}
       viewBox="0 0 30 30"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -21,7 +23,6 @@ export const EditIcon = () => {
     </svg>
   );
 };
-
 
 export const ActiveEditIcon = () => {
   return (

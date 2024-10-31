@@ -1,24 +1,32 @@
 import { MeetingPreviewResponse } from "@/app/gachiga/_types/MeetingPreviewResponse";
+import EmptyStarIcon from "@/core/components/icons/EmptyStarIcon";
+import FilledStarIcon from "@/core/components/icons/FilledStarIcon";
 import { LocationIcon } from "@/core/components/icons/LocationIcon";
+import { LoadingSpinner } from "@/core/components/LoadingSpinner";
+import { useGetMeetings } from "@/core/hooks/useGetMeetings";
+import { usePostMeetingsBookmark } from "@/core/hooks/usePostMeetings";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import PageNavigation from "./PageNavigation";
-import { useRouter } from "next/navigation";
-import { useGetMeetings } from "@/core/hooks/useGetMeetings";
-import FilledStarIcon from "@/core/components/icons/FilledStarIcon";
-import EmptyStarIcon from "@/core/components/icons/EmptyStarIcon";
-import { usePostMeetingsBookmark } from "@/core/hooks/usePostMeetings";
-import { CoinIcon } from "@/core/components/icons/CoinIcon";
 
 interface GachigaPostProps {
   countryCode: string;
+  page: number;
+  size: number;
+  setPage: (page: number) => void;
 }
 
 /**
  * @Description 메인 페이지 '전체모임'을 그려주는 Component
  * @author 김영서
  **/
-const GachigaPost = ({ countryCode }: GachigaPostProps) => {
+const GachigaPost = ({
+  countryCode,
+  page,
+  size,
+  setPage,
+}: GachigaPostProps) => {
   const { data: session } = useSession();
   const router = useRouter();
   const accessToken = session?.accessToken;
@@ -27,33 +35,36 @@ const GachigaPost = ({ countryCode }: GachigaPostProps) => {
   const [meetings, setMeetings] = useState<MeetingPreviewResponse[]>([]);
   //로딩여부
   const [loading, setLoading] = useState(true);
+
+  const [totalElements, setTotalElements] = useState(0);
+  const [totalPage, setTotalPage] = useState(0);
+
   //현재 페이지
-  const [currentPage, setCurrentPage] = useState(1);
+  // const [currentPage, setCurrentPage] = useState(1);
   //페이지당 미팅 개수
-  const meetingsPerPage = 10;
   //전체 페이지 개수
-  const totalPages = Math.ceil(meetings.length / meetingsPerPage);
+  // const totalPages = Math.ceil(meetings.length / meetingsPerPage);
 
   // 현재 페이지에서 보여줄 meetings 슬라이싱
-  const indexOfLastMeeting = currentPage * meetingsPerPage;
-  const indexOfFirstMeeting = indexOfLastMeeting - meetingsPerPage;
-  const currentMeetings = meetings.slice(
-    indexOfFirstMeeting,
-    indexOfLastMeeting
-  );
+  // const indexOfLastMeeting = currentPage * meetingsPerPage;
+  // const indexOfFirstMeeting = indexOfLastMeeting - meetingsPerPage;
+  // const currentMeetings = meetings.slice(
+  //   indexOfFirstMeeting,
+  //   indexOfLastMeeting
+  // );
 
   // 페이지 변경 핸들러
-  const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-  };
 
   //API로부터 소모임을 가져오는 함수
   async function loadMeetings() {
     try {
       setLoading(true);
       if (accessToken) {
-        const data = await useGetMeetings(accessToken, countryCode);
-        setMeetings(data);
+        router.push(`/gachiga/local/${countryCode}?page=${page}&size=${size}`);
+        const data = await useGetMeetings(accessToken, countryCode, page, size);
+        setMeetings(data.content);
+        setTotalElements(data.totalElements);
+        setTotalPage(data.totalPages);
       }
     } catch (error) {
       console.error("Error loading profile:", error);
@@ -84,31 +95,39 @@ const GachigaPost = ({ countryCode }: GachigaPostProps) => {
     if (accessToken) {
       loadMeetings();
     }
-  }, [accessToken, router]);
+  }, [accessToken, router, page]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex flex-col justify-center items-center h-screen">
+        <LoadingSpinner loading={loading} />
+        {/* 로딩 스피너 */}
+        <span className="text-3xl font-bold mt-[20px]">
+          로딩중... 잠시만 기다려주세요
+        </span>
+      </div>
+    );
   }
 
-  if (!meetings.length) {
+  if (!meetings?.length) {
     return <div>소모임이 존재하지 않습니다.</div>;
   }
   return (
     <>
-      <p className="font-bold mt-[20px]">{meetings.length}개 모임</p>
-      <div className="flex flex-row gap-x-5 mt-[15px] flex-wrap gap-y-5">
-        {currentMeetings.map((meeting, index) => (
+      <p className="font-bold mt-[20px]">{totalElements}개 모임</p>
+      <div className="grid grid-cols-5 gap-x-5 mt-[15px] flex-wrap gap-y-5 z-10">
+        {meetings.map((meeting, index) => (
           <div
-            className="bg-white shadow-xl rounded-lg w-[256px] h-[308px] relative"
+            className="bg-white shadow-xl rounded-lg w-auto h-[308px] relative"
             key={index}
           >
             <img
               src={meeting.meetingPhotoUrl}
               alt="Event Image"
-              className=" rounded-md object-cover w-[300px] h-[155px]"
+              className=" rounded-md object-cover w-full h-[155px]"
             />
             <div className="absolute top-2 left-2 bg-black text-white px-2 py-1 text-xs rounded">
-              진행중
+              {meeting.finished ? ("모임완료") : ("진행중")}
             </div>
             <div className="absolute top-0.5 right-1 p-1">
               <button onClick={() => handleBookmark(meeting)}>
@@ -120,13 +139,13 @@ const GachigaPost = ({ countryCode }: GachigaPostProps) => {
               onClick={() => router.push(`/gachiga/${meeting.meetingId}`)}
             >
               <div className="p-3 ">
-                <p className="text-xs text-gray-300 pt-1 flex">
+                <p className="text-xs text-[#a3a3a3] pt-1 flex">
                   {meeting.meetingDate} {meeting.meetingStartTime} <br />
                 </p>
                 <h2 className=" font-bold mt-0.5 text-sm flex">
                   {meeting.title}
                 </h2>
-                <div className="flex flex-row items-center gap-1 mt-2 text-xs text-gray-400">
+                <div className="flex flex-row items-center gap-1 mt-2 text-xs text-[#808080]">
                   <LocationIcon />
                   <p>{meeting.location}</p>
                 </div>
@@ -148,10 +167,12 @@ const GachigaPost = ({ countryCode }: GachigaPostProps) => {
                     </svg>
                     <div className="text-gray-500">20</div>
                   </div> */}
-                <div className="flex items-center w-full absolute bottom-3 left-3 text-start justify-start">
-                    <CoinIcon width={24} height={24} />
-                    <div className="text-slate-300 text-xs">{meeting.coin ? meeting.coin : "무료"}</div>
+                {/* <div className="flex items-center w-full absolute bottom-3 left-3 text-start justify-start">
+                  <CoinIcon width={24} height={24} />
+                  <div className="text-slate-300 text-sm">
+                    1
                   </div>
+                </div> */}
                 <div className="flex items-center w-full absolute bottom-3 right-3 text-end justify-end">
                   <div className="flex -space-x-5 hover:space-x-0.5 transition duration-1000">
                     {meeting.members.map((member, index) => (
@@ -163,7 +184,7 @@ const GachigaPost = ({ countryCode }: GachigaPostProps) => {
                       />
                     ))}
                   </div>
-                  <div className="text-gray-700 text-xs ml-3">
+                  <div className="text-[#a3a3a3] text-xs ml-3">
                     {meeting.members.length} / {meeting.maxMember}
                   </div>
                 </div>
@@ -175,9 +196,9 @@ const GachigaPost = ({ countryCode }: GachigaPostProps) => {
 
       {/* 하단 페이지 이동 네비게이션 */}
       <PageNavigation
-        currentPage={currentPage}
-        totalPages={totalPages}
-        handlePageChange={handlePageChange}
+        page={page + 1}
+        totalPages={totalPage}
+        setPage={setPage}
       />
     </>
   );

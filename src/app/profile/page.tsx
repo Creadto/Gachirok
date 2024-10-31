@@ -1,5 +1,5 @@
 "use client";
-import useGetProfileResponse from "@/core/hooks/useGetProfileResponse";
+import { useGetProfileResponse } from "@/core/hooks/useGetProfileResponse";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";

@@ -108,9 +108,6 @@ const CountryStateCitySelector = ({
       ? setIsCityDropdownVisible(false)
       : setIsCityDropdownVisible(true);
 
-    console.log("residenceCountryCode", selectedCountry);
-    console.log("residenceStateCode", selectedState);
-    console.log("residenceCityCode", selectedCity);
     setValue(registerCountryCode, selectedCountry);
     setValue(registerStateCode, selectedState);
     setValue(registerCityCode, selectedCity);
@@ -126,10 +123,6 @@ const CountryStateCitySelector = ({
     <div className="flex flex-wrap space-x-4">
       {/* Country 버튼 */}
       <div className="relative flex flex-row items-center justify-center gap-x-[10px]">
-        {selectedCountry
-          ? countries.find((countries) => countries.code === selectedCountry)
-              ?.icon
-          : ""}
         <button
           type="button"
           onClick={toggleCountryDropdown}
@@ -138,10 +131,24 @@ const CountryStateCitySelector = ({
           }`}
           {...register(registerCountryCode, { required: true })}
         >
-          {selectedCountry
-            ? countries.find((country) => country.code === selectedCountry)
-                ?.name || "국가를 선택해주세요"
-            : "국가를 선택해주세요"}
+              {selectedCountry ? (
+                <div className="flex flex-row gap-x-[4px]">
+                  {
+                    countries.find(
+                      (country) => country.code === selectedCountry
+                    )?.icon
+                  }
+                  <span>
+                    {
+                      countries.find(
+                        (country) => country.code === selectedCountry
+                      )?.name
+                    }
+                  </span>
+                </div>
+              ) : (
+                "국가를 선택해주세요"
+              )}
         </button>
         {errors[registerCountryCode] && (
           <span className="text-red-500 text-sm">

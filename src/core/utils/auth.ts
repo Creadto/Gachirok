@@ -40,8 +40,8 @@ export const authOptions: NextAuthOptions = {
 
           //account의 accessToken에 가치가 api에서 받아온 accessToken저장
           account.access_token = authResponse.data.accessToken;
+          account.refresh_token = authResponse.data.refreshToken;
           account.signedUpUser = authResponse.data.signedUpUser;
-          console.log("sex", authResponse.data.signedUpUser);
 
           console.log("api auth", authResponse.data);
         } catch (error) {
@@ -55,6 +55,7 @@ export const authOptions: NextAuthOptions = {
         //account에 저장된 기존의 가치가 api에서 받아온 accesstoken을 token.accessToken에 저장
         token.accessToken = account.access_token;
         token.signedUpUser = account.signedUpUser;
+        token.refreshToken = account.refresh_token;
       }
       return token;
     },
@@ -62,6 +63,7 @@ export const authOptions: NextAuthOptions = {
       if (token?.accessToken) {
         //최종적으로 session의 accessToken에 가치가api에서 받아온 accessToken저장
         session.accessToken = token.accessToken;
+        session.refreshToken = token.refreshToken;
         session.user.id = token.id;
         session.signedUpUser = token.signedUpUser;
       }

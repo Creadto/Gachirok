@@ -113,7 +113,7 @@ export default function CreateProfilePage() {
   //닉네임 체크
   const handleNicknameCheck = async (nickname: string) => {
     try {
-      const response = await axios.get(`/api/profiles/check-nickname`, {
+      const response = await axios.get("/api/profiles/check-nickname", {
         params: { nickname },
         headers: {
           Authorization: `Bearer ${session?.accessToken}`,
@@ -149,7 +149,6 @@ export default function CreateProfilePage() {
         <div className="flex items-center ml-[-45px] space-x-[15px]">
           <BackButton onClick={() => router.push("/")} />
           <h1 className="text-[22px] font-bold">프로필 설정</h1>
-          
         </div>
 
         <form onSubmit={handleSubmit(onValid, onInValid)}>
@@ -229,7 +228,7 @@ export default function CreateProfilePage() {
             register={register}
             errors={errors}
             name="birth"
-            placeholder="생일을 입력해주세요"
+            placeholder="생일을 입력해주세요(년-월-일)"
             setValue={setValue}
           />
 
@@ -309,7 +308,7 @@ export default function CreateProfilePage() {
           <div className="w-full flex items-center justify-center mb-[150px]">
             <input
               type="submit"
-              className="mt-[80px] w-[300px] h-[60px] bg-[#E62A2F] text-white rounded-lg font-semibold"
+              className="hover:cursor-pointer mt-[80px] w-[300px] h-[60px] bg-[#E62A2F] text-white rounded-lg font-semibold"
               value="프로필 설정완료!"
             />
           </div>

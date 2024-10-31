@@ -37,7 +37,7 @@ export const CoinIcon = ({width, height}: CoinIconProps) => {
         gradientUnits="userSpaceOnUse"
       >
         <stop stopColor="#FEF887" />
-        <stop offset="1" stop-color="#FFA621" />
+        <stop offset="1" stopColor="#FFA621" />
       </linearGradient>
       <linearGradient
         id="paint1_linear_63_12050"
@@ -48,7 +48,7 @@ export const CoinIcon = ({width, height}: CoinIconProps) => {
         gradientUnits="userSpaceOnUse"
       >
         <stop stopColor="#FFCC00" />
-        <stop offset="1" stop-color="#FF6F00" />
+        <stop offset="1" stopColor="#FF6F00" />
       </linearGradient>
     </defs>
   </svg>

@@ -28,23 +28,22 @@ export default function RootLayout({
   children: React.ReactNode;
   modal: React.ReactNode;
 }>) {
-
-  
   return (
     <html lang="en" className={`${pretendard.variable}`}>
-      <MSWComponent/>
+      <MSWComponent />
       <BodyColorHandler font={pretendard} />
-      <body className={` ${pretendard.className}` }>
+      <body className={` ${pretendard.className}`}>
         <ReactQueryProvider>
           <AuthProvider>
             <Topbar />
-            <Sidebar />
-            <div className="pt-[80px]">
-              {children}
-              {modal}
+            <div className="flex">
+              <Sidebar />
+              <div className="flex-1 items-center pt-[80px]">
+                {children}
+                {modal}
+              </div>
             </div>
-              <Footer />
-
+            <Footer />
           </AuthProvider>
         </ReactQueryProvider>
       </body>

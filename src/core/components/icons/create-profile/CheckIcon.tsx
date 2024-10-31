@@ -24,3 +24,53 @@ export const CheckIcon = () => {
     </svg>
   );
 };
+
+interface CheckColorIconProps {
+  color: string;
+}
+export const CheckColorIcon = ({ color }: CheckColorIconProps) => {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M4.13281 7.66034L7.11409 10.6416L11.8725 5.36133"
+        stroke={color}
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
+export const BlueCheckIcon = () => {
+  return (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 12 12"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g clipPath="url(#tqsvmmacva)">
+        <path
+          d="M2.523 6.098 4.775 8.35l4.7-4.7"
+          stroke="#0676FC"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </g>
+      <defs>
+        <clipPath id="tqsvmmacva">
+          <path fill="#fff" d="M0 0h12v12H0z" />
+        </clipPath>
+      </defs>
+    </svg>
+  );
+};

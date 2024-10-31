@@ -3,7 +3,6 @@
 import { ProfileUI } from "@/app/profile/_types/ProfileUI";
 import CustomAlert from "@/core/components/CustomAlert";
 
-import useGetProfileResponse from "@/core/hooks/useGetProfileResponse";
 import usePutProfileUpdateRequest from "@/core/hooks/usePutProfileUpdateRequest";
 import {
   mapProfileResponse,
@@ -18,6 +17,7 @@ import { ProfileUpdateRequest } from "../_types/ProfileUpdateRequest";
 import UpdateProfileForm from "./_components/UpdateProfileForm";
 import UpdateProfileImageForm from "./_components/UpdateProfileImageForm";
 import appendProfileUpdateRequestFormData from "./_utils/appendProfileUpdateRequestFormData";
+import { useGetProfileResponse } from "@/core/hooks/useGetProfileResponse";
 
 /**
  * @Description 프로필을 업데이트 하는 메인 페이지

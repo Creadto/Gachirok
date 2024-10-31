@@ -63,7 +63,7 @@ const ProfileIcon = () => {
       {user?.signedUpUser === true || session?.signedUpUser === true ? (
         <button
           onClick={() => setIsProfileOpen((prev) => !prev)}
-          className="bg-black text-white rounded-[50px] h-[40px] relative flex items-center justify-center w-full box-border"
+          className="bg-black text-white rounded-[50px] h-[40px] relative flex items-center justify-center w-full box-border z-30"
         >
           <div className=" ml-[5px] mr-[12px] my-[5px] w-[104px] flex h-[30px] gap-x-[5px]">
             {user.profile?.profilePhotoUrl ? (
@@ -76,10 +76,9 @@ const ProfileIcon = () => {
               <div className="object-cover w-[30px] h-[30px] border-none rounded-full">
                 <NoProfileIcon />
               </div>
-              
             )}
             <span className="block w-full text-[14px] whitespace-nowrap items-center justify-center my-auto">
-            {session?.user?.name}님
+              {session?.user?.name}님
             </span>
           </div>
         </button>
@@ -95,9 +94,19 @@ const ProfileIcon = () => {
         </div>
       )}
       {isProfileOpen && user.profile ? (
-        <ProfileDropdown profile={user.profile} closeModal={() => setIsProfileOpen(false)} />
+        <ProfileDropdown
+          profile={user.profile}
+          closeModal={() => setIsProfileOpen(false)}
+        />
       ) : (
         <></>
+      )}
+
+      {isProfileOpen && (
+        <ProfileDropdown
+          profile={user.profile}
+          closeModal={() => setIsProfileOpen(false)}
+        />
       )}
     </>
   );

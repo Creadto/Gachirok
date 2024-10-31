@@ -4,6 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { FaCalendarAlt } from "react-icons/fa";
+import { ko } from "date-fns/locale"; // date-fns의 한국어 로케일
 
 // Props 타입 정의
 interface SingleDateSelectorProps {
@@ -38,13 +39,14 @@ const SingleDateSelector: React.FC<SingleDateSelectorProps> = ({
   };
 
   return (
-    <div className="flex flex-col space-y-4 mt-[10px]">
+    <div className="flex flex-col space-y-4">
       {/* 날짜 선택 */}
       <div className="relative">
-        <div className="flex w-[40%] items-center border border-gray-300 rounded-lg p-2 relative">
-          <FaCalendarAlt className="text-gray-500 mr-2" />
+        <div className="flex w-full items-center border rounded-lg py-[15px] px-[15px] relative h-[50px] bg-[#F6F6F6] text-[#A3A3A3]">
+          <FaCalendarAlt className=" mr-2" />
           <DatePicker
             {...register(`${name}`, { required: true })}
+            locale={ko}
             selected={selectedDate}
             onChange={(date) => {
               onDateChange(date);
@@ -53,7 +55,7 @@ const SingleDateSelector: React.FC<SingleDateSelectorProps> = ({
               }
             }}
             dateFormat="yyyy-MM-dd"
-            className="w-full border-none outline-none text-base"
+            className="w-full border-none outline-none text-base bg-[#F6F6F6] text-black"
             placeholderText={placeholder}
           />
         </div>

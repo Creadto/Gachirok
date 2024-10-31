@@ -10,7 +10,7 @@ export async function usePostMeetingsBookmark(
 ) {
   const response = await axios.post(
     `/api/meetings/${meetingId}/bookmark`,
-    { },
+    {},
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
