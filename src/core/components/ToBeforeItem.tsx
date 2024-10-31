@@ -27,16 +27,18 @@ export default function ToBeforeItem({itemType, regionType }: ToBeforeItemProps)
     const router = useRouter();
     const countryCode = params['country-code']; // Local이면 존재, Universal이면 undefined
     const currentId = parseInt(params[`${itemType}-id`] as string, 10);
+
+    console.log(countryCode, currentId);
     const beforeId = currentId - 1;
     const [beforeItem, setBeforeItem] = useState<Item | null>(null);
 
     const clickToBeforeItem = () => {
         if (currentId > 1) {
             if(regionType === "local"){
-                router.push(`/${itemType}/${regionType}/${countryCode}/${beforeId}`); //
+                router.push(`/${itemType}/${regionType}/article/${countryCode}/${beforeId}`); //
             }
             else{
-                router.push(`/${itemType}/${regionType}/${beforeId}`);
+                router.push(`/${itemType}/${regionType}/article/${beforeId}`);
             }
         }
     };
@@ -60,11 +62,10 @@ export default function ToBeforeItem({itemType, regionType }: ToBeforeItemProps)
     }, [beforeId, itemType]);
 
     return (
-        <div className="flex flex-row items-center py-4 border-b cursor-pointer hover:bg-blue-100 hover:text-white"
+        <div className="flex flex-row py-[20px] items-center cursor-pointer hover:bg-blue-100 hover:text-white border-y-[1px]"
              onClick={clickToBeforeItem}>
-            <p className="pr-32">이전으로</p>
-            <p className="text-xs border text-red-500 bg-red-100 ">{beforeItem?.category}</p>
-            {beforeItem ? <p className="pl-1">{beforeItem.title}</p> : <p>없음</p>}
+            <p className="mr-[80px] text-[15px] whitespace-nowrap">이전으로</p>
+            {beforeItem ? <p className="line-clamp-1">{beforeItem.title}</p> : <p>없음</p>}
         </div>
     );
 }

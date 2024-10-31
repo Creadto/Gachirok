@@ -19,7 +19,11 @@ export default function BodyColorHandler({font} : BodyColorHandlerProps) {
       //  ||  routing 다른 조건들 활성화
      {
       document.body.className = `bg-white ${font.className}`; // 회원가입 페이지일 때 배경색 흰색
-    } else {
+    }
+    else if(pathname.includes('article')){
+      document.body.className = `bg-white ${font.className}`;
+    }
+    else {
       document.body.className = `bg-[#F6F6F6] ${font.className} `; // 그 외 페이지일 때 기본 배경색
     }
   }, [pathname]);

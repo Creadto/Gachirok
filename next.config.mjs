@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+
   async rewrites() {
     return [
       {
@@ -31,7 +32,8 @@ const nextConfig = {
           "https://dev.gachiga.creadto.com/api/v1/profiles/check-nickname", // 쿼리 파라미터는 그대로 전달됨
       },
     ];
-  },
+
+  }
 };
 
 export default nextConfig;

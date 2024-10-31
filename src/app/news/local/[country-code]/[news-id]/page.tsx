@@ -9,17 +9,23 @@ import ToBeforeItem from "@/core/components/ToBeforeItem";
 import Reply from "@/core/components/Reply";
 import ReplyInput from "@/core/components/ReplyInput";
 import ToNextItem from "@/core/components/ToNextItem";
+import {categoryToNumber} from "@/app/news/utils/Category";
+import {useParams, useRouter} from "next/navigation";
+import ShareButton from "@/app/news/universal/_components/ShareButton";
 
-interface NewsItem{
+interface NewsItem {
     title: string;
     description: string;
     category: string;
     date: string;
     imageUrl: string;
-    like:number;
-    disLike:number;
-    id:number;
+    visitCount: number;
+    reply:number;
+    like: number;
+    disLike: number;
+    id: number;
 }
+
 interface RepliesItem{
     id:number;
     replyId:number;
@@ -36,9 +42,24 @@ interface RepliesItem{
  */
 export default function LocalNewsPage({params} : {params : {'news-id': string}}) {
 
+    const param = useParams();
+    const router = useRouter();
+
     const newsId = params['news-id'];
     const [newsData, setNewsData] = useState<NewsItem>();
     const [repliesData, setRepliesData] = useState<RepliesItem[]>([]);
+
+    let categoryId : string;
+    let countryCode : undefined | string | string[];
+
+    if(newsData){
+        categoryId = categoryToNumber[newsData.category];
+    }
+
+    if(param){
+        countryCode = param['country-code'];
+    }
+
 
     useEffect(()=>{
         const fetchNewsData = async()=>{
@@ -63,49 +84,68 @@ export default function LocalNewsPage({params} : {params : {'news-id': string}})
         fetchReplyData();
     },[]);
 
+    const handleClickBackToList = ()=>{
+        router.push(`/news/local/${countryCode}/section/${categoryId}?page=1&limit=8&sort=newest`)
+    }
+
     return (
-        <>
+        <div className="mt-[1.5%] ml-[21.5%] mr-[36.5%] min-w-[800px] max-w-[800px] overflow-x-auto flex flex-col">
             {newsData ? (
-                <section className="px-96 py-5">
+                <section className="px-50 mt-[50px]">
                     {/* 뉴스 카테고리와 제목 표시 */}
-                    <h4 className="text-xs text-gray-500">Local &gt; News &gt; {newsData.category}</h4>
-                    <div className="py-5">
-                        <h1 className="font-bold text-3xl">{newsData.title}</h1>
-                        <p className="text-xs text-gray-500 py-2">{newsData.date} | 조회3 추천3 댓글{repliesData.length}</p>
+                    <h1 className="text-[12px] mb-[7px] text-[#a3a3a3]">Universal &gt; News &gt; {newsData.category}</h1>
+                    <div className="flex flex-row justify-between">
+                        <h1 className="w-[609px] font-bold text-[25px] mb-[10px]">{newsData.title}</h1>
+                        <div className="w-[30px] h-[30px] relative">
+                            <ShareButton />
+                        </div>
                     </div>
-                    <hr/>
+                    <div className="flex flex-row text-[12px] text-[#a3a3a3]">
+                        <p>{newsData.date}</p>
+                        <p className="mx-[10px]">|</p>
+                        <p>조회 {newsData.visitCount} 추천 {newsData.like} 댓글 {repliesData.length}</p>
+                    </div>
+                    <hr className="my-[30px]"/>
                     <div>
                         {/* 뉴스 이미지 및 설명 표시 */}
-                        <Image src={newsData.imageUrl} alt={newsData.title} height={400} width={600} className="object-cover py-5" />
-                        <p className="py-5">{newsData.description}</p>
-                    </div>
-                    <hr/>
-                    <div className="flex justify-center items-center p-4">
-                        <p>이 기사를 추천합니다.</p>
+                        <Image
+                            src={newsData.imageUrl}
+                            alt={newsData.title}
+                            height={400}
+                            width={800}
+                            className="object-cover my-[30px] rounded-[5px]"/>
+                        <p>{newsData.description}</p>
                     </div>
                     {/* 추천 및 비추천 버튼 */}
-                    <div className="flex justify-center items-center p-4">
+                    <div className="flex justify-center items-center my-[50px]">
                         <LikeButton likeCount={newsData.like}/>
                         <HateButton disLikeCount={newsData.disLike}/>
                     </div>
-                    <hr/>
-                    <div className="py-4">
+                    <hr className="mb-[30px]"/>
+                    <div className="mb-[80px]">
                         {/* 댓글 수 및 댓글 입력 */}
-                        <p className="font-bold py-4">댓글 {repliesData.length}</p>
+                        <p className="text-[18px] mb-[15px]">댓글 {repliesData.length}</p>
                         <ReplyInput type="news" parentId={newsId}/>
-                        <Reply reply={repliesData}/>
+                        <div className="mt-[30px] relative">
+                            <Reply reply={repliesData} identity="parent"/>
+                        </div>
                     </div>
                     {/* 이전 뉴스 및 다음 뉴스로 이동하는 버튼 */}
-                    <div>
-                        <ToBeforeItem itemType="news" regionType="local"/>
+                    <div className="mb-[50px]">
+                        <ToBeforeItem itemType="news" regionType="universal"/>
                         <hr/>
-                        <ToNextItem itemType="news" regionType="local"/>
+                        <ToNextItem itemType="news" regionType="universal"/>
+                    </div>
+                    <div className="flex justify-center items-center mb-[150px]">
+                        <button className="w-[300px] h-[60px] px-[70px] py-[19px] bg-[#000] text-[#fff] text-[15px] rounded-[8px]" onClick={handleClickBackToList}>
+                            목록으로
+                        </button>
                     </div>
                 </section>
             ) : (
                 /* 뉴스 데이터가 없을 경우 출력*/
                 <p>찾는 뉴스가 없습니다</p>
             )}
-        </>
+        </div>
     );
 }

@@ -139,7 +139,7 @@ export default function SectionAnnouncement(props: SectionAnnouncementProps) {
                 <select
                     value={sortOrder}
                     onChange={handleSortChange}
-                    className="p-1 rounded-2xl text-sm bg-gray-200 cursor-pointer hover:bg-blue-100 hover:text-white"
+                    className="bg-[#f6f6f6] cursor-pointer hover:bg-gray-300"
                 >
                     <option value="newest">신규순</option>
                     <option value="popular">조회순</option>

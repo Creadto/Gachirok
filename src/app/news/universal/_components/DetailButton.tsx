@@ -17,7 +17,7 @@ export default function DetailButton({section}:{section:string}) {
     const router = useRouter();
 
     function onClick(){
-        router.push(`/news/universal/section/${categoryId}`);
+        router.push(`/news/universal/section/${categoryId}?page=1&limit=8&sort=newest`);
     }
     return(
         <>

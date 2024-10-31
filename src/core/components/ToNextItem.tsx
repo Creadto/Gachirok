@@ -35,10 +35,10 @@ export default function ToNextItem({itemType, regionType }: ToAfterItemProps) {
     const clickToNextItem = () => {
         if (currentId < itemLength) {
             if(regionType === "local"){
-                router.push(`/${itemType}/${regionType}/${countryCode}/${nextId}`);
+                router.push(`/${itemType}/${regionType}/article/${countryCode}/${nextId}`);
             }
             else{
-                router.push(`/${itemType}/${regionType}/${nextId}`);
+                router.push(`/${itemType}/${regionType}/article/${nextId}`);
             }
         }
     };
@@ -76,11 +76,10 @@ export default function ToNextItem({itemType, regionType }: ToAfterItemProps) {
 
 
     return (
-        <div className="flex flex-row items-center py-4 border-b cursor-pointer hover:bg-blue-100 hover:text-white"
+        <div className="flex flex-row items-center py-[20px] cursor-pointer hover:bg-blue-100 hover:text-white border-b-[1px]"
              onClick={clickToNextItem}>
-            <p className="pr-32">다음으로</p>
-            <p className="text-xs border text-red-500 bg-red-100 ">{nextItem?.category}</p>
-            {nextItem ? <p className="pl-1">{nextItem.title}</p> : <p>없음</p>}
+            <p className="mr-[80px] text-[15px] whitespace-nowrap">다음으로</p>
+            {nextItem ? <p className="line-clamp-1">{nextItem.title}</p> : <p>없음</p>}
         </div>
     );
 }

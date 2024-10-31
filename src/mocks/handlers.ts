@@ -7,14 +7,84 @@ import {AnNumberToCategory} from "@/app/announcement/utils/Category";
 
 export const handlers = [
     /*
-    *    (Universal)뉴스 카테고리에 해당하는 뉴스들을 가져오는 API
+    *    (Universal)뉴스 카테고리에 해당하는 뉴스들을 페이지네이션 해서 가져오는 API
     */
-    http.get(`/api/news/section/:sectionId`,({params})=>{
-        const id = numberToCategory[params.sectionId];
-        const sectionNews = mockNewsData.filter((newsData)=>newsData.category === id);
+    http.get(`/api/news/section/:sectionId`,({params,request})=>{
+
+        const category = numberToCategory[params.sectionId];
+        let newData = mockNewsData.filter((data)=>data.category === category)
+
+
+        const url = new URL(request.url)
+        const page= url.searchParams.get('page');
+        const limit = url.searchParams.get('limit');
+        const sort = url.searchParams.get('sort');
+
+        const pageNumber = parseInt(page);
+        const limitNumber = parseInt(limit);
+
+        const startIndex = (pageNumber-1)*limitNumber;
+        const endIndex = startIndex+limitNumber;
+
+        if(sort === "newest"){
+            newData = newData.sort((a,b)=>{
+                if(a.date > b.date){
+                    return -1;
+                }
+                else if(a.date < b.date){
+                    return 1;
+                }
+                else{
+                    return 0;
+                }
+            })
+        }
+        else if(sort === "popular"){
+            newData = newData.sort((a,b)=>{
+                if(a.visitCount > b.visitCount){
+                    return -1;
+                }
+                else if(a.visitCount < b.visitCount){
+                    return 1;
+                }
+                else{
+                    return 0;
+                }
+            })
+        }
+        else if(sort === "likes"){
+            newData = newData.sort((a,b)=>{
+                if(a.like > b.like){
+                    return -1;
+                }
+                else if(a.like < b.like){
+                    return 1;
+                }
+                else{
+                    return 0;
+                }
+            })
+        }
+        else if(sort === "comments") {
+            newData = newData.sort((a, b) => {
+                if (a.reply > b.reply) {
+                    return -1;
+                } else if (a.reply < b.reply) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            })
+        }
+        const paginatedNews = newData.slice(startIndex, endIndex);
+
+        const totalItems = newData.length;
 
         return HttpResponse.json({
-            sectionNews
+            newsData:paginatedNews,
+            currentPage:pageNumber,
+            totalPages: Math.ceil(totalItems/limitNumber),
+            length : totalItems,
         })
     }),
     /*
@@ -30,8 +100,29 @@ export const handlers = [
         })
     }),
     /*
-    *   뉴스 ID에 해당하는 단일 뉴스를 가져오는 API
+    *   전체 뉴스 조회수 상위 9개 가져오는 API
     */
+    http.get('/api/news/popular',({})=>{
+        const NewsSort = mockNewsData.sort((a,b)=> b.visitCount - a.visitCount);
+        const data = NewsSort.slice(0,9);
+
+        return HttpResponse.json({
+            data
+        })
+    }),
+    /*
+   *   섹션 뉴스 조회수 상위 9개 가져오는 API
+   */
+    http.get('/api/news/section/:sectionId/popular',({params})=>{
+        const category = numberToCategory[params.sectionId];
+        const filterData = mockNewsData.filter((data)=>data.category === category)
+        const NewsSort = filterData.sort((a,b)=> b.visitCount - a.visitCount);
+        const data = NewsSort.slice(0,9);
+
+        return HttpResponse.json({
+            data
+        })
+    }),
     http.get('/api/news/:newsId',({params})=>{
 
         const data = mockNewsData.find((news)=>news.id === parseInt(params.newsId,10))
