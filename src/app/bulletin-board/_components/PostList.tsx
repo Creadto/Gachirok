@@ -1,6 +1,6 @@
 "use client"
 import { useRouter } from "next/navigation";
-import { categoryMap, Post } from "../_types/Posts";
+import { categoryMap, Post } from "../_types/PostResponse";
 interface PostListProps {
   filteredPosts: Post[]
 }

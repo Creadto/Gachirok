@@ -1,107 +1,147 @@
 "use client";
 
-import DropdownSelector from "@/core/components/DropdownSelector";
+import { BackButton } from "@/app/bulletin-board/_components/BackButton";
+import PreviewModalFree from "@/app/bulletin-board/_components/PreviewModalFree";
+import CloseIcon from "@/core/components/icons/CloseIcon";
+import { LocationIcon } from "@/core/components/icons/LocationIcon";
+import SearchIcon from "@/core/components/icons/top-bar/SearchIcon";
+import Editor from "@/core/components/quill-editor/Editor";
+import { usePostCreatePost } from "@/core/hooks/usePostPost";
+import { countryStore } from "@/core/store/country-store";
+import { replaceImageWithS3 } from "@/core/utils/replaceImageWithS3";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import "react-quill/dist/quill.snow.css";
-import { BackButton } from "../../_components/BackButton";
-import PreviewModalFree from "../../_components/PreviewModalFree";
-import { QuillEditor } from "../../_components/QuillEditor";
-import { PreviewAndSubmitButton } from "../../_components/PreviewAndSubmitButton";
-import { LocationIcon } from "@/core/components/icons/LocationIcon";
-import CloseIcon from "@/core/components/icons/CloseIcon";
-import SearchIcon from "@/core/components/icons/top-bar/SearchIcon";
+import { CategorySelector } from "../../local/[countryCode]/create/_components/CategorySelector";
+
+
 
 /**
- * @Description Universal의 Bulletin Board에 자유게시판을 작성하는 Page
+ * @Description Universal Bulletin Board에 자유게시판을 작성하는 Page
  * @author 김영서
  **/
-const AddUniversalBulletinBoardPage = () => {
+export default function AddUniversalBulletinBoardPage(){
+  const router = useRouter();
+
+  const { data: session } = useSession();
+
+
   const {
     register,
-    handleSubmit,
     watch,
+    handleSubmit,
     setValue,
     trigger,
     formState: { errors },
   } = useForm();
-  const router = useRouter();
 
-  const onValid = (data: any) => {
-    console.log(data);
-    // 여기에서 데이터를 서버로 전송하거나 다른 작업을 수행합니다.
+  //thumbnail
+  // const [thumbnailPhotoUrl, setThumbnailPhotoUrl] = useState<string | null>(
+  //   null
+  // );
+
+  // Form을 Submit했을 때의 Function
+  const onValid = async (data: any) => {
+    try {
+      console.log(data);
+  
+      // Replace images in the content and get the modified content and thumbnailPhotoUrl
+      const answer = await replaceImageWithS3(
+        data.content,
+        session?.accessToken,
+        "POST"
+      );
+  
+      // If the answer contains modified HTML content
+      if (answer.htmlContent) {
+        data.content = answer.htmlContent;
+  
+        // Conditionally set thumbnailPhotoUrl only if it exists
+        if (answer.thumbnailPhotoUrl !== null) {
+          data.thumbnailPhotoUrl = answer.thumbnailPhotoUrl
+        } else {
+          console.log("No Thumbnail Photo URL to set.");
+        }
+  
+        const response = await usePostCreatePost(session?.accessToken, data);
+        if (response) {
+          alert("게시글이 성공적으로 생성되었습니다.");
+          window.location.replace("/bulletin-board");
+        }
+      }
+  
+      // Post the data to create a new post
+   
+    } catch (err) {
+      console.error("Error:", err);
+      alert("미팅을 생성하는데 오류가 발생하였습니다.");
+    }
   };
-
   //Image의 변동사항을 실시간으로 체크하기 위한 watch
-  const watchImages: FileList | undefined = watch("images") as FileList;
+  const watchImages = watch("photos");
 
-  //주제
-  const categoryOptions = [
-    "일상토크",
-    "정보공유",
-    "질문답변",
-    "자유토론",
-    "고민상담",
-  ];
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
-
-  //본문
-  const [content, setContent] = useState("");
 
   //미리보기 모달 열림 여부
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
   //위치 선택 모달 열림 여부
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
 
-  //이미지 thumbnail
-  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-  const customFileLabel =
-    watchImages && watchImages.length > 0
-      ? `${watchImages.length}개의 파일 선택됨`
-      : "파일 선택";
+  // const customFileLabel = thumbnailPhotoUrl ? "1개 파일 선택됨" : "파일 선택";
 
   const [location, setLocation] = useState<string>("");
+
+  useEffect(() => {
+    setValue("region.countryCode", "UNIVERSAL");
+    setValue("region.stateCode", "");
+    setValue("region.cityCode", "");
+    // setValue("thumbnailPhotoUrl", thumbnailPhotoUrl);
+    setValue("category", "BULLETIN");
+  }, []);
+
+  // //Thumbnail 파일을 추가 / 변동
+  // const handleThumbnailChange = (
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   const files = event.target.files;
+  //   if (files) {
+  //     const newFiles = Array.from(files);
+
+  //     // Create a FileReader for each file
+  //     newFiles.forEach((file) => {
+  //       const reader = new FileReader();
+
+  //       reader.onloadend = () => {
+  //         setThumbnailPhotoUrl(reader.result as string);
+  //       };
+
+  //       reader.readAsDataURL(file); // Read the file as a data URL
+  //     });
+  //   }
+  // };
+
+  // //Thumbnail 파일을 제거
+  // const handleThumbnailRemove = () => {
+  //   setThumbnailPhotoUrl(null);
+  // };
 
   const handlePreviewModal = () => {
     setIsPreviewModalOpen(!isPreviewModalOpen);
   };
 
+  //위치 선택 모달 열림 여부
   const handleLocationModal = () => {
     setIsLocationModalOpen(!isLocationModalOpen);
   };
 
-  useEffect(() => {
-    if (watchImages && watchImages.length > 0) {
-      const imageFiles = Array.from(watchImages); // 파일 배열로 변환
-      const imageUrls = imageFiles.map((file) => URL.createObjectURL(file)); // 각 파일에 대한 URL 생성
-      setImagePreviews(imageUrls); // URL 상태로 저장
-
-      // 메모리 누수 방지 위해 URL 해제
-      return () => {
-        imageUrls.forEach((url) => URL.revokeObjectURL(url));
-      };
-    }
-  }, [watchImages]);
-
-  const handleImageRemove = (index: number) => {
-    const updatedImages = Array.from(watchImages).filter((_, i) => i !== index);
-
-    // react-hook-form의 setValue로 FileList 업데이트
-    const dataTransfer = new DataTransfer();
-    updatedImages.forEach((file) => dataTransfer.items.add(file));
-    setValue("images", dataTransfer.files);
-
-    // 미리보기 이미지 업데이트
-    const updatedPreviews = imagePreviews.filter((_, i) => i !== index);
-    setImagePreviews(updatedPreviews);
-  };
-
   return (
-    <div className="max-w-4xl mx-auto bg-white mt-[50px] rounded-lg">
+    <div className=" max-w-[1460px] min-w-[1460px] mx-auto bg-white mt-[50px] rounded-lg">
       {/* 글쓰기 HEADER */}
       <div className="flex items-center ml-[-45px] space-x-[5px]">
-        <BackButton onClick={() => router.push("/bulletin-board")} />
+        <BackButton
+          onClick={() => router.push("/bulletin-board/universal")}
+        />
         <h1 className="text-[22px] font-bold">글쓰기</h1>
         <div className="bg-[#DDDDDD] px-[7px] py-[3px] rounded-[4px] text-[#808080]">
           Universal
@@ -112,35 +152,9 @@ const AddUniversalBulletinBoardPage = () => {
           </button>
         </div>
       </div>
-
-      {/* 카테고리-자유게시판 */}
-      <div className="flex flex-col">
-        <p className="text-[13px] text-[#808080] mt-[50px]">카테고리</p>
-        <div className=" mt-[10px] w-[100px] h-[50px] text-sm text-white bg-[#E62A2F] rounded-md px-[19.5px] py-[15px]">
-          자유게시판
-        </div>
-      </div>
-
-      <hr className="w-full bg-[#EEEEEE] mt-[40px] mb-[30px]" />
+      
 
       <form onSubmit={handleSubmit(onValid)}>
-        {/* 주제 선택 */}
-        <div className="relative block text-left">
-          <DropdownSelector
-            selectedValue={selectedCategory}
-            setSelectedValue={setSelectedCategory}
-            register={register}
-            errors={errors}
-            options={categoryOptions}
-            name="category"
-            errorMessage="주제 선택은 필수항목입니다."
-            placeholder="주제를 선택해주세요."
-            label="주제"
-            trigger={trigger}
-            setValue={setValue}
-          />
-        </div>
-
         {/* 글 내용 */}
         {/* 제목 */}
         <label className="block mt-[40px] text-xs text-[#808080] mb-[10px]">
@@ -149,8 +163,7 @@ const AddUniversalBulletinBoardPage = () => {
         <input
           type="text"
           {...register("title", { required: true })}
-          className="block w-full border bg-[#F6F6F6] text-black text-[14px] h-[50px]
-         rounded-lg p-[15px]"
+          className="block w-full border bg-[#F6F6F6] text-black text-[14px] h-[50px] rounded-lg p-[15px]"
           placeholder="제목을 입력해 주세요."
         />
         {errors.title && <p className="text-red-500">제목은 필수항목입니다.</p>}
@@ -159,7 +172,7 @@ const AddUniversalBulletinBoardPage = () => {
         <label className="block mt-[40px] text-xs text-[#808080] mb-[10px]">
           내용
         </label>
-        <QuillEditor
+        {/* <QuillEditor
           register={register}
           trigger={trigger}
           name="content"
@@ -171,45 +184,13 @@ const AddUniversalBulletinBoardPage = () => {
             setValue("content", value);
             trigger("content");
           }}
+        /> */}
+        <Editor
+          setValue={setValue}
+          register={register}
+          errors={errors}
+          placeholder={`가치가에서 여러분의 소중한 경험 및 자유로운 얘기를 하며 서로 도움을 주고 받아보세요! \n광고 및 홍보, 스팸냐용, 개인정보 유출, 명예훼손, 욕설, 유사 글 도배, 부적절한 내용 입력 시 사전 통보 없이 삭제될 수 있습니다.`}
         />
-
-        {/* 파일선택 */}
-        <div>
-          <div className="relative w-max mt-2">
-            <input
-              type="file"
-              accept="image/*"
-              {...register("images")}
-              multiple
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-            />
-            <div className="px-4 py-2 bg-[#E62A2F] text-white rounded-md text-center cursor-pointer">
-              {customFileLabel}
-            </div>
-          </div>
-          <p className="mt-[10px]">
-            {watchImages
-              ? `10개 중 ${watchImages.length}개 업로드됨`
-              : "10개 중 0개 업로드"}
-          </p>
-
-          {/* 이미지 미리보기 섹션 */}
-          <div className="flex flex-wrap gap-4 mt-4">
-            {imagePreviews.map((src, index) => (
-              <div
-                key={index}
-                className="w-24 h-24 border border-gray-300 rounded-md overflow-hidden"
-                onClick={() => handleImageRemove(index)}
-              >
-                <img
-                  src={src}
-                  alt={`미리보기 ${index + 1}`}
-                  className="object-cover w-full h-full"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
 
         <hr className="w-full bg-[#EEEEEE] mt-[40px] mb-[30px]" />
 
@@ -224,18 +205,18 @@ const AddUniversalBulletinBoardPage = () => {
           <button
             type="button"
             className="block w-full border bg-[#F6F6F6] text-black text-[14px] text-start h-[50px]
-         rounded-lg pl-[36px] px-[15px]"
+   rounded-lg pl-[36px] px-[15px]"
             onClick={handleLocationModal}
           >
             {location ? location : "위치를 설정해주세요."}
           </button>
         </div>
 
-        {/* 미리보기 버튼 및 작성완료 */}
+        {/* 작성완료 */}
         <div className="flex items-center justify-center mt-[80px] mb-[150px]">
           <input
             type="submit"
-            className="py-[19px] px-[124px] w-[300px] rounded-lg bg-[#E62A2F] text-white"
+            className="py-[19px] px-[124px] w-[300px] rounded-lg bg-[#E62A2F] text-white cursor-pointer"
             value="작성 완료"
           />
         </div>
@@ -287,6 +268,4 @@ const AddUniversalBulletinBoardPage = () => {
       )}
     </div>
   );
-};
-
-export default AddUniversalBulletinBoardPage;
+}

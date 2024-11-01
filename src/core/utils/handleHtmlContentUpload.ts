@@ -2,17 +2,18 @@
 
 import axios from "axios";
 
-interface HandleSingleMediaUploadProps {
+interface HandleHtmlContentUploadProps {
   photoUrl: string;
   accessToken: string | undefined;
-  targetPrefix: string
+  targetPrefix: string,
+
 }
 
-export const HandleSingleMediaUpload = async ({
+export const HandleHtmlContentUpload = async ({
   photoUrl,
   accessToken,
   targetPrefix
-}: HandleSingleMediaUploadProps) => {
+}: HandleHtmlContentUploadProps) => {
   let result = photoUrl; // 초기 URL 값을 유지
 
     const fileExtension = getFileExtensionFromDataUrl(photoUrl);
@@ -20,21 +21,17 @@ export const HandleSingleMediaUpload = async ({
 
     // fileExtension이 null이 아닌 경우에만 getPresignedUrl 호출
     if (fileExtension) {
-      console.log("File Extension:", fileExtension); // 로깅 추가
-      console.log("result", result)
       const presignedUrl = await getPresignedUrl(
         fileExtension,
         accessToken,
         targetPrefix
       );
-      console.log("Presigned URL:", presignedUrl); // 로깅 추가
 
       if (presignedUrl) {
         const imageUploadResponse = await uploadImageToPresignedUrl(
           byteInformation,
           presignedUrl
         );
-        console.log("Image Upload Response:", imageUploadResponse); // 로깅 추가
         if (imageUploadResponse) {
           result = presignedUrl.split("?")[0]; // 업로드 완료 후 URL로 변경
         }
@@ -87,9 +84,7 @@ const getPresignedUrl = async (
   targetPrefix: string
 ) => {
   try {
-    console.log("targetPrefix", targetPrefix)
-    console.log("contentType", fileExtension)
-    const response = await axios.get("/api/v1/files/presigned-url", {
+    const response = await axios.get("https://dev.gachiga.creadto.com/api/v1/files/presigned-url", {
       params: {
         targetPrefix: targetPrefix, // 쿼리 파라미터 설정
         contentType: fileExtension.toUpperCase(), // 쿼리 파라미터 설정
@@ -97,11 +92,9 @@ const getPresignedUrl = async (
       headers: {
         Authorization: `Bearer ${accessToken}`, // Authorization 헤더에 accessToken 추가
       },
-    });
-    console.log("response", response.data.url)
+    });console.log("response", response.data.url)
 
     if (response) {
-      // console.log(response.data.url); // 응답 데이터 출력
       return response.data.url; // 응답 데이터 반환 (필요에 따라 조정 가능)
     }
   } catch (error) {

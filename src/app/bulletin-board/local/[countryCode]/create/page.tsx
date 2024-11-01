@@ -5,16 +5,16 @@ import PreviewModalFree from "@/app/bulletin-board/_components/PreviewModalFree"
 import CloseIcon from "@/core/components/icons/CloseIcon";
 import { LocationIcon } from "@/core/components/icons/LocationIcon";
 import SearchIcon from "@/core/components/icons/top-bar/SearchIcon";
+import Editor from "@/core/components/quill-editor/Editor";
 import { usePostCreatePost } from "@/core/hooks/usePostPost";
 import { countryStore } from "@/core/store/country-store";
-import { HandleSingleMediaUpload } from "@/core/utils/handleSingleMediaUpload";
+import { replaceImageWithS3 } from "@/core/utils/replaceImageWithS3";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import "react-quill/dist/quill.snow.css";
 import { CategorySelector } from "./_components/CategorySelector";
-import Editor from "@/core/components/quill-editor/Editor";
 
 interface AddFreeLocalBulletinBoardPageProps {
   params: {
@@ -49,48 +49,58 @@ export default function AddFreeLocalBulletinBoardPage({
     formState: { errors },
   } = useForm();
 
+  //thumbnail
+  // const [thumbnailPhotoUrl, setThumbnailPhotoUrl] = useState<string | null>(
+  //   null
+  // );
+
   // Form을 Submit했을 때의 Function
   const onValid = async (data: any) => {
     try {
-      if (thumbnailPhotoUrl) {
-        data.thumbnailPhotoUrl = await HandleSingleMediaUpload({
-          photoUrl: thumbnailPhotoUrl,
-          accessToken: session?.accessToken,
-          targetPrefix: "POST",
-        });
+      console.log(data);
+  
+      // Replace images in the content and get the modified content and thumbnailPhotoUrl
+      const answer = await replaceImageWithS3(
+        data.content,
+        session?.accessToken,
+        "POST"
+      );
+  
+      // If the answer contains modified HTML content
+      if (answer.htmlContent) {
+        data.content = answer.htmlContent;
+  
+        // Conditionally set thumbnailPhotoUrl only if it exists
+        if (answer.thumbnailPhotoUrl !== null) {
+          data.thumbnailPhotoUrl = answer.thumbnailPhotoUrl
+        } else {
+          console.log("No Thumbnail Photo URL to set.");
+        }
+  
+        const response = await usePostCreatePost(session?.accessToken, data);
+        if (response) {
+          alert("게시글이 성공적으로 생성되었습니다.");
+          window.location.replace(`/bulletin-board/local/${countryCode}`);
+        }
       }
-
-      const response = await usePostCreatePost(session?.accessToken, data);
-      if (response) {
-        alert("게시글이 성공적으로 생성되었습니다.");
-        window.location.replace(`/bulletin-board/local/${countryCode}`);
-      }
+  
+      // Post the data to create a new post
+   
     } catch (err) {
       console.error("Error:", err);
       alert("미팅을 생성하는데 오류가 발생하였습니다.");
     }
   };
-
   //Image의 변동사항을 실시간으로 체크하기 위한 watch
   const watchImages = watch("photos");
 
-  //thumbnail
-  const [thumbnailPhotoUrl, setThumbnailPhotoUrl] = useState<string | null>(
-    null
-  );
-
-  //본문
-  const [content, setContent] = useState("");
 
   //미리보기 모달 열림 여부
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
   //위치 선택 모달 열림 여부
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
 
-  //본문에 사용되는 사진들
-  const [photoUrls, setPhotoUrls] = useState<string[]>([]);
-
-  const customFileLabel = thumbnailPhotoUrl ? "1개 파일 선택됨" : "파일 선택";
+  // const customFileLabel = thumbnailPhotoUrl ? "1개 파일 선택됨" : "파일 선택";
 
   const [location, setLocation] = useState<string>("");
 
@@ -98,63 +108,35 @@ export default function AddFreeLocalBulletinBoardPage({
     setValue("region.countryCode", countryCode);
     setValue("region.stateCode", "");
     setValue("region.cityCode", "");
-    setValue("thumbnailPhotoUrl", thumbnailPhotoUrl);
+    // setValue("thumbnailPhotoUrl", thumbnailPhotoUrl);
     setValue("category", "BULLETIN");
-  }, [countryCode, thumbnailPhotoUrl]);
+  }, [countryCode]);
 
-  //Thumbnail 파일을 추가 / 변동
-  const handleThumbnailChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const files = event.target.files;
-    if (files) {
-      const newFiles = Array.from(files);
+  // //Thumbnail 파일을 추가 / 변동
+  // const handleThumbnailChange = (
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   const files = event.target.files;
+  //   if (files) {
+  //     const newFiles = Array.from(files);
 
-      // Create a FileReader for each file
-      newFiles.forEach((file) => {
-        const reader = new FileReader();
+  //     // Create a FileReader for each file
+  //     newFiles.forEach((file) => {
+  //       const reader = new FileReader();
 
-        reader.onloadend = () => {
-          setThumbnailPhotoUrl(reader.result as string);
-        };
+  //       reader.onloadend = () => {
+  //         setThumbnailPhotoUrl(reader.result as string);
+  //       };
 
-        reader.readAsDataURL(file); // Read the file as a data URL
-      });
-    }
-  };
+  //       reader.readAsDataURL(file); // Read the file as a data URL
+  //     });
+  //   }
+  // };
 
-  //Thumbnail 파일을 제거
-  const handleThumbnailRemove = () => {
-    setThumbnailPhotoUrl(null);
-  };
-
-  //이미지 파일 추가 / 변동
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (files) {
-      const newFiles = Array.from(files);
-
-      // Create a FileReader for each file
-      newFiles.forEach((file) => {
-        const reader = new FileReader();
-
-        reader.onloadend = () => {
-          setPhotoUrls((prev) => [...prev, reader.result as string]); // Store data URL
-        };
-
-        reader.readAsDataURL(file); // Read the file as a data URL
-      });
-    }
-  };
-
-  const handleImageRemove = (index: number) => {
-    // Update photoList state by removing the selected file
-    setPhotoUrls((prevPhotoList) => {
-      // Use the same index to remove from photoList
-      const updatedPhotoList = prevPhotoList.filter((_, i) => i !== index);
-      return updatedPhotoList;
-    });
-  };
+  // //Thumbnail 파일을 제거
+  // const handleThumbnailRemove = () => {
+  //   setThumbnailPhotoUrl(null);
+  // };
 
   const handlePreviewModal = () => {
     setIsPreviewModalOpen(!isPreviewModalOpen);
@@ -166,7 +148,7 @@ export default function AddFreeLocalBulletinBoardPage({
   };
 
   return (
-    <div className="max-w-4xl mx-auto bg-white mt-[50px] rounded-lg">
+    <div className=" max-w-[1460px] min-w-[1460px] mx-auto bg-white mt-[50px] rounded-lg">
       {/* 글쓰기 HEADER */}
       <div className="flex items-center ml-[-45px] space-x-[5px]">
         <BackButton
@@ -220,42 +202,6 @@ export default function AddFreeLocalBulletinBoardPage({
         />
         {errors.title && <p className="text-red-500">제목은 필수항목입니다.</p>}
 
-        {/* 썸네일 사진 */}
-        <label className="block mt-[40px] text-xs text-[#808080] mb-[10px]">
-          썸네일 사진 등록 (선택)
-        </label>
-        <div>
-          <div className="relative w-max mt-2">
-            <input
-              type="file"
-              accept="image/*"
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-              onChange={handleThumbnailChange}
-            />
-            <div className="px-4 py-2 bg-[#E62A2F] text-white rounded-md text-center cursor-pointer">
-              {customFileLabel}
-            </div>
-          </div>
-          <p className="mt-[10px]"></p>
-
-          {/* 이미지 미리보기 섹션 */}
-          <div className="flex flex-wrap gap-4 mt-4">
-            {thumbnailPhotoUrl && (
-              <div
-                key={thumbnailPhotoUrl}
-                className="w-24 h-24 border border-gray-300 rounded-md overflow-hidden"
-                onClick={() => handleThumbnailRemove()}
-              >
-                <img
-                  src={thumbnailPhotoUrl}
-                  alt={"미리보기"}
-                  className="object-cover w-full h-full"
-                />
-              </div>
-            )}
-          </div>
-        </div>
-
         {/* 본문 */}
         <label className="block mt-[40px] text-xs text-[#808080] mb-[10px]">
           내용
@@ -273,8 +219,12 @@ export default function AddFreeLocalBulletinBoardPage({
             trigger("content");
           }}
         /> */}
-        <Editor setValue={setValue} register={register} errors={errors}
-        placeholder={`가치가에서 여러분의 소중한 경험 및 자유로운 얘기를 하며 서로 도움을 주고 받아보세요! \n광고 및 홍보, 스팸냐용, 개인정보 유출, 명예훼손, 욕설, 유사 글 도배, 부적절한 내용 입력 시 사전 통보 없이 삭제될 수 있습니다.`} />
+        <Editor
+          setValue={setValue}
+          register={register}
+          errors={errors}
+          placeholder={`가치가에서 여러분의 소중한 경험 및 자유로운 얘기를 하며 서로 도움을 주고 받아보세요! \n광고 및 홍보, 스팸냐용, 개인정보 유출, 명예훼손, 욕설, 유사 글 도배, 부적절한 내용 입력 시 사전 통보 없이 삭제될 수 있습니다.`}
+        />
 
         <hr className="w-full bg-[#EEEEEE] mt-[40px] mb-[30px]" />
 

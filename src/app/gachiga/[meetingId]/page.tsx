@@ -230,7 +230,7 @@ const MeetingDetailsPage = ({ params }: MeetingDetailsPageProps) => {
 
   return (
     <>
-      <div className=" h-full  ml-[21.4%] mr-[21.4%] mt-[30px] flex flex-row gap-x-[3.6%] relative">
+      <div className=" h-full  ml-[21.4%] mr-[21.4%] mt-[30px] flex flex-row gap-x-[3.6%] relative max-w-[1460px] min-w-[1460px]">
         <div className="w-full ml-auto h-full flex flex-col">
           {/* 잔여 자리 / 카테고리 */}
           <div className="flex gap-x-[5px]">

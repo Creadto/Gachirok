@@ -133,6 +133,11 @@ const nextConfig = {
         destination:
           "https://dev.gachiga.creadto.com/api/v1/files/presigned-url",
       },
+      {
+        source: "/api/files/presigned-url",
+        destination:
+          "https://dev.gachiga.creadto.com/api/v1/files/presigned-url",
+      },
     ];
   },
 };

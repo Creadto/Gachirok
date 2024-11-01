@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { categoryMap, Post } from "../_types/Posts";
+import { categoryMap, Post } from "../_types/PostResponse";
 import { posts } from "../_data/mock_post";
 import Image from "next/image";
 import LikeButton from "../_components/LikeButton";

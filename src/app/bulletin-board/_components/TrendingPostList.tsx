@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from "react";
-import { categoryMap, Post } from "../_types/Posts";
+import { categoryMap, Post } from "../_types/PostResponse";
 import { useRouter } from "next/navigation";
 
 const TrendingPostList = ({ posts }: { posts: Post[] }) => {

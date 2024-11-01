@@ -21,3 +21,23 @@ export interface Post {
     "자유토론": "freeDebate",
     "고민상담": "advice",
   };
+
+  export interface PostResponse {
+    postId: number,
+    category: number,
+    title: string,
+    content: string,
+    thumbnailPhotoUrl: string,
+    createdAt: string,
+    modifiedAt: string,
+    likeCount: number,
+    commentCount: number,
+    author: {
+      userId: number,
+      nickname: string,
+      profilePhotoUrl: string,
+      traveler: boolean
+    },
+
+
+  }
