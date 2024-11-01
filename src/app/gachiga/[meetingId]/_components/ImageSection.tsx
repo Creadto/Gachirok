@@ -1,55 +1,102 @@
-import Image from "next/image"
-import { useState } from "react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+
 interface ImageSectionProps {
-  photoUrls: string[]
+  photoUrls: string[];
 }
 
-export const ImageSection = ({photoUrls}:ImageSectionProps) => {
-
+export const ImageSection = ({ photoUrls }: ImageSectionProps) => {
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const nextPhoto = () => {
-    if (currentPhotoIndex < photoUrls.length - 1) {
-      setCurrentPhotoIndex((prevIndex) => prevIndex + 1);
+  // 5초마다 이미지 전환
+  useEffect(() => {
+    if (photoUrls.length > 1) {
+      const interval = setInterval(() => {
+        setIsAnimating(true);
+        setTimeout(() => {
+          setCurrentPhotoIndex((prevIndex) =>
+            prevIndex === photoUrls.length - 1 ? 0 : prevIndex + 1
+          );
+          setIsAnimating(false);
+        }, 500); // 페이드 아웃/인 시간과 맞춤
+      }, 5000);
+
+      return () => clearInterval(interval);
     }
+  }, [photoUrls.length]);
+
+  const handleViewFullImage = () => {
+    // 새로운 창에서 전체 사진을 보여줌
+    window.open(photoUrls[currentPhotoIndex], "_blank");
   };
 
-  const prevPhoto = () => {
-    if (currentPhotoIndex > 0) {
-      setCurrentPhotoIndex((prevIndex) => prevIndex - 1);
-    }
+
+  const handleDotClick = (index: number) => {
+    setCurrentPhotoIndex(index);
   };
+
+  const toggleModal = () => {
+    setIsModalOpen((prev) => !prev);
+  };
+
+
+
 
   return (
-    <div className="relative w-full mt-[30px]">
-      <Image
-        src={photoUrls[currentPhotoIndex]}
-        width={500}
-        height={423}
-        layout="responsive"
-        alt="Meeting Photo"
-        className="w-full h-full object-fill"
-      />
-      <button
-        onClick={prevPhoto}
-        disabled={currentPhotoIndex === 0}
-        className={`text-lg absolute left-0 top-8 transform -translate-y-1/2 px-8 py-4  text-white rounded-lg ${
-          currentPhotoIndex === 0 ? "bg-[#a3a3a3] cursor-not-allowed" : "bg-[#e62a2f]"
+    <div className="relative w-full mt-[30px] flex-col items-center">
+        <button
+        onClick={handleViewFullImage}
+        className="absolute top-4 right-4 z-10 px-3 py-1 text-sm text-white bg-gray-800 bg-opacity-75 rounded-md hover:bg-opacity-90"
+      >
+        전체사진보기
+      </button>
+      {/* 페이지네이션 점 */}
+      <div className="flex mt-4 space-x-4 mb-[15px] items-center justify-center">
+        {photoUrls.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => handleDotClick(index)}
+            className={`w-4 h-4 rounded-full ${
+              currentPhotoIndex === index ? "bg-[#e62a2f]" : "bg-[#a3a3a3]"
+            }`}
+          />
+        ))}
+      </div>
+
+      {/* 이미지 표시 */}
+      <div
+        onClick={toggleModal} // 클릭으로 모달 제어
+        className={`relative w-full transition-opacity duration-500 ease-in-out ${
+          isAnimating ? "opacity-0 scale-105" : "opacity-100 scale-100"
         }`}
       >
-        이전
-      </button>
-      <button
-        onClick={nextPhoto}
-        disabled={currentPhotoIndex === photoUrls.length - 1}
-        className={`text-lg absolute right-0 top-8 transform -translate-y-1/2 px-8 py-4  text-white rounded-lg ${
-          currentPhotoIndex === photoUrls.length - 1
-            ? "bg-[#a3a3a3] cursor-not-allowed"
-            : "bg-[#e62a2f]"
-        }`}
-      >
-        다음
-      </button>
+        <Image
+          src={photoUrls[currentPhotoIndex]}
+          width={500}
+          height={423}
+          alt="Meeting Photo"
+          className="hover:cursor-pointer w-full max-h-[623px] min-h-[523px] object-fill rounded-lg transition-transform duration-700 ease-in-out"
+        />
+      </div>
+
+      {/* 모달 표시 */}
+      {isModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70"
+          onClick={toggleModal} // 모달 닫기
+        >
+          <div className="relative w-4/5 h-4/5 max-w-3xl">
+            <Image
+              src={photoUrls[currentPhotoIndex]}
+              alt="Meeting Photo Enlarged"
+              fill
+              className="object-contain rounded-lg"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -25,13 +25,12 @@ const GachigaPage = ({ params }: GachigaPageProps) => {
   const router = useRouter();
 
   const [isMyyMeetingsSelected, setIsMyMeetingsSelected] = useState(false);
-
-  const size = Number(searchParams.get("size")) || 10; // Default to 20 if not specified
-  const [page, setPage] = useState(Number(searchParams.get("page")) || 0)
+  const size = searchParams ? Number(searchParams.get("size")) || 10 : 10;
+  const [page, setPage] = useState(searchParams ? Number(searchParams.get("page")) || 0 : 0);
 
   return (
     <>
-      <div className=" mt-[30px] h-full ml-[8.1%] mr-[8.1%]">
+      <div className=" mt-[30px] h-full ml-[8.1%] mr-[8.1%] max-w-[1460px] min-w-[1460px]">
         <div className="flex flex-row gap-x-[10px] text-[22px] items-center">
           <div>
             <GachigaIcon />

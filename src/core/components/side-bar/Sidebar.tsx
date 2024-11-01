@@ -1,6 +1,5 @@
 "use client";
 import { countryStore } from "@/core/store/country-store";
-import { usePathname, useRouter } from "next/navigation";
 import {
   ActiveAnnouncementIcon,
   AnnouncementIcon,
@@ -27,6 +26,7 @@ import { useEffect, useState } from "react";
 
 import SidebarItem from "./SidebarItem";
 import { CountryList } from "@/core/data/CountryList";
+import { usePathname, useRouter } from "next/navigation";
 /**
  * @Description 왼쪽 Navigation Bar
  * @author 김영서
@@ -53,27 +53,34 @@ const Sidebar = () => {
   const countryList = CountryList;
 
   useEffect(() => {
-    setActiveItems({
-      home: pathname === `/${country}`,
-      universalNews:
-        pathname.startsWith("/news") && !pathname.includes("/local"),
-      universalAnnouncement:
-        pathname.startsWith("/announcement") && !pathname.includes("/local"),
-      universalBulletinBoard:
-        pathname.startsWith("/bulletin-board") && !pathname.includes("/local"),
-      localNews: pathname.includes("/news/local"),
-      localAnnouncement: pathname.includes("/announcement/local"),
-      localGachiga: pathname.includes("/gachiga/"),
-      localBulletinBoard: pathname.startsWith("/bulletin-board/local/"),
-      localRealEstate: pathname.includes("/real-estate/local"),
-      localFleaMarket: pathname.includes("/flea-market/local"),
-      localRecruit: pathname.includes("/recruit/local"),
-      localShop: pathname.includes("/shop/local"),
-    });
+    if (pathname) {
+      setActiveItems({
+        home: pathname === `/${country}`,
+        universalNews:
+          pathname.startsWith("/news") && !pathname.includes("/local"),
+        universalAnnouncement:
+          pathname.startsWith("/announcement") && !pathname.includes("/local"),
+        universalBulletinBoard:
+          pathname.startsWith("/bulletin-board") &&
+          !pathname.includes("/local"),
+        localNews: pathname.includes("/news/local"),
+        localAnnouncement: pathname.includes("/announcement/local"),
+        localGachiga: pathname.includes("/gachiga/"),
+        localBulletinBoard: pathname.startsWith("/bulletin-board/local/"),
+        localRealEstate: pathname.includes("/real-estate/local"),
+        localFleaMarket: pathname.includes("/flea-market/local"),
+        localRecruit: pathname.includes("/recruit/local"),
+        localShop: pathname.includes("/shop/local"),
+      });
+    }
   }, [router, pathname]);
+  if (pathname) {
+    if (
+      pathname.startsWith("/sign-up") ||
+      pathname.startsWith("/create-profile")
+    )
+      return null;
 
-  if (pathname.startsWith("/sign-up") || pathname.startsWith("/create-profile")) return null;
-  else {
     return (
       <aside className=" ml-[1%] w-[230px] mt-[100px] h-full  bg-white rounded-[15px] border-[#EEEEEE] border-2 sticky top-[100px] ">
         {/* 국가선택 */}
@@ -141,7 +148,11 @@ const Sidebar = () => {
             {/* Announcement */}
             <SidebarItem
               isActive={activeItems.universalAnnouncement}
-              onClick={() => router.push("/announcement/universal/section/1?page=1&limit=8&sort=newest")}
+              onClick={() =>
+                router.push(
+                  "/announcement/universal/section/1?page=1&limit=8&sort=newest"
+                )
+              }
               activeIcon={<ActiveAnnouncementIcon />}
               inactiveIcon={<AnnouncementIcon />}
               label="Announcement"
@@ -150,7 +161,7 @@ const Sidebar = () => {
             {/* Bulletin Board */}
             <SidebarItem
               isActive={activeItems.universalBulletinBoard}
-              onClick={() => router.push("/bulletin-board")}
+              onClick={() => router.push("/bulletin-board?page=0&size=10")}
               activeIcon={<ActiveBulletinBoardIcon />}
               inactiveIcon={<BulletinBoardIcon />}
               label="Bulletin Board"
@@ -190,7 +201,11 @@ const Sidebar = () => {
             {/* Announcement */}
             <SidebarItem
               isActive={activeItems.localAnnouncement}
-              onClick={() => router.push(`/announcement/local/${country}/section/1?page=1&limit=8&sort=newest`)}
+              onClick={() =>
+                router.push(
+                  `/announcement/local/${country}/section/1?page=1&limit=8&sort=newest`
+                )
+              }
               activeIcon={<ActiveAnnouncementIcon />}
               inactiveIcon={<AnnouncementIcon />}
               label="Announcement"
@@ -199,7 +214,9 @@ const Sidebar = () => {
             {/* Gachiga */}
             <SidebarItem
               isActive={activeItems.localGachiga}
-              onClick={() => router.push(`/gachiga/local/${country}?page=0&size=10`)}
+              onClick={() =>
+                router.push(`/gachiga/local/${country}?page=0&size=10`)
+              }
               activeIcon={<ActiveGachigaIcon />}
               inactiveIcon={<GachigaIcon />}
               label="Gachiga"

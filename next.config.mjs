@@ -120,6 +120,22 @@ const nextConfig = {
         destination:
           "https://dev.gachiga.creadto.com/api/v1/posts",
       },
+      {
+        source: "/api/posts/:postId",
+        destination:
+          "https://dev.gachiga.creadto.com/api/v1/posts/:postId",
+      },
+      {
+        source: "/api/reactions",
+        destination:
+          "https://dev.gachiga.creadto.com/api/v1/reactions",
+      },
+      {
+        source: "/api/posts/:postId/comments",
+        destination:
+          "https://dev.gachiga.creadto.com/api/v1/posts/:postId/comments",
+      },
+
 
       // ETC / Reports
       {
@@ -130,6 +146,11 @@ const nextConfig = {
       //S3
       {
         source: "/api/v1/files/presigned-url",
+        destination:
+          "https://dev.gachiga.creadto.com/api/v1/files/presigned-url",
+      },
+      {
+        source: "/api/files/presigned-url",
         destination:
           "https://dev.gachiga.creadto.com/api/v1/files/presigned-url",
       },
