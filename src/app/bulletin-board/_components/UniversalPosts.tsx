@@ -12,6 +12,7 @@ import PageNavigationPost from "./PageNavigationPost";
 import { HotIcon } from "@/core/components/icons/HotIcon";
 import { PopularPosts } from "./PopularPosts";
 import { changeTimeFormatYYMMDD } from "@/core/utils/handleTimeFormat";
+import { useRouter } from "next/navigation";
 
 interface UniversalPostsProps {
   page: number;
@@ -25,6 +26,7 @@ export const UniversalPosts = ({
   setPage,
 }: UniversalPostsProps) => {
   const { data: session } = useSession();
+  const router = useRouter();
 
   const {
     data: postData,
@@ -57,7 +59,6 @@ export const UniversalPosts = ({
     return doc.body.innerHTML; // img 태그가 제거된 HTML 반환
   };
 
-
   if (isPostLoading) {
     return (
       <div className="flex flex-col justify-center items-center h-screen">
@@ -70,7 +71,9 @@ export const UniversalPosts = ({
   }
 
   if (isPostError) {
-    return <div>미팅을 가져오는데 {PostError.message}가 발생하였습니다. </div>;
+    return (
+      <div>게시글을 가져오는데 {PostError.message}가 발생하였습니다. </div>
+    );
   }
 
   if (postData) {
@@ -91,7 +94,11 @@ export const UniversalPosts = ({
         </label>
         <div className="grid grid-cols-2 gap-x-5 mt-[15px] flex-wrap gap-y-5 w-full justify-center">
           {postData.content.map((post: PostResponse, index: number) => (
-            <div className="bg-white p-[15px] rounded-[10px] flex " key={index}>
+            <div
+              className="bg-white p-[15px] rounded-[10px] flex cursor-pointer "
+              key={index}
+              onClick={() => router.push(`/bulletin-board/post/${post.postId}`)}
+            >
               <section className="flex flex-col flex-1 gap-y-[5px]">
                 {/* 태그 */}
                 <div className="bg-[#ffe9ea] px-[6px] py-[2px] rounded-[2px] mr-auto">

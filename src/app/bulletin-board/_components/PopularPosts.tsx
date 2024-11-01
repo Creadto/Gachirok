@@ -5,12 +5,14 @@ import { TravelIcon } from "@/core/components/icons/TravelIcon";
 import { ResidentIcon } from "@/core/components/icons/ResidentIcon";
 import { changeTimeFormatYYMMDD } from "@/core/utils/handleTimeFormat";
 import { CommentIcon, LikeIcon } from "@/core/components/icons/LikeCommentIcon";
+import { useRouter } from "next/navigation";
 
 interface PopularPostsProps {
   postData: PostResponse[];
 }
 
 export const PopularPosts = ({ postData }: PopularPostsProps) => {
+  const router = useRouter();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [maxIndex, setMaxIndex] = useState(0);
   const [currentPostGroup, setCurrentPostGroup] = useState<PostResponse[]>([]);
@@ -44,15 +46,14 @@ export const PopularPosts = ({ postData }: PopularPostsProps) => {
   };
 
   useEffect(() => {
-    setMaxIndex(postData.length)
+    setMaxIndex(postData.length);
 
     const currentPost = postData?.slice(currentIndex, currentIndex + 3);
     setCurrentPostGroup(currentPost);
-  }, [currentIndex, postData ]);
+  }, [currentIndex, postData]);
   return (
     <div className="flex flex-row relative w-full">
-      <button className="flex items-center" 
-      onClick={handleBeforeClick}>
+      <button className="flex items-center" onClick={handleBeforeClick}>
         <Image
           src="/images/interests&expertises/circle-before-logo.svg"
           alt="이전으로"
@@ -66,14 +67,19 @@ export const PopularPosts = ({ postData }: PopularPostsProps) => {
           <div
             key={post.postId}
             className="w-full h-[140px] flex flex-row p-[15px] cursor-pointer border rounded-[10px] bg-[#FFF]"
-            onClick={() => {}}
+            onClick={() => {
+              router.push(`/bulletin-board/post/${post.postId}`);
+            }}
           >
             <div className="flex w-full">
               <section className="flex flex-col flex-1 gap-y-[5px] ">
                 {/* 태그 */}
-                <div className="bg-[#ffe9ea] px-[6px] py-[2px] rounded-[2px] mr-auto">
-                  <span className="text-[11px] text-[#e62a2f] flex my-auto">
+                <div className="bg-[#ffe9ea]  rounded-[2px] mr-auto flex">
+                  <span className="text-[11px] text-[#e62a2f] inline px-[6px] py-[2px]">
                     자유게시판
+                  </span>
+                  <span className="text-[11px] text-[#ffffff] bg-[#e62a2f] inline-block px-[6px] py-[2px] ">
+                    HOT🌟
                   </span>
                 </div>
                 {/* 제목 */}

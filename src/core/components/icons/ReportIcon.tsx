@@ -17,3 +17,23 @@ export const ReportIcon = () => {
     </svg>
   );
 };
+
+export const ReportIconSize30 = () => {
+  return (
+    <svg
+      width="30"
+      height="30"
+      viewBox="0 0 30 30"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M21.607 19.032H8.395v-6.123A6.38 6.38 0 0 1 15 6.782a6.38 6.38 0 0 1 6.606 6.127v6.123zM15 13.568v5.468M22.221 19.037H7.777a1 1 0 0 0-1 1v2.184a1 1 0 0 0 1 1h14.444a1 1 0 0 0 1-1v-2.184a1 1 0 0 0-1-1z"
+        stroke="#000"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};

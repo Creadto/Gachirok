@@ -7,14 +7,12 @@ import { LocationIcon } from "@/core/components/icons/LocationIcon";
 import SearchIcon from "@/core/components/icons/top-bar/SearchIcon";
 import Editor from "@/core/components/quill-editor/Editor";
 import { usePostCreatePost } from "@/core/hooks/usePostPost";
-import { countryStore } from "@/core/store/country-store";
 import { replaceImageWithS3 } from "@/core/utils/replaceImageWithS3";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import "react-quill/dist/quill.snow.css";
-import { CategorySelector } from "../../local/[countryCode]/create/_components/CategorySelector";
 
 
 
@@ -172,19 +170,6 @@ export default function AddUniversalBulletinBoardPage(){
         <label className="block mt-[40px] text-xs text-[#808080] mb-[10px]">
           내용
         </label>
-        {/* <QuillEditor
-          register={register}
-          trigger={trigger}
-          name="content"
-          errors={errors}
-          placeholder={`가치가에서 여러분의 소중한 경험 및 자유로운 얘기를 하며 서로 도움을 주고 받아보세요! \n광고 및 홍보, 스팸냐용, 개인정보 유출, 명예훼손, 욕설, 유사 글 도배, 부적절한 내용 입력 시 사전 통보 없이 삭제될 수 있습니다.`}
-          value={content}
-          onChange={(value) => {
-            setContent(value);
-            setValue("content", value);
-            trigger("content");
-          }}
-        /> */}
         <Editor
           setValue={setValue}
           register={register}
@@ -195,7 +180,7 @@ export default function AddUniversalBulletinBoardPage(){
         <hr className="w-full bg-[#EEEEEE] mt-[40px] mb-[30px]" />
 
         {/* 위치 입력 */}
-        <label className="block mt-[40px] text-xs text-[#808080] mb-[10px]">
+        {/* <label className="block mt-[40px] text-xs text-[#808080] mb-[10px]">
           위치 (선택)
         </label>
         <div className="flex relative">
@@ -210,7 +195,7 @@ export default function AddUniversalBulletinBoardPage(){
           >
             {location ? location : "위치를 설정해주세요."}
           </button>
-        </div>
+        </div> */}
 
         {/* 작성완료 */}
         <div className="flex items-center justify-center mt-[80px] mb-[150px]">

@@ -24,7 +24,7 @@ const UniversalBulletinBoardPage = () => {
 
   return (
     <>
-      <div className="ml-[8.1%] min-w-[1460px] max-w-[1460px] bg-yellow-100 flex mx-auto mr-[8.1%] flex-col">
+      <div className="ml-[8.1%] min-w-[1460px] max-w-[1460px] flex mx-auto mr-[8.1%] flex-col">
         {/* 자유게시판 헤더 */}
         <header className="mt-[30px] flex gap-x-[5px]">
           <div className="rounded-full w-[30px] h-[30px] flex items-center justify-center bg-[#ffe9ea]">
