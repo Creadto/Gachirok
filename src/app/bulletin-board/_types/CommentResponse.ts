@@ -1,33 +1,33 @@
-export interface CommentResponse{
-  comments: SingleCommentResponse[],
-  commentCount: number
+export interface CommentResponse {
+  comments: SingleCommentResponse[];
+  commentCount: number;
 }
 
-export interface SingleCommentResponse{
+export interface SingleCommentResponse {
   commentId: number;
-  content: string,
+  content: string;
   author: {
-    userId: number,
-    nickname: string,
-    profilePhotoUrl: string,
-    traveler: boolean
-  }
-  createdAt: string,
-  modifiedAt: string,
-  deleted: boolean,
-  replies: ReplyResponse[]
+    userId: number;
+    nickname: string;
+    profilePhotoUrl: string;
+    traveler: boolean;
+  };
+  createdAt: string;
+  modifiedAt: string;
+  deleted: boolean;
+  replies: ReplyResponse[];
 }
 
-export interface ReplyResponse{
-  commmentId: number,
-  content: string,
+export interface ReplyResponse {
+  commmentId: number;
+  content: string;
   author: {
-    userId: number,
-    nickname: string,
-    profilePhotoUrl: string,
-    traveler: boolean,
-    createdAt: string,
-    modifiedAt: string,
-    deleted: boolean,
-  }
+    userId: number;
+    nickname: string;
+    profilePhotoUrl: string;
+    traveler: boolean;
+  };
+  createdAt: string;
+  modifiedAt: string;
+  deleted: boolean;
 }
