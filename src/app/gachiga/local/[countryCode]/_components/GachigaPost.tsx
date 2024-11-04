@@ -115,10 +115,10 @@ const GachigaPost = ({
   return (
     <>
       <p className="font-bold mt-[20px]">{totalElements}개 모임</p>
-      <div className="grid grid-cols-5 gap-x-5 mt-[15px] flex-wrap gap-y-5 z-10">
+      <div className="grid grid-cols-5 gap-x-5 mt-[15px] flex-wrap gap-y-5 z-10 w-full">
         {meetings.map((meeting, index) => (
           <div
-            className="bg-white shadow-xl rounded-lg w-auto h-[308px] relative"
+            className="bg-white shadow-xl rounded-lg w-[100%] h-[308px] relative"
             key={index}
           >
             <img

@@ -15,15 +15,16 @@ import PageNavigation from "./[countryCode]/_components/PageNavigation";
 import { CreateMeetingsButton } from "./[countryCode]/_components/CreateMeetingsButton";
 import { useGetFilteredMeetings } from "@/core/hooks/useGetMeetings";
 
+
+//필터링된 페이지
 const FilteredPage = () => {
   const router = useRouter();
   const { country, setCountry } = countryStore();
   const searchParams = useSearchParams();
 
   const meetingsParam = sessionStorage.getItem("meetingsParam");
-
-  const size = Number(searchParams.get("size")) || 10; // Default to 20 if not specified
-  const [page, setPage] = useState(Number(searchParams.get("page")) || 0);
+  const size = searchParams ? Number(searchParams.get("size")) || 10 : 10;
+  const [page, setPage] = useState(searchParams ? Number(searchParams.get("page")) || 0 : 0);
 
   const [totalPage, setTotalPage] = useState(0);
   const [totalElements, setTotalElements] = useState(0);

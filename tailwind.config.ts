@@ -10,13 +10,14 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      lineClamp: {
+        2: 2
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
     },
   },
-  plugins: [
-  ],
 };
 export default config;

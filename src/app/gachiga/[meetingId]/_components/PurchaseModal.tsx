@@ -150,10 +150,10 @@ export const PurchaseModal = ({
       </div>
       {/* 참여하기 버튼*/}
       <button
-        className="mt-[75px] bg-[#e62a2f] px-[234px] flex py-5 rounded-md relative mx-[15px]"
+        className="mt-[84px] bg-[#e62a2f] px-[234px] flex pt-[20px] pb-[16px] rounded-md relative mx-[15px]"
         onClick={handlePurchaseConfirm}
       >
-        <span className="text-white font-semibold text-sm whitespace-nowrap flex items-center justify-center mx-auto py-0.5">
+        <span className="text-white font-semibold text-sm whitespace-nowrap flex items-center justify-center mx-auto ">
           참여하기
         </span>
 

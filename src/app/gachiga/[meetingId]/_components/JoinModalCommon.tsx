@@ -105,14 +105,14 @@ export const JoinModalCommon = ({
       </span>
 
       {/* 다음 버튼 */}
-      <div className="mt-[30px] mx-[15px] mb-[15px]">
+      <div className="mt-[30px] mx-[15px] mb-[10px]">
         <button
           onClick={() =>
             meetingData.approval
               ? setIsReplyModalOpen(true)
               : setIsPurchaseModalOpen(true)
           }
-          className=" bg-black flex py-[16px] w-full  items-center justify-center rounded-[15px] disabled:bg-[#a3a3a3]"
+          className=" bg-black flex py-[16px] w-full  items-center justify-center rounded-md disabled:bg-[#a3a3a3]"
           disabled={!isAgreed}
         >
           <span className="text-white flex items-center justify-center">

@@ -1,30 +1,33 @@
 // app/components/BodyClassHandler.tsx
-'use client';
+"use client";
 
-import { NextFontWithVariable } from 'next/dist/compiled/@next/font';
-import { usePathname } from 'next/navigation';
-import { useEffect } from 'react';
-
+import { NextFontWithVariable } from "next/dist/compiled/@next/font";
+import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 
 interface BodyColorHandlerProps {
-font : NextFontWithVariable
+  font: NextFontWithVariable;
 }
 
-export default function BodyColorHandler({font} : BodyColorHandlerProps) {
+export default function BodyColorHandler({ font }: BodyColorHandlerProps) {
   const pathname = usePathname();
-  
+
   useEffect(() => {
     // 특정 페이지에 따라 배경색 변경
-    if (pathname.startsWith("/sign-up") || pathname.startsWith("/create-profile") || pathname.includes('create') || (pathname.startsWith('/gachiga') && !pathname.includes("local")))
-      //  ||  routing 다른 조건들 활성화
-     {
-      document.body.className = `bg-white ${font.className}`; // 회원가입 페이지일 때 배경색 흰색
-    }
-    else if(pathname.includes('article')){
-      document.body.className = `bg-white ${font.className}`;
-    }
-    else {
-      document.body.className = `bg-[#F6F6F6] ${font.className} `; // 그 외 페이지일 때 기본 배경색
+    if (pathname) {
+      if (
+        pathname.startsWith("/sign-up") ||
+        pathname.startsWith("/create-profile") ||
+        pathname.includes("create") ||
+        (pathname.startsWith("/gachiga") && !pathname.includes("local")) || (pathname.includes("/bulletin-board") && pathname.includes("post"))
+      ) {
+        //  ||  routing 다른 조건들 활성화
+        document.body.className = `bg-white ${font.className}`; // 회원가입 페이지일 때 배경색 흰색
+      } else if (pathname.includes("article")) {
+        document.body.className = `bg-white ${font.className}`;
+      } else {
+        document.body.className = `bg-[#F6F6F6] ${font.className} `; // 그 외 페이지일 때 기본 배경색
+      }
     }
   }, [pathname]);
 

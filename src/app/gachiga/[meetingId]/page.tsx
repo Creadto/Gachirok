@@ -230,7 +230,7 @@ const MeetingDetailsPage = ({ params }: MeetingDetailsPageProps) => {
 
   return (
     <>
-      <div className=" h-full  ml-[21.4%] mr-[21.4%] mt-[30px] flex flex-row gap-x-[3.6%] relative">
+      <div className=" h-full  ml-[21.4%] mr-[21.4%] mt-[30px] flex flex-row gap-x-[3.6%] relative max-w-[1460px] min-w-[1460px]">
         <div className="w-full ml-auto h-full flex flex-col">
           {/* 잔여 자리 / 카테고리 */}
           <div className="flex gap-x-[5px]">
@@ -552,7 +552,7 @@ const MeetingDetailsPage = ({ params }: MeetingDetailsPageProps) => {
                     <div className="flex items-center justify-center mr-[15px]">
                         <svg width="18" height="18" viewBox="0 0 18 18" fill="none"
                              xmlns="http://www.w3.org/2000/svg">
-                            <g clip-path="url(#fgfdvtzs6a)">
+                            <g clipPath="url(#fgfdvtzs6a)">
                                 <path d="M9 18A9 9 0 1 0 9 0a9 9 0 0 0 0 18z" fill="#E62A2F"/>
                                 <path d="m5.672 8.708 2.565 2.565L12.33 6.73" stroke="#fff" stroke-width="1.5"
                                       stroke-linecap="round" stroke-linejoin="round"/>
