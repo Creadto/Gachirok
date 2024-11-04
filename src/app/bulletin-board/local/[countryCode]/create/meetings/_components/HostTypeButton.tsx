@@ -12,7 +12,9 @@ interface HostTypeButtonProps {
 
 export const HostTypeButton = ({ userData, setValue }: HostTypeButtonProps) => {
   const [selectedHostType, setSelectedHostType] = useState("normal_host");
-  const [coin, setCoin] = useState(userData?.purchaseProfile.freeHosting ? 0 : -1);
+  const [coin, setCoin] = useState(
+    userData?.purchaseProfile.freeHosting ? 0 : -1
+  );
 
   const purchasePackage = () => {
     if (userData?.purchaseProfile.purchaseItem.all === "day_all") {
@@ -61,8 +63,8 @@ export const HostTypeButton = ({ userData, setValue }: HostTypeButtonProps) => {
       userData?.purchaseProfile.purchaseItem.hosting === "month_hosting"
     ) {
       setValue("packageItem", "month_hosting");
-    }else{
-      setValue("packageItem", "none")
+    } else {
+      setValue("packageItem", "none");
     }
   };
 
@@ -88,7 +90,7 @@ export const HostTypeButton = ({ userData, setValue }: HostTypeButtonProps) => {
   useEffect(() => {
     setValue("hostType", selectedHostType);
     setValue("coin", coin);
-    packageItemChange(selectedHostType)
+    packageItemChange(selectedHostType);
   }, [coin, selectedHostType, userData]);
 
   return (
@@ -122,7 +124,44 @@ export const HostTypeButton = ({ userData, setValue }: HostTypeButtonProps) => {
       </div>
       <div className="flex space-x-4 mt-[30px]">
         {/* 노출 종류 선택 */}
-        {userData?.purchaseProfile.freeHosting ? (
+
+        <button
+          type="button"
+          key="normal_host"
+          className={`relative flex-1 p-4 text-left border ${
+            selectedHostType === "normal_host"
+              ? "border-4 border-[#E62A2F]"
+              : "border-[#eeeeee]"
+          } bg-white flex flex-col rounded-[10px]`}
+          onClick={() => handleHostTypeChange("normal_host", 0)}
+        >
+          {userData?.purchaseProfile.freeHosting ? (
+            <>
+              <span className="font-bold block">일반 호스트</span>
+              <span className="block mt-[10px] text-xs text-[#808080]">
+                기본 개설 방식이며 개설된 순서로 모임이 노출됩니다 (하루에 한번
+                무료 호스팅 제공)
+              </span>
+              <div className="mt-[20px] flex gap-x-[5px] items-center justify-start absolute left-[15px] bottom-[20px]">
+                <CoinIcon width={22} height={22} />
+                <span className="font-bold text-lg">무료</span>
+              </div>
+            </>
+          ) : (
+            <>
+              <span className="font-bold block">일반 호스트</span>
+              <span className="block mt-[10px] text-xs text-[#808080]">
+                기본 개설 방식이며 개설된 순서로 모임이 노출됩니다
+              </span>
+              <div className="mt-[20px] flex gap-x-[5px] items-center justify-start absolute left-[15px] bottom-[20px]">
+                <CoinIcon width={22} height={22} />
+                <span className="font-bold text-lg">1</span>
+              </div>
+            </>
+          )}
+        </button>
+
+        {/* {userData?.purchaseProfile.freeHosting ? (
           <button
             type="button"
             key="normal_host"
@@ -163,11 +202,11 @@ export const HostTypeButton = ({ userData, setValue }: HostTypeButtonProps) => {
               <span className="font-bold text-lg">1</span>
             </div>
           </button>
-        )}
+        )} */}
 
         <button
           type="button"
-          key="normal_host"
+          key="super_host"
           className={`relative h-[140px] flex-1 p-4 text-left border ${
             selectedHostType === "super_host"
               ? "border-4 border-[#E62A2F]"
@@ -187,7 +226,7 @@ export const HostTypeButton = ({ userData, setValue }: HostTypeButtonProps) => {
 
         <button
           type="button"
-          key="normal_host"
+          key="hero_host"
           className={`relative flex-1 p-4 text-left border ${
             selectedHostType === "hero_host"
               ? "border-4 border-[#E62A2F]"
