@@ -19,7 +19,7 @@ export interface SingleCommentResponse {
 }
 
 export interface ReplyResponse {
-  commmentId: number;
+  commentId: number;
   content: string;
   author: {
     userId: number;
