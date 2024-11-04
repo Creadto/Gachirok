@@ -117,31 +117,31 @@ const nextConfig = {
       // POSTS
       {
         source: "/api/posts",
-        destination:
-          "https://dev.gachiga.creadto.com/api/v1/posts",
+        destination: "https://dev.gachiga.creadto.com/api/v1/posts",
       },
       {
         source: "/api/posts/:postId",
-        destination:
-          "https://dev.gachiga.creadto.com/api/v1/posts/:postId",
+        destination: "https://dev.gachiga.creadto.com/api/v1/posts/:postId",
       },
       {
         source: "/api/reactions",
-        destination:
-          "https://dev.gachiga.creadto.com/api/v1/reactions",
+        destination: "https://dev.gachiga.creadto.com/api/v1/reactions",
       },
       {
         source: "/api/posts/:postId/comments",
         destination:
           "https://dev.gachiga.creadto.com/api/v1/posts/:postId/comments",
       },
-
+      {
+        source: "/api/posts/comments/:commentId",
+        destination:
+          "https://dev.gachiga.creadto.com/api/v1/posts/comments/:commentId",
+      },
 
       // ETC / Reports
       {
         source: "/api/reports",
-        destination:
-          "https://dev.gachiga.creadto.com/api/v1/reports",
+        destination: "https://dev.gachiga.creadto.com/api/v1/reports",
       },
       //S3
       {
