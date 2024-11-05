@@ -34,10 +34,10 @@ export default function AnnouncementCategoryButton(props: AnnouncementCategoryBu
         }
     }
     return (
-        <div className="pr-2">
+        <div>
             {category === currentCategory ? (
                 <button
-                    className="rounded-2xl border-2 p-1 bg-gray-700 text-white"
+                    className="px-[12px] py-[9px] bg-[#000000] text-[13px] text-[#fff] rounded-[50px]"
                     onClick={onClickHandler}
                     value={category}
                 >
@@ -45,7 +45,7 @@ export default function AnnouncementCategoryButton(props: AnnouncementCategoryBu
                 </button>
             ) : (
                 <button
-                    className="rounded-2xl border-2 p-1 hover:bg-gray-500 hover:text-white"
+                    className="px-[12px] py-[9px] bg-[#fff] text-[13px] text-[#000000] rounded-[50px]"
                     onClick={onClickHandler}
                     value={category}
                 >
