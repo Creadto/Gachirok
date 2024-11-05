@@ -13,7 +13,7 @@ interface HostTypeButtonProps {
 export const HostTypeButton = ({ userData, setValue }: HostTypeButtonProps) => {
   const [selectedHostType, setSelectedHostType] = useState("normal_host");
   const [coin, setCoin] = useState(
-    userData?.purchaseProfile.freeHosting ? 0 : -1
+    userData?.purchaseProfile?.freeHosting ? 0 : -1
   );
 
   const purchasePackage = () => {

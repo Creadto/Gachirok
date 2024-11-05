@@ -10,6 +10,8 @@
     "mock": "npx tsx watch ./src/mocks/http.ts"
   },
   "dependencies": {
+    "@googlemaps/js-api-loader": "^1.16.8",
+    "@react-google-maps/api": "^2.20.3",
     "@tailwindcss/line-clamp": "^0.4.4",
     "@tanstack/react-query": "^5.56.2",
     "@tanstack/react-query-devtools": "^5.56.2",
@@ -37,6 +39,7 @@
     "react-spinners": "^0.14.1",
     "react-tailwindcss-datepicker": "^1.7.2",
     "react-time-picker": "^7.0.0",
+    "uuid": "^11.0.2",
     "zustand": "^5.0.0-rc.2",
     "zustand-persist": "^0.4.0"
   },

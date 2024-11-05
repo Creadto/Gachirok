@@ -149,7 +149,7 @@ export default function ShareButton() {
                     <div className="flex items-center justify-center mr-[15px]">
                         <svg width="18" height="18" viewBox="0 0 18 18" fill="none"
                              xmlns="http://www.w3.org/2000/svg">
-                            <g clip-path="url(#fgfdvtzs6a)">
+                            <g clipPath="url(#fgfdvtzs6a)">
                                 <path d="M9 18A9 9 0 1 0 9 0a9 9 0 0 0 0 18z" fill="#E62A2F"/>
                                 <path d="m5.672 8.708 2.565 2.565L12.33 6.73" stroke="#fff" stroke-width="1.5"
                                       stroke-linecap="round" stroke-linejoin="round"/>

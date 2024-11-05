@@ -26,7 +26,7 @@ import { HandleMediaUpload } from "@/core/utils/handleMediaUpload";
 import CloseIcon from "@/core/components/icons/CloseIcon";
 import SearchIcon from "@/core/components/icons/top-bar/SearchIcon";
 import { LocationIcon } from "@/core/components/icons/LocationIcon";
-import GooglePlacesAutocomplete from "@/core/utils/handlePlaceAutoComplete";
+import { LocationSelectModal } from "@/core/components/LocationSelectModal";
 
 interface AddFleaMarketLocalBulletinBoardPageProps {
   params: {
@@ -161,7 +161,7 @@ export default function AddMeetingsLocalBulletinBoardPage({
   const watchImages = watch("photos"); // 최신 photos 값을 실시간으로 감
 
   //위치 입력 모달
-  const [isLocationModalOpen, setIsLocationModlOpen]  = useState(false);
+  const [isLocationModalOpen, setIsLocationModlOpen] = useState(false);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -287,7 +287,7 @@ export default function AddMeetingsLocalBulletinBoardPage({
     costly === false ? setIsCostlyItemOpen(false) : setIsCostlyItemOpen(true);
     setValue("photoUrls", photoURL);
 
-    console.log("introduction", content)
+    console.log("introduction", content);
   }, [
     approval,
     minValue,
@@ -302,7 +302,7 @@ export default function AddMeetingsLocalBulletinBoardPage({
     endHour,
     endMinute,
     photoURL,
-    content
+    content,
   ]);
 
   const formatDate = (date: Date): string => {
@@ -393,7 +393,7 @@ export default function AddMeetingsLocalBulletinBoardPage({
         />
 
         {/* 위치 선택 */}
-        {/* <label className="block mt-[40px] text-xs text-[#808080] mb-[10px]">
+        <label className="block mt-[40px] text-xs text-[#808080] mb-[10px]">
           위치
         </label>
         <input
@@ -405,9 +405,9 @@ export default function AddMeetingsLocalBulletinBoardPage({
         />
         {errors.location && (
           <p className="text-red-500">위치 입력은 필수항목입니다.</p>
-        )} */}
+        )}
 
-         {/* 위치 입력 */}
+        {/* 위치 입력 */}
         <label className="block mt-[40px] text-xs text-[#808080] mb-[10px]">
           위치
         </label>
@@ -424,7 +424,6 @@ export default function AddMeetingsLocalBulletinBoardPage({
             {/* {location ? location : "위치를 설정해주세요."} */}
           </button>
         </div>
-
 
         {/* 하루만/언제나 */}
         <TwoButtonForm
@@ -608,7 +607,7 @@ export default function AddMeetingsLocalBulletinBoardPage({
         <div>
           <div className="relative w-max mt-2">
             <input
-            id="file-input"
+              id="file-input"
               type="file"
               accept="image/*"
               multiple
@@ -702,38 +701,6 @@ export default function AddMeetingsLocalBulletinBoardPage({
           onClose={() => setShowAlert(false)}
           route={`/gachiga/local/${countryCode}`}
         />
-      )}
-            {isLocationModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white rounded-[15px]  w-[700px] h-[700px] relative ">
-            {/* 모달 HEADER */}
-            <div className="flex flex-row">
-              <div className="w-full h-[60px] flex items-start justify-start shadow-sm">
-                <span className="font-bold text-lg pl-[15px] py-[17px]">
-                  위치 설정
-                </span>
-              </div>
-              <button
-                onClick={()=> setIsLocationModlOpen(false)}
-                className="absolute top-[15px] right-[15px] text-black hover:text-gray-800"
-              >
-                <CloseIcon />
-              </button>
-            </div>
-
-            <div className="w-[680px] mx-auto flex h-[40px] mt-[20px] bg-[#F6F6F6] relative border rounded-[5px]">
-              <div className="absolute top-[20px] left-[5px]">
-                <SearchIcon />
-              </div>
-              <GooglePlacesAutocomplete />
-              {/* <input
-                type="text"
-                placeholder="지역, 도로명, 건물명 검색"
-                className="w-full ml-[40px] bg-[#F6F6F6] pl-2"
-              /> */}
-            </div>
-          </div>
-        </div>
       )}
 
       {/* 미리보기 모달창 */}
