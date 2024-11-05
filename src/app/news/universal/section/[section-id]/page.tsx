@@ -1,6 +1,5 @@
 import NewsCategoryButton from "@/app/news/universal/section/_components/NewsCategoryButton";
 import {Category, numberToCategory} from "@/app/news/utils/Category";
-import Image from "next/image";
 import PopularNews from "@/app/news/universal/_components/PopularNews";
 import DetailSectionNews from "@/app/news/universal/section/_components/DetailSectionNews";
 
@@ -20,12 +19,22 @@ export default function SectionPage({params}:{params:{'section-id':string}}){
     return(
         <div className="mt-[1.5%] ml-[9.3%] mr-[9.3%] min-w-[1460px] max-w-[1460px] overflow-x-auto flex flex-col">
             <section className="mb-[20px] px-[50px] flex flex-row items-center gap-[5px] max-w-[318px] min-w-[318px]">
-                <Image
-                    src="/images/interests&expertises/news-logo.svg"
-                    alt="뉴스"
-                    width={30}
-                    height={30}
-                />
+                <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g clip-path="url(#rytfi9er3a)">
+                        <circle cx="15" cy="15" r="15" fill="#FFE9EA"/>
+                        <path
+                            d="M14.999 22.166a7.167 7.167 0 1 0 0-14.334 7.167 7.167 0 0 0 0 14.334zM7.832 14.998h14.334"
+                            stroke="#E62A2F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path
+                            d="M15 7.832a10.966 10.966 0 0 1 2.866 7.167A10.966 10.966 0 0 1 15 22.166a10.965 10.965 0 0 1-2.867-7.167A10.965 10.965 0 0 1 15 7.832z"
+                            stroke="#E62A2F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </g>
+                    <defs>
+                        <clipPath id="rytfi9er3a">
+                            <path fill="#fff" d="M0 0h30v30H0z"/>
+                        </clipPath>
+                    </defs>
+                </svg>
                 <h1 className="w-[39px] h-[30px] text-[22px] font-bold flex items-center justify-center">뉴스</h1>
                 <p className="text-[13px] text-[#808080] px-[7px] py-[3px] bg-[#ddd] rounded-[4px]">Universal</p>
             </section>

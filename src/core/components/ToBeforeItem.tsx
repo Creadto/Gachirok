@@ -28,17 +28,26 @@ export default function ToBeforeItem({itemType, regionType }: ToBeforeItemProps)
     const countryCode = params['country-code']; // Local이면 존재, Universal이면 undefined
     const currentId = parseInt(params[`${itemType}-id`] as string, 10);
 
-    console.log(countryCode, currentId);
     const beforeId = currentId - 1;
     const [beforeItem, setBeforeItem] = useState<Item | null>(null);
 
     const clickToBeforeItem = () => {
         if (currentId > 1) {
             if(regionType === "local"){
-                router.push(`/${itemType}/${regionType}/article/${countryCode}/${beforeId}`); //
+                if(itemType === "news"){
+                    router.push(`/${itemType}/${regionType}/${countryCode}/article/${beforeId}`); //
+                }
+                else if(itemType === "announcement"){
+                    router.push(`/${itemType}/${regionType}/${countryCode}/${beforeId}`); //
+                }
             }
             else{
-                router.push(`/${itemType}/${regionType}/article/${beforeId}`);
+                if(itemType === "news"){
+                    router.push(`/${itemType}/${regionType}/article/${beforeId}`);
+                }
+                else if(itemType === "announcement"){
+                    router.push(`/${itemType}/${regionType}/${beforeId}`);
+                }
             }
         }
     };
