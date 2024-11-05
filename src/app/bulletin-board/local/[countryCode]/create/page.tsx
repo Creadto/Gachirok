@@ -267,7 +267,8 @@ export default function AddFreeLocalBulletinBoardPage({
       />
 
       {isLocationModalOpen && <LocationSelectModal 
-      setIsLocationModlOpen={setIsLocationModalOpen}/>}
+      setIsLocationModlOpen={setIsLocationModalOpen}
+      setLocationResult={setLocation}/>}
     </div>
   );
 }

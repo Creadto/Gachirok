@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import {
   useHandleAutoComplete,
@@ -16,10 +16,12 @@ import {
 
 interface LocationSelectModalProps {
   setIsLocationModlOpen: (value: boolean) => void;
+  setLocationResult: (value: string) => void;
 }
 
 export const LocationSelectModal = ({
   setIsLocationModlOpen,
+  setLocationResult,
 }: LocationSelectModalProps) => {
   const containerStyle = {
     width: "100%",
@@ -44,6 +46,9 @@ export const LocationSelectModal = ({
 
   //GeoCoding 결과
   const [location, setLocation] = useState<any>(null);
+
+  //전달해야하는 주소 결과값
+  const [formattedAddress, setFormattedAddress] = useState(null);
 
   //지도 Marker 클릭 여부
   const [isInfoWindowOpen, setIsInfoWindowOpen] = useState(false);
@@ -148,6 +153,11 @@ export const LocationSelectModal = ({
     setIsInfoWindowOpen(false); // Close InfoWindow when modal is closed
     setLocation(null); // Clear the location when modal is closed
   };
+  const handleSubmitButton = () => {
+    setIsLocationModlOpen(false);
+    setLocationResult(location.formatted_address)
+  }
+
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -218,10 +228,6 @@ export const LocationSelectModal = ({
                     lng: parseFloat(location.geometry.location.lng),
                   }}
                   zoom={15}
-                  onUnmount={() => {
-                    setIsInfoWindowOpen(false);
-                    setLocation(null); // Clear location on unmount
-                  }}
                 >
                   <Marker
                     position={{
@@ -245,7 +251,6 @@ export const LocationSelectModal = ({
                       options={{
                         pixelOffset: new google.maps.Size(0, -45),
                       }}
-                      onCloseClick={() => setIsInfoWindowOpen(false)}
                     >
                       <p className="font-semibold text-sm">
                         핀을 움직여 원하시는 위치를 설정하세요.
@@ -307,6 +312,7 @@ export const LocationSelectModal = ({
         <button
           className="disabled:bg-[#a3a3a3] bg-black  items-center justify-center py-[16px] rounded-lg absolute bottom-[20px] w-[670px]"
           disabled={!location}
+          onClick={handleSubmitButton}
         >
           <span className="text-white text-lg">이 위치로 주소 설정</span>
         </button>
