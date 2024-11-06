@@ -1,18 +1,16 @@
-import { useEffect, useState } from "react";
+import {
+  LoadScript
+} from "@react-google-maps/api";
+import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import {
   useHandleAutoComplete,
   useHandlePlaceDetail,
   useHandleReverseGeocoding,
 } from "../utils/handleLocation";
+import { GoogleMapView } from "./GoogleMapView";
 import CloseIcon from "./icons/CloseIcon";
 import SearchIcon from "./icons/top-bar/SearchIcon";
-import {
-  GoogleMap,
-  Marker,
-  LoadScript,
-  InfoWindow,
-} from "@react-google-maps/api";
 
 interface LocationSelectModalProps {
   setIsLocationModlOpen: (value: boolean) => void;
@@ -23,12 +21,6 @@ export const LocationSelectModal = ({
   setIsLocationModlOpen,
   setLocationResult,
 }: LocationSelectModalProps) => {
-  const containerStyle = {
-    width: "100%",
-    height: "400px",
-    borderRadius: "8px",
-  };
-
   //uuid로 세션 생성
   const [sessionToken, setSessionToken] = useState<string>(uuidv4());
 
@@ -46,12 +38,6 @@ export const LocationSelectModal = ({
 
   //GeoCoding 결과
   const [location, setLocation] = useState<any>(null);
-
-  //전달해야하는 주소 결과값
-  const [formattedAddress, setFormattedAddress] = useState(null);
-
-  //지도 Marker 클릭 여부
-  const [isInfoWindowOpen, setIsInfoWindowOpen] = useState(false);
 
   const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     // setPlaceSuggestion([]);
@@ -85,12 +71,13 @@ export const LocationSelectModal = ({
       setPlaceSuggestion([]);
     }
   };
-  // 사용자가 장소를 선택했을 때 세션을 리셋
+
+  //자동 완성 된 위치 선택
   const handlePlaceSelect = async (id: string, text: string | undefined) => {
     setPlaceInput(text);
     console.log(text);
     setPlaceId(id);
-    setSessionToken(uuidv4());
+
     setIsSearchResultOpen(false);
     setPlaceSuggestion([]);
     try {
@@ -116,48 +103,17 @@ export const LocationSelectModal = ({
     }
   };
 
-  const handleMarkerDragEnd = async (event: google.maps.MapMouseEvent) => {
-    const newLat = event.latLng?.lat();
-    const newLng = event.latLng?.lng();
-
-    if (newLat && newLng) {
-      setLocation((prevLocation: Location) => ({
-        ...prevLocation,
-        geometry: {
-          ...prevLocation.geometry,
-          location: {
-            lat: newLat,
-            lng: newLng,
-          },
-        },
-      }));
-      try {
-        const reverseGeoResponse = await useHandleReverseGeocoding(
-          newLat.toString(),
-          newLng.toString()
-        );
-        if (reverseGeoResponse) {
-          setLocation(reverseGeoResponse.data.results[0]);
-          console.log(reverseGeoResponse.data.results[0]);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-
-      console.log("Marker dragged to: ", newLat, newLng);
-    }
-  };
-
+  //모달 닫힐 때
   const handleCloseModal = () => {
     setIsLocationModlOpen(false);
-    setIsInfoWindowOpen(false); // Close InfoWindow when modal is closed
     setLocation(null); // Clear the location when modal is closed
   };
+
+  //주소 설정 버튼 누를 때
   const handleSubmitButton = () => {
     setIsLocationModlOpen(false);
-    setLocationResult(location.formatted_address)
-  }
-
+    setLocationResult(location.formatted_address);
+  };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -221,87 +177,10 @@ export const LocationSelectModal = ({
                 googleMapsApiKey="AIzaSyAQcCwjh64dWWAk6o-Nqm5sCIzaOjaPXnI"
                 version="beta"
               >
-                <GoogleMap
-                  mapContainerStyle={containerStyle}
-                  center={{
-                    lat: parseFloat(location.geometry.location.lat),
-                    lng: parseFloat(location.geometry.location.lng),
-                  }}
-                  zoom={15}
-                >
-                  <Marker
-                    position={{
-                      lat: parseFloat(location.geometry.location.lat),
-                      lng: parseFloat(location.geometry.location.lng),
-                    }}
-                    title={location.formatted_address}
-                    draggable={true}
-                    onDragEnd={handleMarkerDragEnd}
-                    icon={{
-                      url: "/images/icons/location-pin.png",
-                    }}
-                    onClick={() => setIsInfoWindowOpen((prev) => !prev)}
-                  />
-                  {isInfoWindowOpen && (
-                    <InfoWindow
-                      position={{
-                        lat: location.geometry.location.lat + 0.0002,
-                        lng: location.geometry.location.lng,
-                      }}
-                      options={{
-                        pixelOffset: new google.maps.Size(0, -45),
-                      }}
-                    >
-                      <p className="font-semibold text-sm">
-                        핀을 움직여 원하시는 위치를 설정하세요.
-                      </p>
-                    </InfoWindow>
-                  )}
-                </GoogleMap>
+                <GoogleMapView location={location} setLocation={setLocation} />
               </LoadScript>
             ) : (
-              <GoogleMap
-                mapContainerStyle={containerStyle}
-                center={{
-                  lat: parseFloat(location.geometry.location.lat),
-                  lng: parseFloat(location.geometry.location.lng),
-                }}
-                zoom={15}
-                onUnmount={() => {
-                  setIsInfoWindowOpen(false);
-                  setLocation(null); // Clear location on unmount
-                }}
-              >
-                <Marker
-                  position={{
-                    lat: parseFloat(location.geometry.location.lat),
-                    lng: parseFloat(location.geometry.location.lng),
-                  }}
-                  title={location.formatted_address}
-                  draggable={true}
-                  onDragEnd={handleMarkerDragEnd}
-                  icon={{
-                    url: "/images/icons/location-pin.png",
-                  }}
-                  onClick={() => setIsInfoWindowOpen((prev) => !prev)}
-                />
-                {isInfoWindowOpen && (
-                  <InfoWindow
-                    position={{
-                      lat: location.geometry.location.lat + 0.0002,
-                      lng: location.geometry.location.lng,
-                    }}
-                    options={{
-                      pixelOffset: new google.maps.Size(0, -45),
-                    }}
-                    onCloseClick={() => setIsInfoWindowOpen(false)}
-                  >
-                    <p className="font-semibold text-sm">
-                      핀을 움직여 원하시는 위치를 설정하세요.
-                    </p>
-                  </InfoWindow>
-                )}
-              </GoogleMap>
+              <GoogleMapView location={location} setLocation={setLocation} />
             ))}
         </div>
         <div className=" mt-[20px] flex-col w-full">
