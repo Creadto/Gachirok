@@ -10,7 +10,7 @@ import ToNextItem from "@/core/components/ToNextItem";
 import axios from "axios";
 import {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
-import ShareButton from "@/app/news/universal/_components/ShareButton";
+import ShareButton from "@/core/components/ShareButton"
 import {categoryToNumber} from "@/app/news/utils/Category";
 
 interface NewsItem {
@@ -84,7 +84,7 @@ export default function UniversalNewsPage({params}: { params: { 'news-id': strin
     return (
         <div className="mt-[1.5%] ml-[21.5%] mr-[36.5%] min-w-[800px] max-w-[800px] overflow-x-auto flex flex-col">
             {newsData ? (
-                <section className="px-50 mt-[50px]">
+                <section className="mt-[50px]">
                     {/* 뉴스 카테고리와 제목 표시 */}
                     <h1 className="text-[12px] mb-[7px] text-[#a3a3a3]">Universal &gt; News &gt; {newsData.category}</h1>
                     <div className="flex flex-row justify-between">

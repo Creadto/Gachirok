@@ -10,6 +10,7 @@
     "mock": "npx tsx watch ./src/mocks/http.ts"
   },
   "dependencies": {
+    "@bootpay/client-js": "^5.0.1",
     "@googlemaps/js-api-loader": "^1.16.8",
     "@react-google-maps/api": "^2.20.3",
     "@tailwindcss/line-clamp": "^0.4.4",

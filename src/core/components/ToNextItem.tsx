@@ -13,7 +13,7 @@ interface Item{
 }
 interface ToAfterItemProps {
     itemType: string; // 예: "news" 또는 "announcement"
-    regionType: string // 예: "Universal" 또는 "Local"
+    regionType: string // 예: "universal" 또는 "local"
 }
 
 /**
@@ -33,12 +33,26 @@ export default function ToNextItem({itemType, regionType }: ToAfterItemProps) {
 
     // 다음 아이템으로 이동
     const clickToNextItem = () => {
-        if (currentId < itemLength) {
+
+        console.log(currentId);
+
+        if (currentId >= 1) { // max를 어떻게 설정하지?? 그냥 임의로 무조건 되게 햇음 주의!!!!!!
             if(regionType === "local"){
-                router.push(`/${itemType}/${regionType}/article/${countryCode}/${nextId}`);
+                console.log(itemType,regionType);
+                if(itemType === "news"){
+                    router.push(`/${itemType}/${regionType}/${countryCode}/article/${nextId}`); //
+                }
+                else if(itemType === "announcement"){
+                    router.push(`/${itemType}/${regionType}/${countryCode}/${nextId}`); //
+                }
             }
             else{
-                router.push(`/${itemType}/${regionType}/article/${nextId}`);
+                if(itemType === "news"){
+                    router.push(`/${itemType}/${regionType}/article/${nextId}`);
+                }
+                else if(itemType === "announcement"){
+                    router.push(`/${itemType}/${regionType}/${nextId}`);
+                }
             }
         }
     };

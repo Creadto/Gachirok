@@ -133,38 +133,30 @@ export default function SectionAnnouncement(props: SectionAnnouncementProps) {
     }, [searchParams]);
 
     return (
-        <div className="py-4">
-            <div className="flex justify-between items-center">
-                <h2 className="font-bold text-xl py-4">{totalAnnouncementsCount}개의 공지</h2>
-                <select
-                    value={sortOrder}
-                    onChange={handleSortChange}
-                    className="bg-[#f6f6f6] cursor-pointer hover:bg-gray-300"
-                >
-                    <option value="newest">신규순</option>
-                    <option value="popular">조회순</option>
-                    <option value="likes">좋아요순</option>
-                    <option value="comments">댓글순</option>
-                </select>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
+        <div>
+            <section>
+                <div className="flex flex-row justify-between">
+                    <p className="text-[18px] font-bold">{totalAnnouncementsCount}개의 뉴스</p>
+                    <form>
+                        <select
+                            onChange={handleSortChange}
+                            className="text-[13px] h-[20px] bg-[#f6f6f6]"
+                        >
+                            <option value="newest">신규순</option>
+                            <option value="popular">조회 높은순</option>
+                            <option value="likes">추천 높은순</option>
+                            <option value="comments">댓글 높은순</option>
+                        </select>
+                    </form>
+                </div>
+            </section>
+            <section className="grid grid-cols-2 gap-[20px] mt-[25px]">
                 {sectionAnnouncement.map((announcement) => (
-                    <div key={announcement.id} className="border rounded-lg p-4 cursor-pointer hover:bg-blue-100 hover:text-white">
-                        <Announcement
-                            id={announcement.id}
-                            title={announcement.title}
-                            category={announcement.category}
-                            description={announcement.description}
-                            date={announcement.date}
-                            imageUrl={announcement.imageUrl}
-                            likes={announcement.likes}
-                            popular={announcement.popular}
-                            comments={announcement.comments}
-                            regionType={props.regionType}
-                        />
+                    <div key={announcement.id}>
+                        <Announcement announcement={announcement} />
                     </div>
                 ))}
-            </div>
+            </section>
             <div className="flex justify-center py-16">
                 <button
                     className="px-2 rounded hover:bg-gray-300"

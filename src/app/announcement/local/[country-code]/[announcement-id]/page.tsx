@@ -93,9 +93,9 @@ export default function UniversalAnnouncePage({params} : {params : {'announcemen
                     </div>
                     {/* 이전 공지 및 다음 공지로 이동하는 버튼 */}
                     <div>
-                        <ToBeforeItem itemType="announcement" regionType="universal"/>
+                        <ToBeforeItem itemType="announcement" regionType="local"/>
                         <hr/>
-                        <ToNextItem itemType="announcement" regionType="universal"/>
+                        <ToNextItem itemType="announcement" regionType="local"/>
                     </div>
                 </section>
             ) : (
