@@ -13,7 +13,7 @@ export const AlertToast = ({content}:AlertToastProps) => {
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <g clip-path="url(#fgfdvtzs6a)">
+        <g clipPath="url(#fgfdvtzs6a)">
           <path
             d="M9 18A9 9 0 1 0 9 0a9 9 0 0 0 0 18z"
             fill="#E62A2F"

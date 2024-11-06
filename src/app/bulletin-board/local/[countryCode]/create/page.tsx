@@ -2,9 +2,8 @@
 
 import { BackButton } from "@/app/bulletin-board/_components/BackButton";
 import PreviewModalFree from "@/app/bulletin-board/_components/PreviewModalFree";
-import CloseIcon from "@/core/components/icons/CloseIcon";
 import { LocationIcon } from "@/core/components/icons/LocationIcon";
-import SearchIcon from "@/core/components/icons/top-bar/SearchIcon";
+import { LocationSelectModal } from "@/core/components/LocationSelectModal";
 import Editor from "@/core/components/quill-editor/Editor";
 import { usePostCreatePost } from "@/core/hooks/usePostPost";
 import { countryStore } from "@/core/store/country-store";
@@ -58,34 +57,33 @@ export default function AddFreeLocalBulletinBoardPage({
   const onValid = async (data: any) => {
     try {
       console.log(data);
-  
+
       // Replace images in the content and get the modified content and thumbnailPhotoUrl
       const answer = await replaceImageWithS3(
         data.content,
         session?.accessToken,
         "POST"
       );
-  
+
       // If the answer contains modified HTML content
       if (answer.htmlContent) {
         data.content = answer.htmlContent;
-  
+
         // Conditionally set thumbnailPhotoUrl only if it exists
         if (answer.thumbnailPhotoUrl !== null) {
-          data.thumbnailPhotoUrl = answer.thumbnailPhotoUrl
+          data.thumbnailPhotoUrl = answer.thumbnailPhotoUrl;
         } else {
           console.log("No Thumbnail Photo URL to set.");
         }
-  
+
         const response = await usePostCreatePost(session?.accessToken, data);
         if (response) {
           alert("게시글이 성공적으로 생성되었습니다.");
           window.location.replace(`/bulletin-board/local/${countryCode}`);
         }
       }
-  
+
       // Post the data to create a new post
-   
     } catch (err) {
       console.error("Error:", err);
       alert("미팅을 생성하는데 오류가 발생하였습니다.");
@@ -93,7 +91,6 @@ export default function AddFreeLocalBulletinBoardPage({
   };
   //Image의 변동사항을 실시간으로 체크하기 위한 watch
   const watchImages = watch("photos");
-
 
   //미리보기 모달 열림 여부
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
@@ -269,37 +266,9 @@ export default function AddFreeLocalBulletinBoardPage({
         }}
       />
 
-      {isLocationModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white rounded-[15px]  w-[550px] h-[600px] relative ">
-            {/* 모달 HEADER */}
-            <div className="flex flex-row">
-              <div className="w-full h-[60px] flex items-start justify-start shadow-sm">
-                <span className="font-bold text-lg pl-[15px] py-[17px]">
-                  위치 설정
-                </span>
-              </div>
-              <button
-                onClick={handleLocationModal}
-                className="absolute top-[15px] right-[15px] text-black hover:text-gray-800"
-              >
-                <CloseIcon />
-              </button>
-            </div>
-
-            <div className="w-[520px] mx-auto flex h-[40px] mt-[20px] bg-[#F6F6F6] relative border rounded-[5px]">
-              <div className="absolute top-[20px] left-[5px]">
-                <SearchIcon />
-              </div>
-              <input
-                type="text"
-                placeholder="지역, 도로명, 건물명 검색"
-                className="w-full ml-[40px] bg-[#F6F6F6] pl-2"
-              />
-            </div>
-          </div>
-        </div>
-      )}
+      {isLocationModalOpen && <LocationSelectModal 
+      setIsLocationModlOpen={setIsLocationModalOpen}
+      setLocationResult={setLocation}/>}
     </div>
   );
 }
