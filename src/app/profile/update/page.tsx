@@ -17,7 +17,7 @@ import { ProfileUpdateRequest } from "../_types/ProfileUpdateRequest";
 import UpdateProfileForm from "./_components/UpdateProfileForm";
 import UpdateProfileImageForm from "./_components/UpdateProfileImageForm";
 import appendProfileUpdateRequestFormData from "./_utils/appendProfileUpdateRequestFormData";
-import { useGetProfileResponse } from "@/core/hooks/useGetProfileResponse";
+import { useGetUserProfileResponse } from "@/core/hooks/useGetProfile";
 
 /**
  * @Description 프로필을 업데이트 하는 메인 페이지
@@ -53,9 +53,9 @@ export default function ProfilePage() {
   async function loadProfile() {
     try {
       if (accessToken) {
-        const initialData = await useGetProfileResponse(accessToken);
+        const initialData = await useGetUserProfileResponse(accessToken);
         if (initialData) {
-          setProfileUI(mapProfileUI(initialData.data));
+          setProfileUI(mapProfileUI(initialData));
           setImagePreviewURL(initialData.data.profilePhotoUrl);
         }
       }

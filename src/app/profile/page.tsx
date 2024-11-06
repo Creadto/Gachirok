@@ -1,10 +1,11 @@
 "use client";
-import {useGetProfileResponse} from "@/core/hooks/useGetProfileResponse";
+
 import {signOut, useSession} from "next-auth/react";
 import {useRouter} from "next/navigation";
 import {useEffect, useState} from "react";
 import BootPayModule from "@/app/_component/_payment/BootPayModule";
 import axios from "axios";
+import { useGetUserProfileResponse } from "@/core/hooks/useGetProfile";
 
 //Client SIde Rendering
 const ProfilePage = () => {
@@ -17,7 +18,7 @@ const ProfilePage = () => {
     const fetchProfileData = async () => {
         if (session?.accessToken) {
             try {
-                const response = await useGetProfileResponse(session.accessToken);
+                const response = await useGetUserProfileResponse(session.accessToken);
                 const data = response.data;
                 if (data) {
                     setLoading(false);

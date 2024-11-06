@@ -5,11 +5,14 @@ import { QuillEditor } from "@/app/bulletin-board/_components/QuillEditor";
 import TwoButtonForm from "@/app/create-profile/_components/profile-setup/TwoButtonForm";
 import CustomAlert from "@/core/components/CustomAlert";
 import DoubleDateTimeSelector from "@/core/components/DoubleDateTimeSelector";
+import { LocationIcon } from "@/core/components/icons/LocationIcon";
 import InterestSelector from "@/core/components/InterestsSelector";
-import { useGetProfileResponse } from "@/core/hooks/useGetProfileResponse";
+import { useGetPurchaseProfileResponse } from "@/core/hooks/useGetPurchaseProfile";
 import { countryStore } from "@/core/store/country-store";
 import { sexTypes } from "@/core/types/DataForUI";
+import { HandleMediaUpload } from "@/core/utils/handleMediaUpload";
 import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -21,12 +24,6 @@ import CountryStateCitySelector from "./_components/CountryStateCitySelector";
 import { HostTypeButton } from "./_components/HostTypeButton";
 import { RangeSlider } from "./_components/RangeSlider";
 import TwoButtonApproval from "./_components/TwoButtonApproval";
-import axios from "axios";
-import { HandleMediaUpload } from "@/core/utils/handleMediaUpload";
-import CloseIcon from "@/core/components/icons/CloseIcon";
-import SearchIcon from "@/core/components/icons/top-bar/SearchIcon";
-import { LocationIcon } from "@/core/components/icons/LocationIcon";
-import { LocationSelectModal } from "@/core/components/LocationSelectModal";
 
 interface AddFleaMarketLocalBulletinBoardPageProps {
   params: {
@@ -49,13 +46,13 @@ export default function AddMeetingsLocalBulletinBoardPage({
   const accessToken = session?.accessToken;
 
   const {
-    data: userData,
-    isLoading: isUserLoading,
+    data: userPurchaseData,
+    isLoading: isUserPurchaseDataLoading,
     isError: isUserError,
     error: userError,
   } = useQuery({
-    queryKey: ["user"],
-    queryFn: () => useGetProfileResponse(session?.accessToken), //meeting을 가져오는 react query가 실행된 후에 실시
+    queryKey: ["user", "purchase"],
+    queryFn: () => useGetPurchaseProfileResponse(session?.accessToken), //meeting을 가져오는 react query가 실행된 후에 실시
     enabled: !!session?.accessToken,
     retry: 2,
   });
@@ -678,10 +675,10 @@ export default function AddMeetingsLocalBulletinBoardPage({
           <span className="text-sm">
             호스팅 방식에 따라 모임의 참석률과 신청률이 달라집니다.
           </span>
-          {isUserLoading ? (
+          {isUserPurchaseDataLoading ? (
             <div>회원 정보 로딩 중...</div>
           ) : (
-            <HostTypeButton userData={userData?.data} setValue={setValue} />
+            <HostTypeButton userPurchaseData={userPurchaseData?.data} setValue={setValue} />
           )}
         </div>
 

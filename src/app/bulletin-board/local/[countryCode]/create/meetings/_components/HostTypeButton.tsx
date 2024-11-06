@@ -1,4 +1,5 @@
 import { ProfileResponse } from "@/app/profile/_types/ProfileResponse";
+import { PurchaseProfileResponse } from "@/app/profile/_types/PurchaseProfileResponse";
 import { CoinIcon } from "@/core/components/icons/CoinIcon";
 import { HeroHostIcon } from "@/core/components/icons/HeroHostIcon";
 import { PackageIcon } from "@/core/components/icons/PackageIcon";
@@ -6,61 +7,61 @@ import { useEffect, useState } from "react";
 import { UseFormSetValue } from "react-hook-form";
 
 interface HostTypeButtonProps {
-  userData: ProfileResponse | undefined;
+  userPurchaseData: PurchaseProfileResponse | undefined;
   setValue: UseFormSetValue<any>;
 }
 
-export const HostTypeButton = ({ userData, setValue }: HostTypeButtonProps) => {
+export const HostTypeButton = ({ userPurchaseData, setValue }: HostTypeButtonProps) => {
   const [selectedHostType, setSelectedHostType] = useState("normal_host");
   const [coin, setCoin] = useState(
-    userData?.purchaseProfile?.freeHosting ? 0 : -1
+    userPurchaseData?.freeHosting ? 0 : -1
   );
 
   const purchasePackage = () => {
-    if (userData?.purchaseProfile.purchaseItem.all === "day_all") {
+    if (userPurchaseData?.purchaseItem.all === "day_all") {
       return "하루 무제한 패키지 이용중";
-    } else if (userData?.purchaseProfile.purchaseItem.all === "week_all") {
+    } else if (userPurchaseData?.purchaseItem.all === "week_all") {
       return "일주일 무제한 패키지 이용중";
-    } else if (userData?.purchaseProfile.purchaseItem.all === "month_all") {
+    } else if (userPurchaseData?.purchaseItem.all === "month_all") {
       return "한달 무제한 패키지 이용중";
     } else if (
-      userData?.purchaseProfile.purchaseItem.all === null &&
-      userData?.purchaseProfile.purchaseItem.hosting === "day_hosting"
+      userPurchaseData?.purchaseItem.all === null &&
+      userPurchaseData?.purchaseItem.hosting === "day_hosting"
     ) {
       return "하루 호스팅 패키지 이용중";
     } else if (
-      userData?.purchaseProfile.purchaseItem.all === null &&
-      userData?.purchaseProfile.purchaseItem.hosting === "week_hosting"
+      userPurchaseData?.purchaseItem.all === null &&
+      userPurchaseData?.purchaseItem.hosting === "week_hosting"
     ) {
       return "일주일 호스팅 패키지 이용중";
     } else if (
-      userData?.purchaseProfile.purchaseItem.all === null &&
-      userData?.purchaseProfile.purchaseItem.hosting === "month_hosting"
+      userPurchaseData?.purchaseItem.all === null &&
+      userPurchaseData?.purchaseItem.hosting === "month_hosting"
     ) {
       return "한달 호스팅 패키지 이용중";
     }
   };
 
   const packageItemSort = () => {
-    if (userData?.purchaseProfile.purchaseItem.all === "day_all") {
+    if (userPurchaseData?.purchaseItem.all === "day_all") {
       setValue("packageItem", "day_all");
-    } else if (userData?.purchaseProfile.purchaseItem.all === "week_all") {
+    } else if (userPurchaseData?.purchaseItem.all === "week_all") {
       setValue("packageItem", "week_all");
-    } else if (userData?.purchaseProfile.purchaseItem.all === "month_all") {
+    } else if (userPurchaseData?.purchaseItem.all === "month_all") {
       setValue("packageItem", "month_all");
     } else if (
-      userData?.purchaseProfile.purchaseItem.all === null &&
-      userData?.purchaseProfile.purchaseItem.hosting === "day_hosting"
+      userPurchaseData?.purchaseItem.all === null &&
+      userPurchaseData?.purchaseItem.hosting === "day_hosting"
     ) {
       setValue("packageItem", "day_hosting");
     } else if (
-      userData?.purchaseProfile.purchaseItem.all === null &&
-      userData?.purchaseProfile.purchaseItem.hosting === "week_hosting"
+      userPurchaseData?.purchaseItem.all === null &&
+      userPurchaseData?.purchaseItem.hosting === "week_hosting"
     ) {
       setValue("packageItem", "week_hosting");
     } else if (
-      userData?.purchaseProfile.purchaseItem.all === null &&
-      userData?.purchaseProfile.purchaseItem.hosting === "month_hosting"
+      userPurchaseData?.purchaseItem.all === null &&
+      userPurchaseData?.purchaseItem.hosting === "month_hosting"
     ) {
       setValue("packageItem", "month_hosting");
     } else {
@@ -69,7 +70,7 @@ export const HostTypeButton = ({ userData, setValue }: HostTypeButtonProps) => {
   };
 
   const packageItemChange = (hostType: string) => {
-    if (userData?.purchaseProfile.freeHosting === true) {
+    if (userPurchaseData?.freeHosting === true) {
       if (hostType === "normal_host") {
         setValue("packageItem", "free_hosting");
       } else if (hostType === "super_host") {
@@ -91,13 +92,13 @@ export const HostTypeButton = ({ userData, setValue }: HostTypeButtonProps) => {
     setValue("hostType", selectedHostType);
     setValue("coin", coin);
     packageItemChange(selectedHostType);
-  }, [coin, selectedHostType, userData]);
+  }, [coin, selectedHostType, userPurchaseData]);
 
   return (
     <>
       {/* 이용중인 패키지 선택 */}
-      {userData?.purchaseProfile.purchaseItem.all === null &&
-      userData?.purchaseProfile.purchaseItem.hosting === null ? (
+      {userPurchaseData?.purchaseItem.all === null &&
+      userPurchaseData?.purchaseItem.hosting === null ? (
         <div className="mt-[15px] bg-[#eff6ff] flex p-[15px]  rounded-lg">
           <div className="text-sm text-[#0676fc] flex">
             이용중인 패키지가 없습니다.
@@ -119,7 +120,7 @@ export const HostTypeButton = ({ userData, setValue }: HostTypeButtonProps) => {
       <div className="flex items-center justify-end gap-x-[5px] bg-[#ececec] rounded-full py-[2px] pl-[2px] pr-[10px] max-w-fit ml-auto mt-[5px]">
         <CoinIcon width={22} height={22} />
         <span className="font-semibold text-xs items-center justify-center flex my-auto">
-          {userData?.purchaseProfile.coin}
+          {userPurchaseData?.coin}
         </span>
       </div>
       <div className="flex space-x-4 mt-[30px]">
@@ -135,7 +136,7 @@ export const HostTypeButton = ({ userData, setValue }: HostTypeButtonProps) => {
           } bg-white flex flex-col rounded-[10px]`}
           onClick={() => handleHostTypeChange("normal_host", 0)}
         >
-          {userData?.purchaseProfile.freeHosting ? (
+          {userPurchaseData?.freeHosting ? (
             <>
               <span className="font-bold block">일반 호스트</span>
               <span className="block mt-[10px] text-xs text-[#808080]">
