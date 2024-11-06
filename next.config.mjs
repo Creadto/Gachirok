@@ -154,6 +154,11 @@ const nextConfig = {
         destination:
           "https://dev.gachiga.creadto.com/api/v1/files/presigned-url",
       },
+      {
+        source: "/api/coin",
+        destination:
+        "https://dev.gachiga.creadto.com/api/v1/coin",
+      },
     ];
   },
 };
