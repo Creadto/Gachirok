@@ -14,6 +14,8 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import "react-quill/dist/quill.snow.css";
 import { CategorySelector } from "./_components/CategorySelector";
+import CloseIcon from "@/core/components/icons/CloseIcon";
+import { LocationSection } from "./_components/LocationSection";
 
 interface AddFreeLocalBulletinBoardPageProps {
   params: {
@@ -99,7 +101,10 @@ export default function AddFreeLocalBulletinBoardPage({
 
   // const customFileLabel = thumbnailPhotoUrl ? "1개 파일 선택됨" : "파일 선택";
 
+  //위치
   const [location, setLocation] = useState<string>("");
+
+  const [locationDetail, setLocationDetail] = useState<string | null>(null);
 
   useEffect(() => {
     setValue("region.countryCode", countryCode);
@@ -137,11 +142,6 @@ export default function AddFreeLocalBulletinBoardPage({
 
   const handlePreviewModal = () => {
     setIsPreviewModalOpen(!isPreviewModalOpen);
-  };
-
-  //위치 선택 모달 열림 여부
-  const handleLocationModal = () => {
-    setIsLocationModalOpen(!isLocationModalOpen);
   };
 
   return (
@@ -226,22 +226,12 @@ export default function AddFreeLocalBulletinBoardPage({
         <hr className="w-full bg-[#EEEEEE] mt-[40px] mb-[30px]" />
 
         {/* 위치 입력 */}
-        <label className="block mt-[40px] text-xs text-[#808080] mb-[10px]">
-          위치 (선택)
-        </label>
-        <div className="flex relative">
-          <div className="absolute left-[15px] top-[17px]">
-            <LocationIcon />
-          </div>
-          <button
-            type="button"
-            className="block w-full border bg-[#F6F6F6] text-black text-[14px] text-start h-[50px]
-   rounded-lg pl-[36px] px-[15px]"
-            onClick={handleLocationModal}
-          >
-            {location ? location : "위치를 설정해주세요."}
-          </button>
-        </div>
+        <LocationSection
+          setIsLocationModalOpen={setIsLocationModalOpen}
+          setLocation={setLocation}
+          location={location}
+          setLocationDetail={setLocationDetail}
+        />
 
         {/* 작성완료 */}
         <div className="flex items-center justify-center mt-[80px] mb-[150px]">
@@ -266,9 +256,12 @@ export default function AddFreeLocalBulletinBoardPage({
         }}
       />
 
-      {isLocationModalOpen && <LocationSelectModal 
-      setIsLocationModlOpen={setIsLocationModalOpen}
-      setLocationResult={setLocation}/>}
+      {isLocationModalOpen && (
+        <LocationSelectModal
+          setIsLocationModlOpen={setIsLocationModalOpen}
+          setLocationResult={setLocation}
+        />
+      )}
     </div>
   );
 }

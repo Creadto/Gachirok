@@ -46,7 +46,7 @@ export async function useHandlePlaceDetail(placeId: string) {
 }
 
 /**
- * @Description Reverse Geocoding
+ * @Description Reverse Geocoding을 통해 지도에 그릴 정보 조회
  * @author 김영서
  **/
 export async function useHandleReverseGeocoding(lat: string, lng: string) {

@@ -1,6 +1,4 @@
-import {
-  LoadScript
-} from "@react-google-maps/api";
+import { LoadScript } from "@react-google-maps/api";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -38,6 +36,7 @@ export const LocationSelectModal = ({
 
   //GeoCoding 결과
   const [location, setLocation] = useState<any>(null);
+
 
   const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     // setPlaceSuggestion([]);
@@ -97,7 +96,7 @@ export const LocationSelectModal = ({
       }
     } catch (error) {
       console.error(
-        "Error fetching place details or reverse geocoding:",
+        "Errotching place details or reverse geocoding:",
         error
       );
     }
@@ -113,6 +112,7 @@ export const LocationSelectModal = ({
   const handleSubmitButton = () => {
     setIsLocationModlOpen(false);
     setLocationResult(location.formatted_address);
+    // setLocationDetailResult()
   };
 
   return (
@@ -187,6 +187,7 @@ export const LocationSelectModal = ({
           <span className="text-lg font-bold block">
             {location ? location.formatted_address : ""}
           </span>
+
         </div>
         <button
           className="disabled:bg-[#a3a3a3] bg-black  items-center justify-center py-[16px] rounded-lg absolute bottom-[20px] w-[670px]"
