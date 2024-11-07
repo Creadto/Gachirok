@@ -18,7 +18,7 @@ import {
   ProfileVersionIcon,
 } from "../icons/ProfileDropdownIcons";
 import { signOut } from "next-auth/react";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import SignOutModal from "../SignOutModal";
 
 interface ProfileDropdownProps {
@@ -89,7 +89,13 @@ export const ProfileDropdown = ({
         </button>
 
         {/* 보유 포인트 버튼 */}
-        <div className="flex mt-[20px] bg-[#E6A55E] bg-opacity-20 h-[76px] mx-[20px]">
+        <div
+            className="flex mt-[20px] bg-[#E6A55E] bg-opacity-20 h-[76px] mx-[20px] cursor-pointer"
+            onClick={() => {
+              router.push("/payment")
+              closeModal();
+            }}
+        >
           <div className="flex flex-row mx-[12px] my-[15px] w-[256px] h-[46px] space-x-[15px]">
             <div className="flex my-[4px] items-center">
               <CoinIcon width={36} height={36} />

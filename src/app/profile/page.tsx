@@ -101,13 +101,6 @@ const ProfilePage = () => {
                     )}
                     <hr className="h-3"/>
                     <SignOut/>
-                    <hr className="h-3"/>
-                    <div className="flex flex-col border p-4">
-                        <div className="flex justify-center py-1">
-                            내 코인 개수 : {coin}
-                        </div>
-                        <BootPayModule/>
-                    </div>
                 </div>
             ) : (
                 <button className="w-full px-4 py-2 text-white bg-blue-500 rounded-md shadow-md hover:bg-blue-600"
