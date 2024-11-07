@@ -1,30 +1,27 @@
-import { useQuery } from "@tanstack/react-query";
-import {
-  CommentResponse,
-  ReplyResponse,
-  SingleCommentResponse,
-} from "../_types/CommentResponse";
-import { useGetPostIdComments } from "@/core/hooks/useGetPost";
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import { TravelIcon } from "@/core/components/icons/TravelIcon";
-import { ResidentIcon } from "@/core/components/icons/ResidentIcon";
-import { changeTimeFormatComment } from "@/core/utils/handleTimeFormat";
 import { AlertToast } from "@/core/components/AlertToast";
+import ScrollToButton from "@/core/components/ScrollToButton";
+import { DeleteIcon } from "@/core/components/icons/DeleteIcon";
+import { MoreButton } from "@/core/components/icons/MoreButton";
+import { ResidentIcon } from "@/core/components/icons/ResidentIcon";
+import { TravelIcon } from "@/core/components/icons/TravelIcon";
+import { EditIcon } from "@/core/components/icons/top-bar/EditIcon";
+import { useGetPostIdComments } from "@/core/hooks/useGetPost";
+import useGetUserResponse from "@/core/hooks/useGetUserResponse";
 import {
   useDeleteComments,
   usePostComments,
   usePutComments,
 } from "@/core/hooks/usePostComments";
-import ScrollToBottomButton from "@/core/components/ScrollToButton";
-import ScrollToButton from "@/core/components/ScrollToButton";
-import { MoreButton } from "@/core/components/icons/MoreButton";
-import { useGetProfileResponse } from "@/core/hooks/useGetProfileResponse";
+import { changeTimeFormatComment } from "@/core/utils/handleTimeFormat";
+import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
-import useGetUserResponse from "@/core/hooks/useGetUserResponse";
-import { EditIcon } from "@/core/components/icons/top-bar/EditIcon";
-import { DeleteIcon } from "@/core/components/icons/DeleteIcon";
-import React from "react";
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
+import {
+  CommentResponse,
+  ReplyResponse,
+  SingleCommentResponse,
+} from "../_types/CommentResponse";
 
 interface ReplySectionProps {
   postId: number;

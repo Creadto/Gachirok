@@ -30,6 +30,10 @@ const nextConfig = {
         source: "/api/profiles2/:userId",
         destination: "https://dev.gachiga.creadto.com/api/v2/profiles/:userId",
       },
+      {
+        source: "/api/profiles2/me",
+        destination: "https://dev.gachiga.creadto.com/api/v2/profiles/me",
+      },
 
       //USERS
       {
@@ -163,6 +167,13 @@ const nextConfig = {
         source:"/api/purchases",
         destination:
             "https://dev.gachiga.creadto.com/api/v1/purchases",
+      },
+
+      //구매내역
+      {
+        source: "/api/purchases",
+        destination:
+        "https://dev.gachiga.creadto.com/api/v1/purchases",
       },
     ];
   },

@@ -9,7 +9,6 @@ import { ShareButton } from "@/core/components/icons/ShareButton";
 import { TravelIcon } from "@/core/components/icons/TravelIcon";
 import { LoadingSpinner } from "@/core/components/LoadingSpinner";
 import { useGetMeetingsId } from "@/core/hooks/useGetMeetings";
-import { useGetProfileResponse } from "@/core/hooks/useGetProfileResponse";
 import { interestsOptions } from "@/core/types/InterestsAndExpertisesOptions";
 import { useQuery } from "@tanstack/react-query";
 import DOMPurify from "dompurify"; //dangerouslySetInnerHTML을 xss 공격으로부터 보호
@@ -21,6 +20,7 @@ import { HostMoreButton } from "./_components/HostMoreButton";
 import { ImageSection } from "./_components/ImageSection";
 import { RightFloatModal } from "./_components/RightFloatModal";
 import { VisitorMoreButton } from "./_components/VisitorMoreButton";
+import { useGetUserProfileResponse } from "@/core/hooks/useGetProfile";
 interface MeetingDetailsPageProps {
   params: {
     meetingId: number;
@@ -67,7 +67,7 @@ const MeetingDetailsPage = ({ params }: MeetingDetailsPageProps) => {
     error: userError,
   } = useQuery({
     queryKey: ["user"],
-    queryFn: () => useGetProfileResponse(session?.accessToken), //meeting을 가져오는 react query가 실행된 후에 실시
+    queryFn: () => useGetUserProfileResponse(session?.accessToken), //meeting을 가져오는 react query가 실행된 후에 실시
     enabled: !!session?.accessToken,
     retry: 2,
   });
