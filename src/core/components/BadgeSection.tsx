@@ -26,7 +26,7 @@ export const BadgeSection = ({ profile }: BadgeSectionProps) => {
           <ActiveActivityBadge />
         </div>
       </div>
-      {isFullBadgeSectionOpen && <FullBadgeSection />}
+      {isFullBadgeSectionOpen && <FullBadgeSection profile={profile}/>}
     </>
   );
 };
