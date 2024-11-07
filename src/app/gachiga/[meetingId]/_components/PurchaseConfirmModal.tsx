@@ -5,10 +5,11 @@ import axios from "axios";
 import { MeetingResponse } from "../../_types/MeetingResponse";
 import { useRouter } from "next/navigation";
 import { usePostGuestCreateRequest } from "@/core/hooks/useGuest";
+import { PurchaseProfileResponse } from "@/app/profile/_types/PurchaseProfileResponse";
 
 interface PurchaseConfirmModal {
   setIsPurchaseConfirmModalOpen: (value: boolean) => void;
-  userData: ProfileResponse;
+  userPurchaseData: PurchaseProfileResponse | undefined
   needToPay: boolean;
   meetingData: MeetingResponse;
   accessToken: string;
@@ -23,7 +24,7 @@ interface PurchaseConfirmModal {
  **/
 export const PurchaseConfirmModal = ({
   setIsPurchaseConfirmModalOpen,
-  userData,
+  userPurchaseData,
   needToPay,
   meetingData,
   accessToken,
@@ -34,25 +35,25 @@ export const PurchaseConfirmModal = ({
   const meetingId = meetingData.meetingId;
 
   const purchasePackage = () => {
-    if (userData.purchaseProfile.purchaseItem.all === "day_all") {
+    if (userPurchaseData?.purchaseItem.all === "day_all") {
       return "day_all";
-    } else if (userData.purchaseProfile.purchaseItem.all === "week_all") {
+    } else if (userPurchaseData?.purchaseItem.all === "week_all") {
       return "week_all";
-    } else if (userData.purchaseProfile.purchaseItem.all === "month_all") {
+    } else if (userPurchaseData?.purchaseItem.all === "month_all") {
       return "month_all";
     } else if (
-      userData.purchaseProfile.purchaseItem.all === null &&
-      userData.purchaseProfile.purchaseItem.guest === "day_guest"
+      userPurchaseData?.purchaseItem.all === null &&
+      userPurchaseData?.purchaseItem.guest === "day_guest"
     ) {
       return "day_guest";
     } else if (
-      userData.purchaseProfile.purchaseItem.all === null &&
-      userData.purchaseProfile.purchaseItem.guest === "week_guest"
+      userPurchaseData?.purchaseItem.all === null &&
+      userPurchaseData?.purchaseItem.guest === "week_guest"
     ) {
       return "week_guest";
     } else if (
-      userData.purchaseProfile.purchaseItem.all === null &&
-      userData.purchaseProfile.purchaseItem.guest === "month_guest"
+      userPurchaseData?.purchaseItem.all === null &&
+      userPurchaseData?.purchaseItem.guest === "month_guest"
     ) {
       return "month_guest";
     }
@@ -117,7 +118,7 @@ export const PurchaseConfirmModal = ({
           <div className="flex text-sm">
             <label className=" flex text-[#a3a3a3]">내 보유 포인트</label>
             <span className="flex ml-auto">
-              {userData.purchaseProfile.coin}
+              {userPurchaseData?.coin}
             </span>
           </div>
           <div className="flex text-sm">
@@ -129,9 +130,9 @@ export const PurchaseConfirmModal = ({
           <div className="flex text-sm">
             <label className=" flex text-[#a3a3a3]">참여 시 남은 포인트</label>
             <span className="flex ml-auto">
-              {needToPay
-                ? userData.purchaseProfile.coin - 1
-                : userData.purchaseProfile.coin}
+              {needToPay && userPurchaseData
+                ? userPurchaseData?.coin - 1
+                : userPurchaseData?.coin}
             </span>
           </div>
         </div>

@@ -1,25 +1,22 @@
 import { Session } from "next-auth";
 import Image from "next/image";
 import useProfileStore2 from "../store/profile-v2-store";
-import { CloseIconWhite } from "./icons/CloseIcon";
-import { ShareIcon } from "./icons/ShareIcon";
-import { TravelIcon, TravelIconBig } from "./icons/TravelIcon";
-import { ResidentIcon, ResidentIconBig } from "./icons/ResidentIcon";
-import {
-  getCountryName,
-  getStateKoreanName,
-} from "../utils/handleCountryStateCityModify";
+import { getCountryName } from "../utils/handleCountryStateCityModify";
 import { BadgeSection } from "./BadgeSection";
+import { CloseIconWhite } from "./icons/CloseIcon";
+import { ResidentIconBig } from "./icons/ResidentIcon";
+import { ShareIcon } from "./icons/ShareIcon";
+import { TravelIconBig } from "./icons/TravelIcon";
 
-interface UserProfileModalProps {
+interface PersonalProfileModalProps {
   session: Session | null;
   setIsUserProfileModalOpen: (value: boolean) => void;
 }
 
-export const UserProfileModal = ({
+export const PersonalProfileModal = ({
   session,
   setIsUserProfileModalOpen,
-}: UserProfileModalProps) => {
+}: PersonalProfileModalProps) => {
   const { profile } = useProfileStore2();
   if (profile)
     return (
@@ -44,7 +41,7 @@ export const UserProfileModal = ({
             >
               <CloseIconWhite />
             </button>
-            <BadgeSection profile={profile}/>
+            <BadgeSection profile={profile} />
           </div>
 
           {/* 사용자 프로필 이미지 */}
@@ -111,15 +108,15 @@ export const UserProfileModal = ({
 
           <div className="flex items-center justify-center">
             {/* 운영 */}
-            <div className="px-[26px] flex-col flex gap-y-[2px]">
+            <div className="px-[26px] flex-col flex gap-y-[2px] items-center justify-center">
               <span className="text-[13px] block">운영</span>
               <span className="text-lg font-bold">{profile.hostValue}</span>
             </div>
-            <div className="px-[26px] flex-col flex gap-y-[2px]">
+            <div className="px-[26px] flex-col flex gap-y-[2px] justify-center items-center">
               <span className="text-[13px] block">참여</span>
               <span className="text-lg font-bold">{profile.guestValue}</span>
             </div>
-            <div className="px-[15px] flex-col flex gap-y-[2px] items-center">
+            <div className="px-[15px] flex-col flex gap-y-[2px] items-center justify-center">
               <span className="text-[13px] block">지식등급</span>
               <span className="text-lg font-bold">
                 lv.{profile.knowledgeValue}

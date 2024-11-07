@@ -1,5 +1,6 @@
 "use client";
 
+import { AlertToast } from "@/core/components/AlertToast";
 import { CommentIcon, LikeIcon } from "@/core/components/icons/LikeCommentIcon";
 import { ReportIconSize30 } from "@/core/components/icons/ReportIcon";
 import { ResidentIcon } from "@/core/components/icons/ResidentIcon";
@@ -10,6 +11,7 @@ import { LoadingSpinner } from "@/core/components/LoadingSpinner";
 import { ReportModal } from "@/core/components/ReportModal";
 import ToBeforeItem from "@/core/components/ToBeforeItem";
 import ToNextItem from "@/core/components/ToNextItem";
+import { VisitorProfileModal } from "@/core/components/VisitorProfileModal";
 import { useDeletePostReactions } from "@/core/hooks/useDeletePost";
 import { useGetPostId } from "@/core/hooks/useGetPost";
 import { usePostPostReactions } from "@/core/hooks/usePostPost";
@@ -23,7 +25,6 @@ import { useEffect, useState } from "react";
 import { ReactionButton } from "../../_components/ReactionButton";
 import { ReplySection } from "../../_components/ReplySection";
 import { PostSingleResponse } from "../../_types/PostSingleResponse";
-import { AlertToast } from "@/core/components/AlertToast";
 
 interface PostPageProps {
   params: {
@@ -42,6 +43,9 @@ const PostPage = ({ params }: PostPageProps) => {
 
   //스크랩 여부
   const [isScrapped, setIsScrapped] = useState<boolean | undefined>(undefined);
+
+  //유저 프로필 모달창 열림 여부
+  const [isVisitorProfileOpen, setIsVisitorProfileOpen] = useState(false);
 
   //스크랩 버튼 작동
   const handleScrapButton = async () => {
@@ -121,7 +125,6 @@ const PostPage = ({ params }: PostPageProps) => {
       <>
         <div className="mt-[1.5%] ml-[21.5%] mr-[36.5%] min-w-[800px] max-w-[800px] overflow-x-auto flex flex-col bg-white">
           <section className="px-50 mt-[50px]">
-            
             <h1 className="text-[12px] mb-[7px] text-[#a3a3a3]">
               Universal &gt; Bulletin Board
             </h1>
@@ -150,31 +153,36 @@ const PostPage = ({ params }: PostPageProps) => {
             </div>
             <div className="flex flex-row text-[12px] text-[#a3a3a3]">
               <div className="flex mt-[5.5px] items-center">
-                {/* 유저 프로필 사진*/}
-                <div className="w-[15px] h-[15px] rounded-full">
-                  <Image
-                    src={postIdData.author.profilePhotoUrl}
-                    width={100}
-                    height={100}
-                    alt={postIdData.author.nickname}
-                    className="w-full h-full object-cover rounded-full"
-                  />
-                </div>
-                {/* 유저 닉네임 */}
-                <div className="text-[13px] ml-[5px]">
-                  {postIdData.author.nickname}
-                </div>
+                <button
+                  className="flex items-center"
+                  onClick={() => setIsVisitorProfileOpen(true)}
+                >
+                  {/* 유저 프로필 사진*/}
+                  <div className="w-[15px] h-[15px] rounded-full">
+                    <Image
+                      src={postIdData.author.profilePhotoUrl}
+                      width={100}
+                      height={100}
+                      alt={postIdData.author.nickname}
+                      className="w-full h-full object-cover rounded-full"
+                    />
+                  </div>
+                  {/* 유저 닉네임 */}
+                  <div className="text-[13px] ml-[5px]">
+                    {postIdData.author.nickname}
+                  </div>
 
-                {/* 유저 거주자/여행자 배지 */}
-                {postIdData.author.traveler ? (
-                  <div className="w-[15px] h-[15px] ml-[3px] flex items-center">
-                    <TravelIcon />
-                  </div>
-                ) : (
-                  <div className="w-[15px] h-[15px] ml-[3px] flex items-center">
-                    <ResidentIcon />
-                  </div>
-                )}
+                  {/* 유저 거주자/여행자 배지 */}
+                  {postIdData.author.traveler ? (
+                    <div className="w-[15px] h-[15px] ml-[3px] flex items-center">
+                      <TravelIcon />
+                    </div>
+                  ) : (
+                    <div className="w-[15px] h-[15px] ml-[3px] flex items-center">
+                      <ResidentIcon />
+                    </div>
+                  )}
+                </button>
 
                 <div className="h-[2px] w-[2px] rounded-full ml-[5px] bg-[#a3a3a3] flex items-center" />
 
@@ -251,6 +259,14 @@ const PostPage = ({ params }: PostPageProps) => {
           />
         )}
         {isToastOpen && <AlertToast content={toastContent} />}
+
+        {isVisitorProfileOpen && (
+          <VisitorProfileModal
+            session={session}
+            setIsVisitorProfileOpen={setIsVisitorProfileOpen}
+            targetUserId={postIdData?.author.userId}
+          />
+        )}
       </>
     );
   }

@@ -9,13 +9,12 @@ import { useEffect, useState } from "react";
 import { MeetingResponse } from "../../_types/MeetingResponse";
 import { JoinModal } from "./JoinModal";
 import { ModalDescription } from "./ModalDescription";
+import { PurchaseProfileResponse } from "@/app/profile/_types/PurchaseProfileResponse";
 
 interface RightFloatModalInterface {
   meetingData: MeetingResponse;
   accessToken: string;
-  userData: ProfileResponse;
-  isHost: boolean;
-  isJoined: boolean;
+  userPurchaseData: PurchaseProfileResponse | undefined;
   setIsJoined: (join: boolean) => void;
 }
 
@@ -26,9 +25,7 @@ interface RightFloatModalInterface {
 export const RightFloatModal = ({
   meetingData,
   accessToken,
-  userData,
-  isHost,
-  isJoined,
+  userPurchaseData,
   setIsJoined,
 }: RightFloatModalInterface) => {
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
@@ -44,11 +41,11 @@ export const RightFloatModal = ({
       setIsFavorite(meetingData.bookmark);
     }
 
-    userData.purchaseProfile.purchaseItem.all === null &&
-    userData.purchaseProfile.purchaseItem.guest === null
+    userPurchaseData?.purchaseItem.all === null &&
+    userPurchaseData?.purchaseItem.guest === null
       ? setNeedToPay(true)
       : setNeedToPay(false);
-  }, [meetingData, userData]);
+  }, [meetingData, userPurchaseData]);
 
   const handleBookmark = (meetingId: number) => {
     try {
@@ -179,7 +176,7 @@ export const RightFloatModal = ({
         <JoinModal
           setIsJoinModalOpen={setIsJoinModalOpen}
           meetingData={meetingData}
-          userData={userData}
+          userPurchaseData={userPurchaseData}
           accessToken={accessToken}
           setIsJoined={setIsJoined}
         />

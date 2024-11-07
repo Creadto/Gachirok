@@ -10,11 +10,11 @@ import { useEffect, useState } from "react";
 import useUserStore from "../../store/user-store";
 import { ProfileDropdown } from "./ProfileDropdown";
 import { NoProfileIcon } from "../icons/NoProfileIcon";
-import { UserProfileModal } from "../UserProfileModal";
 import { useGetUserProfileResponse } from "@/core/hooks/useGetProfile";
 import { useQuery } from "@tanstack/react-query";
 import { ProfileResponse } from "@/app/profile/_types/ProfileResponse";
 import useProfileStore2 from "@/core/store/profile-v2-store";
+import { PersonalProfileModal } from "../PersonalProfileModal";
 
 /**
  * @Description 프로필 아이콘 컴포넌트(User없을 때는 로그인/회원가입, 있을 때는 사진+이름)
@@ -97,7 +97,7 @@ const ProfileIcon = () => {
 
         {/* UserProfileModal only depends on its own state */}
         {isUserProfileModalOpen && (
-          <UserProfileModal
+          <PersonalProfileModal
             session={session}
             setIsUserProfileModalOpen={setIsUserProfileModalOpen}
           />

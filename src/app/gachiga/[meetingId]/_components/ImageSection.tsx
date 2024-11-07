@@ -1,3 +1,8 @@
+import { ArrowLeftIcon } from "@/core/components/icons/ArrowLeftIcon";
+import {
+  ArrowRightIcon,
+  ArrowRightIconExtraLarge,
+} from "@/core/components/icons/ArrowRightIcon";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -9,6 +14,7 @@ export const ImageSection = ({ photoUrls }: ImageSectionProps) => {
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentPhotoModalIndex, setCurrentPhotoModalIndex] = useState(0);
 
   // 5초마다 이미지 전환
   useEffect(() => {
@@ -29,24 +35,34 @@ export const ImageSection = ({ photoUrls }: ImageSectionProps) => {
 
   const handleViewFullImage = () => {
     // 새로운 창에서 전체 사진을 보여줌
+
     window.open(photoUrls[currentPhotoIndex], "_blank");
   };
-
 
   const handleDotClick = (index: number) => {
     setCurrentPhotoIndex(index);
   };
 
+  const handleModalNextButton = () => {
+    setCurrentPhotoModalIndex((prevIndex) =>
+      prevIndex === photoUrls.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
+  const handleModalPrevButton = () => {
+    setCurrentPhotoModalIndex((currentIndex) =>
+      currentIndex === 0 ? photoUrls.length - 1 : currentIndex - 1
+    );
+  };
+
   const toggleModal = () => {
+    setCurrentPhotoModalIndex(currentPhotoIndex);
     setIsModalOpen((prev) => !prev);
   };
 
-
-
-
   return (
     <div className="relative w-full mt-[30px] flex-col items-center">
-        <button
+      <button
         onClick={handleViewFullImage}
         className="absolute top-4 right-4 z-10 px-3 py-1 text-sm text-white bg-gray-800 bg-opacity-75 rounded-md hover:bg-opacity-90"
       >
@@ -68,16 +84,15 @@ export const ImageSection = ({ photoUrls }: ImageSectionProps) => {
       {/* 이미지 표시 */}
       <div
         onClick={toggleModal} // 클릭으로 모달 제어
-        className={`relative w-full transition-opacity duration-500 ease-in-out ${
+        className={`relative w-full h-[523px] rounded-lg mb-[10px] transition-opacity duration-500 ease-in-out ${
           isAnimating ? "opacity-0 scale-105" : "opacity-100 scale-100"
         }`}
       >
         <Image
           src={photoUrls[currentPhotoIndex]}
-          width={500}
-          height={423}
+          fill
           alt="Meeting Photo"
-          className="hover:cursor-pointer w-full max-h-[623px] min-h-[523px] object-fill rounded-lg transition-transform duration-700 ease-in-out"
+          className="hover:cursor-pointer  w-full max-h-[523px] min-h-[523px] object-cover rounded-lg transition-transform duration-700 ease-in-out"
         />
       </div>
 
@@ -89,11 +104,29 @@ export const ImageSection = ({ photoUrls }: ImageSectionProps) => {
         >
           <div className="relative w-4/5 h-4/5 max-w-3xl">
             <Image
-              src={photoUrls[currentPhotoIndex]}
+              src={photoUrls[currentPhotoModalIndex]}
               alt="Meeting Photo Enlarged"
               fill
               className="object-contain rounded-lg"
             />
+            <button
+              className="absolute left-[-100px] top-[500px] bg-white rounded-full"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleModalPrevButton();
+              }}
+            >
+              <ArrowLeftIcon />
+            </button>
+            <button
+              className="absolute right-[-100px] top-[500px] bg-white rounded-full"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleModalNextButton();
+              }}
+            >
+              <ArrowRightIconExtraLarge />
+            </button>
           </div>
         </div>
       )}

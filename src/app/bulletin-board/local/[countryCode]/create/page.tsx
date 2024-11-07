@@ -145,7 +145,7 @@ export default function AddFreeLocalBulletinBoardPage({
   };
 
   return (
-    <div className=" max-w-[1460px] min-w-[1460px] mx-auto bg-white mt-[50px] rounded-lg">
+    <div className=" max-w-[1460px]  min-w-[896px] mx-auto bg-white mt-[50px] rounded-lg">
       {/* 글쓰기 HEADER */}
       <div className="flex items-center ml-[-45px] space-x-[5px]">
         <BackButton
@@ -154,11 +154,6 @@ export default function AddFreeLocalBulletinBoardPage({
         <h1 className="text-[22px] font-bold">글쓰기</h1>
         <div className="bg-[#DDDDDD] px-[7px] py-[3px] rounded-[4px] text-[#808080]">
           Local
-        </div>
-        <div className="flex items-end justify-end flex-1">
-          <button className="px-[12px] py-[10px] border border-[#EEEEEE] rounded-lg">
-            미리보기
-          </button>
         </div>
       </div>
 

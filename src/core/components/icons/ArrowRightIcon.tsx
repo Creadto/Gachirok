@@ -37,3 +37,23 @@ export const ArrowRightIconLarge = () => {
     </svg>
   );
 };
+
+export const ArrowRightIconExtraLarge = () => {
+  return (
+    <svg
+      width="30"
+      height="30"
+      viewBox="0 0 30 30"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M11.105 6.946l7.79 8.052-7.79 8.052"
+        stroke="#000"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};

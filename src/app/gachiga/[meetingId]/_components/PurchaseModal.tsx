@@ -8,12 +8,13 @@ import { useEffect, useState } from "react";
 import { MeetingResponse } from "../../_types/MeetingResponse";
 import { ModalDescription } from "./ModalDescription";
 import { PurchaseConfirmModal } from "./PurchaseConfirmModal";
+import { PurchaseProfileResponse } from "@/app/profile/_types/PurchaseProfileResponse";
 
 interface PurchaseModalProps {
   setIsJoinModalOpen: (value: boolean) => void;
   setIsPurchaseModalOpen: (value: boolean) => void;
   meetingData: MeetingResponse;
-  userData: ProfileResponse;
+  userPurchaseData: PurchaseProfileResponse | undefined
   acccessToken: string
   replyValue: string | null,
   setIsJoined: (value: boolean) => void;
@@ -22,7 +23,7 @@ export const PurchaseModal = ({
   setIsJoinModalOpen,
   setIsPurchaseModalOpen,
   meetingData,
-  userData,
+  userPurchaseData,
   acccessToken,
   replyValue,
   setIsJoined
@@ -34,25 +35,25 @@ export const PurchaseModal = ({
     useState(false);
 
   const purchasePackage = () => {
-    if (userData.purchaseProfile.purchaseItem.all === "day_all") {
+    if (userPurchaseData?.purchaseItem.all === "day_all") {
       return "하루 무제한 패키지 이용중";
-    } else if (userData.purchaseProfile.purchaseItem.all === "week_all") {
+    } else if (userPurchaseData?.purchaseItem.all === "week_all") {
       return "일주일 무제한 패키지 이용중";
-    } else if (userData.purchaseProfile.purchaseItem.all === "month_all") {
+    } else if (userPurchaseData?.purchaseItem.all === "month_all") {
       return "한달 무제한 패키지 이용중";
     } else if (
-      userData.purchaseProfile.purchaseItem.all === null &&
-      userData.purchaseProfile.purchaseItem.guest === "day_guest"
+      userPurchaseData?.purchaseItem.all === null &&
+      userPurchaseData?.purchaseItem.guest === "day_guest"
     ) {
       return "하루 게스트 패키지 이용중";
     } else if (
-      userData.purchaseProfile.purchaseItem.all === null &&
-      userData.purchaseProfile.purchaseItem.guest === "week_guest"
+      userPurchaseData?.purchaseItem.all === null &&
+      userPurchaseData?.purchaseItem.guest === "week_guest"
     ) {
       return "일주일 게스트 패키지 이용중";
     } else if (
-      userData.purchaseProfile.purchaseItem.all === null &&
-      userData.purchaseProfile.purchaseItem.guest === "month_guest"
+      userPurchaseData?.purchaseItem.all === null &&
+      userPurchaseData?.purchaseItem.guest === "month_guest"
     ) {
       return "한달 게스트 패키지 이용중";
     }
@@ -63,11 +64,11 @@ export const PurchaseModal = ({
   };
 
   useEffect(() => {
-    userData.purchaseProfile.purchaseItem.all === null &&
-    userData.purchaseProfile.purchaseItem.guest === null
+    userPurchaseData?.purchaseItem.all === null &&
+    userPurchaseData?.purchaseItem.guest === null
       ? setNeedToPay(true)
       : setNeedToPay(false);
-  }, [userData]);
+  }, [userPurchaseData]);
 
   return (
     <div className="bg-white rounded-[10px] shadow-lg w-[550px] h-[657px] relative" onClick={(e) => e.stopPropagation()}>
@@ -111,7 +112,7 @@ export const PurchaseModal = ({
           <div className="flex items-center justify-center py-[2px]">
             <CoinIcon width={20} height={20} />
           </div>
-          <span className="text-[13px]">{userData.purchaseProfile.coin}</span>
+          <span className="text-[13px]">{userPurchaseData?.coin}</span>
         </div>
       </div>
 
@@ -124,8 +125,8 @@ export const PurchaseModal = ({
       </div>
 
       {/* 이용중인 패키지 */}
-      {userData.purchaseProfile.purchaseItem.all === null &&
-      userData.purchaseProfile.purchaseItem.guest === null ? (
+      {userPurchaseData?.purchaseItem.all === null &&
+      userPurchaseData?.purchaseItem.guest === null ? (
         <div className="mt-[30px] bg-[#eff6ff] flex p-[15px] mx-[15px] rounded-lg">
           <div className="text-sm text-[#0676fc] flex">
             이용중인 패키지가 없습니다.
@@ -170,7 +171,7 @@ export const PurchaseModal = ({
       </button>
       {isPurchaseConfirmModalOpen && (
         <PurchaseConfirmModal
-          userData={userData}
+        userPurchaseData={userPurchaseData}
           setIsPurchaseConfirmModalOpen={setIsPurchaseConfirmModalOpen}
           needToPay={needToPay}
           meetingData={meetingData}

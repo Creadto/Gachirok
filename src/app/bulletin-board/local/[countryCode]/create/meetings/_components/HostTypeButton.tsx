@@ -132,8 +132,8 @@ export const HostTypeButton = ({ userPurchaseData, setValue }: HostTypeButtonPro
           className={`relative flex-1 p-4 text-left border ${
             selectedHostType === "normal_host"
               ? "border-4 border-[#E62A2F]"
-              : "border-[#eeeeee]"
-          } bg-white flex flex-col rounded-[10px]`}
+              : "border-white border-4"
+          } bg-[#eeeeee] bg-opacity-40 flex flex-col rounded-[10px]`}
           onClick={() => handleHostTypeChange("normal_host", 0)}
         >
           {userPurchaseData?.freeHosting ? (
@@ -211,7 +211,7 @@ export const HostTypeButton = ({ userPurchaseData, setValue }: HostTypeButtonPro
           className={`relative h-[140px] flex-1 p-4 text-left border ${
             selectedHostType === "super_host"
               ? "border-4 border-[#E62A2F]"
-              : "border-[#ffd2bf]"
+              : "border-white border-4"
           } bg-[#fff3ee] flex flex-col rounded-[10px]`}
           onClick={() => handleHostTypeChange("super_host", -2)}
         >
@@ -231,7 +231,7 @@ export const HostTypeButton = ({ userPurchaseData, setValue }: HostTypeButtonPro
           className={`relative flex-1 p-4 text-left border ${
             selectedHostType === "hero_host"
               ? "border-4 border-[#E62A2F]"
-              : "border-[#ac15e8]"
+              : "border-white border-4"
           } bg-gradient-to-br from-[rgba(255,220,254,0.5)] to-[rgba(230,148,255,0.5)] flex flex-col rounded-[10px]`}
           onClick={() => handleHostTypeChange("hero_host", -5)}
         >

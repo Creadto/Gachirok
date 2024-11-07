@@ -3,7 +3,6 @@ import { Profile } from "@/core/store/profile-store";
 import { getCountryName } from "@/core/utils/handleCountryStateCityModify";
 import { Session } from "next-auth";
 import { useRouter } from "next/navigation";
-import { UserProfileModal } from "../UserProfileModal";
 import { ArrowRightIcon } from "../icons/ArrowRightIcon";
 import { CoinIcon } from "../icons/CoinIcon";
 import {
@@ -140,7 +139,13 @@ export const ProfileDropdown = ({
         </button>
 
         {/* 설정 */}
-        <button className="flex mt-[5px] py-[15px] items-center gap-x-[10px] w-full">
+        <button
+          className="flex mt-[5px] py-[15px] items-center gap-x-[10px] w-full"
+          onClick={() => {
+            router.push("/profile/settings");
+            closeModal();
+          }}
+        >
           <ProfileSettingIcon />
           <span className="text-[15px]">설정</span>
           <div className=" flex ml-auto">

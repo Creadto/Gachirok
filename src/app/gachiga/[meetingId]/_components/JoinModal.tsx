@@ -6,11 +6,12 @@ import { BeforeIcon } from "@/core/components/icons/BackIcon";
 import CloseIcon from "@/core/components/icons/CloseIcon";
 import { PurchaseModal } from "./PurchaseModal";
 import { ProfileResponse } from "@/app/profile/_types/ProfileResponse";
+import { PurchaseProfileResponse } from "@/app/profile/_types/PurchaseProfileResponse";
 
 interface JoinModalProps {
   setIsJoinModalOpen: (value: boolean) => void;
   meetingData: MeetingResponse;
-  userData: ProfileResponse
+  userPurchaseData: PurchaseProfileResponse | undefined
   accessToken: string
   setIsJoined: (value: boolean) => void;
 }
@@ -22,7 +23,7 @@ interface JoinModalProps {
 export const JoinModal = ({
   setIsJoinModalOpen,
   meetingData,
-  userData,
+  userPurchaseData,
   accessToken,
   setIsJoined
 }: JoinModalProps) => {
@@ -39,12 +40,12 @@ export const JoinModal = ({
           meetingData={meetingData}
           setIsReplyModalOpen={setIsReplyModalOpen}
           setIsJoinModalOpen={setIsJoinModalOpen}
-          userData={userData}
+          userPurchaseData={userPurchaseData}
           accessToken={accessToken}
           setIsJoined={setIsJoined}
         />
       ) : isPurchaseModalOpen ? (
-        <PurchaseModal setIsJoinModalOpen={setIsJoinModalOpen} setIsPurchaseModalOpen={setIsPurchaseModalOpen} meetingData={meetingData} userData={userData} acccessToken={accessToken} replyValue={null} setIsJoined={setIsJoined}/>
+        <PurchaseModal setIsJoinModalOpen={setIsJoinModalOpen} setIsPurchaseModalOpen={setIsPurchaseModalOpen} meetingData={meetingData} userPurchaseData={userPurchaseData} acccessToken={accessToken} replyValue={null} setIsJoined={setIsJoined}/>
       ) : (
         <JoinModalCommon
           meetingData={meetingData}
