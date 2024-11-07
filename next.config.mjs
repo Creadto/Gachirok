@@ -161,7 +161,12 @@ const nextConfig = {
       {
         source: "/api/coin",
         destination:
-        "https://dev.gachiga.creadto.com/api/v1/coin",
+          "https://dev.gachiga.creadto.com/api/v1/coin",
+      },
+      {
+        source:"/api/purchases",
+        destination:
+            "https://dev.gachiga.creadto.com/api/v1/purchases",
       },
 
       //구매내역

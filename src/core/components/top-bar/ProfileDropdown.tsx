@@ -2,10 +2,7 @@
 import { Profile } from "@/core/store/profile-store";
 import { getCountryName } from "@/core/utils/handleCountryStateCityModify";
 import { Session } from "next-auth";
-import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import SignOutModal from "../SignOutModal";
 import { UserProfileModal } from "../UserProfileModal";
 import { ArrowRightIcon } from "../icons/ArrowRightIcon";
 import { CoinIcon } from "../icons/CoinIcon";
@@ -18,17 +15,20 @@ import {
   ProfilePolicyIcon,
   ProfilePrivacyIcon,
   ProfileReferralIcon,
-  ProfileSettingIcon
+  ProfileSettingIcon,
 } from "../icons/ProfileDropdownIcons";
-import { ResidentIcon } from "../icons/ResidentIcon";
-import { EditProfileIcon } from "../icons/create-profile/EditProfileIcon";
+import { signOut } from "next-auth/react";
+import { useEffect, useRef, useState } from "react";
+import SignOutModal from "../SignOutModal";
 import { ProfileResponse } from "@/app/profile/_types/ProfileResponse";
+import { EditProfileIcon } from "../icons/create-profile/EditProfileIcon";
+import { ResidentIcon } from "../icons/ResidentIcon";
 
 interface ProfileDropdownProps {
   profile: ProfileResponse | null;
   closeModal: () => void;
   session: Session | null;
-  setIsUserProfileModalOpen: (value: boolean) => void; 
+  setIsUserProfileModalOpen: (value: boolean) => void;
 }
 
 /**
@@ -39,7 +39,7 @@ export const ProfileDropdown = ({
   profile,
   closeModal,
   session,
-  setIsUserProfileModalOpen
+  setIsUserProfileModalOpen,
 }: ProfileDropdownProps) => {
   const router = useRouter();
 
@@ -72,7 +72,7 @@ export const ProfileDropdown = ({
             </div>
 
             <button
-            type="button"
+              type="button"
               className="flex w-full"
               onClick={() => {
                 setIsUserProfileModalOpen(true);
@@ -103,16 +103,20 @@ export const ProfileDropdown = ({
         </div>
 
         {/* 보유 포인트 버튼 */}
-        <div className="flex mt-[20px] bg-[#E6A55E] bg-opacity-20 px-[12px] py-[15px] rounded-lg">
+        <div
+          className="flex mt-[20px] bg-[#E6A55E] bg-opacity-20 px-[12px] py-[15px] rounded-lg cursor-pointer"
+          onClick={() => {
+            router.push("/payment");
+            closeModal();
+          }}
+        >
           <div className="flex gap-x-[15px]">
             <div className="flex items-center">
               <CoinIcon width={36} height={36} />
             </div>
             <div className="flex flex-col space-y-[2px]">
               <span className="text-[13px] text-[#E6A45E]">보유 포인트</span>
-              <div className="text-lg font-bold">
-                {profile?.coin}
-              </div>
+              <div className="text-lg font-bold">{profile?.coin}</div>
             </div>
           </div>
         </div>
