@@ -24,7 +24,7 @@ export default function Page({ params }: PageProps) {
   const { country, setCountry, countryName } = countryStore();
   const { user } = useUserStore();
   const { data: session } = useSession();
-  const { profile, setProfile } = useProfileStore2();
+  const { profile } = useProfileStore2();
 
   //URL의 params을 country store에 저장
   useEffect(() => {

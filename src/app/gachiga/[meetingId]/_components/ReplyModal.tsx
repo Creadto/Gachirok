@@ -4,10 +4,11 @@ import { MeetingResponse } from "../../_types/MeetingResponse";
 import { useState } from "react";
 import { PurchaseModal } from "./PurchaseModal";
 import { ProfileResponse } from "@/app/profile/_types/ProfileResponse";
+import { PurchaseProfileResponse } from "@/app/profile/_types/PurchaseProfileResponse";
 
 interface ReplyModalProps {
   meetingData: MeetingResponse;
-  userData: ProfileResponse;
+  userPurchaseData: PurchaseProfileResponse | undefined;
   setIsReplyModalOpen: (value: boolean) => void;
   setIsJoinModalOpen: (value: boolean) => void;
   accessToken: string;
@@ -22,7 +23,7 @@ export const ReplyModal = ({
   meetingData,
   setIsReplyModalOpen,
   setIsJoinModalOpen,
-  userData,
+  userPurchaseData,
   accessToken,
   setIsJoined
 }: ReplyModalProps) => {
@@ -36,7 +37,7 @@ export const ReplyModal = ({
           setIsJoinModalOpen={setIsJoinModalOpen}
           setIsPurchaseModalOpen={setIsPurchaseModalOpen}
           meetingData={meetingData}
-          userData={userData}
+          userPurchaseData={userPurchaseData}
           acccessToken={accessToken}
           replyValue = {replyValue}
           setIsJoined={setIsJoined}

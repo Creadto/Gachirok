@@ -41,6 +41,11 @@ const nextConfig = {
         destination: "https://dev.gachiga.creadto.com/api/v1/users",
       },
 
+      // FRIENDS
+      {
+        source: "/api/friends",
+        destination: "https://dev.gachiga.creadto.com/api/v1/friends",
+      },
       //MEETINGS
       {
         source: "/api/meetings",
