@@ -1,4 +1,4 @@
-export default function HostingPackage() {
+export default function HostingPackage({subscribeTime} : {subscribeTime : string | null | undefined}) {
 
 
 

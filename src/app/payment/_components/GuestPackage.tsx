@@ -1,4 +1,6 @@
-export default function GuestPackage() {
+
+
+export default function GuestPackage({subscribeTime,allTime} : {subscribeTime : string | null | undefined, allTime : string | null | undefined}) {
 
 
 

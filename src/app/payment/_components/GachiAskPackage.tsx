@@ -1,4 +1,4 @@
-export default function GachiAskPackage() {
+export default function GachiAskPackage({subscribeTime} : {subscribeTime : string | null | undefined}) {
 
 
 
