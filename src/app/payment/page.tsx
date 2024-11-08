@@ -16,6 +16,11 @@ export default function PaymentPage(){
     const {data: session} = useSession();
     const [coin, setCoin] = useState<number>();
 
+    const [all,setAll] = useState<string>();
+    const [guest,setGuest] = useState<string>();
+    const [inquiry,setInquiry] = useState<string>();
+    const [hosting,setHosting] = useState<string>();
+
 
     const getUserData = async () => {
         if (session?.accessToken) {
@@ -40,7 +45,6 @@ export default function PaymentPage(){
                         Authorization: `Bearer ${session.accessToken}`,
                     },
                 });
-                console.log("response", response);
                 setCoin(response.data.coin);
             } catch (error) {
                 console.error("Error getCoin data:", error);
@@ -48,9 +52,29 @@ export default function PaymentPage(){
         }
     }
 
+    const getSubscribe = async ()=>{
+        if(session?.accessToken){
+            try{
+                const response = await axios.get("/api/purchases", {
+                    headers:{
+                        Authorization: `Bearer ${session.accessToken}`,
+                    }
+                })
+                setAll(response.data.purchaseItem.allExpirationDateTime);
+                setGuest(response.data.purchaseItem.guestExpirationDateTime);
+                setInquiry(response.data.purchaseItem.inquiryExpirationDateTime);
+                setHosting(response.data.purchaseItem.hostingExpirationDateTime);
+            }
+            catch(error){
+                console.log(error);
+            }
+        }
+    }
+
     useEffect(() => {
         getCoinData();
         getUserData();
+        getSubscribe();
     },[session])
 
 
@@ -69,10 +93,10 @@ export default function PaymentPage(){
             {/*구매 아이템 목록*/}
             <div className="flex flex-row w-full">
                 <Coin userId={userId}/>
-                <AllinonePackage/>
-                <GuestPackage/>
-                <GachiAskPackage/>
-                <HostingPackage/>
+                <AllinonePackage subscribeTime={all}/>
+                <GuestPackage subscribeTime={guest} allTime={all}/>
+                <GachiAskPackage subscribeTime={inquiry} allTime={all}/>
+                <HostingPackage subscribeTime={hosting} allTime={all}/>
             </div>
 
         </div>
